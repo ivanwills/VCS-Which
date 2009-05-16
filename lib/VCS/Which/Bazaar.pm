@@ -1,6 +1,6 @@
-package VCS::Which;
+package VCS::Which::Bazaar;
 
-# Created on: 2009-05-16 16:54:35
+# Created on: 2009-05-16 16:58:36
 # Create by:  ivan
 # $Id$
 # $Revision$, $HeadURL$, $Date$
@@ -21,8 +21,7 @@ use base qw/Exporter/;
 our $VERSION     = version->new('0.0.1');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
-
-our %systems;
+#our @EXPORT      = qw//;
 
 sub new {
 	my $caller = shift;
@@ -32,43 +31,7 @@ sub new {
 
 	bless $self, $class;
 
-	if ( !%systems ) {
-		$self->get_systems();
-	}
-
 	return $self;
-}
-
-sub load_systems {
-	my ( $self ) = @_;
-
-	for my $module (keys %systems) {
-		$self->{system}{$module} = $module->new;
-	}
-
-	return;
-}
-
-sub get_systems {
-	my ($self) = @_;
-
-	for my $dir (@INC) {
-		my @files = glob "$dir/VCS/Which/*.pm";
-
-		for my $file (@files) {
-			my $module = $file;
-			$module =~ s{$dir/}{}xms;
-			$module =~ s{/}{::}gxms;
-			$module =~ s{[.]pm$}{}xms;
-
-			next if $systems{$module};
-
-			require $file;
-			$systems{$module} = 1;
-		}
-	}
-
-	return;
 }
 
 1;
@@ -77,16 +40,16 @@ __END__
 
 =head1 NAME
 
-VCS::Which - <One-line description of module's purpose>
+VCS::Which::Bazaar - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to VCS::Which version 0.1.
+This documentation refers to VCS::Which::Bazaar version 0.1.
 
 
 =head1 SYNOPSIS
 
-   use VCS::Which;
+   use VCS::Which::Bazaar;
 
    # Brief but working code example(s) here showing the most common usage(s)
    # This section will be as far as many users bother reading, so make it as
@@ -119,7 +82,7 @@ context to help them understand the methods that are subsequently described.
 
 Param: C<$search> - type (detail) - description
 
-Return: VCS::Which -
+Return: VCS::Which::Bazaar -
 
 Description:
 
