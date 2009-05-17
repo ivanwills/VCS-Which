@@ -1,6 +1,6 @@
-package VCS::Which::Plugin::CVS;
+#!/usr/bin/perl
 
-# Created on: 2009-05-16 16:58:14
+# Created on: 2009-05-16 17:53:41
 # Create by:  ivan
 # $Id$
 # $Revision$, $HeadURL$, $Date$
@@ -9,57 +9,85 @@ package VCS::Which::Plugin::CVS;
 use strict;
 use warnings;
 use version;
-use Carp;
+use Scalar::Util;
+use List::Util;
+#use List::MoreUtils;
+use Getopt::Long;
+use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/VCS::Which::Plugin/;
-use File::Class;
+use FindBin qw/$Bin/;
 
 our $VERSION = version->new('0.0.1');
-our $name    = 'CVS';
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
-sub installed {
-	my ($self) = @_;
+my %option = (
+	out     => undef,
+	verbose => 0,
+	man     => 0,
+	help    => 0,
+	VERSION => 0,
+);
 
-	return $self->{installed} if exists $self->{installed};
+if ( !@ARGV ) {
+	pod2usage( -verbose => 1 );
+}
 
-	for my $path (split /[:;]/, $ENV{PATH}) {
-		next if !-x "$path/cvs";
+main();
+exit 0;
 
-		return $self->{installed} = 1;
+sub main {
+
+	Getopt::Long::Configure('bundling');
+	GetOptions(
+		\%option,
+		'out|o=s',
+		'verbose|v+',
+		'man',
+		'help',
+		'VERSION!',
+	) or pod2usage(2);
+	#my $file = join ' ', @ARGV;
+
+	if ( $option{'VERSION'} ) {
+		print "$name Version = $VERSION\n";
+		exit 1;
+	}
+	elsif ( $option{'man'} ) {
+		pod2usage( -verbose => 2 );
+	}
+	elsif ( $option{'help'} ) {
+		pod2usage( -verbose => 1 );
 	}
 
-	return $self->{installed} = 0;
+	# do stuff here
+
+
+	return;
 }
 
-sub used {
-	my ( $self, $dir ) = @_;
-
-	croak "$dir is not a directory!" if !-d $dir;
-
-	return -d "$dir/CVS";
-}
-
-1;
-
-__END__
+__DATA__
 
 =head1 NAME
 
-VCS::Which::Plugin::CVS - <One-line description of module's purpose>
+bin/vcs-which - <One-line description of commands purpose>
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::CVS version 0.1.
-
+This documentation refers to bin/vcs-which version 0.1.
 
 =head1 SYNOPSIS
 
-   use VCS::Which::Plugin::CVS;
+   bin/vcs-which [option]
 
-   # Brief but working code example(s) here showing the most common usage(s)
-   # This section will be as far as many users bother reading, so make it as
-   # educational and exemplary as possible.
+ OPTIONS:
+  -o --other         other option
+
+  -v --verbose       Show more detailed option
+     --version       Prints the version information
+     --help          Prints this help information
+     --man           Prints the full documentation for bin/vcs-which
+
 
 
 =head1 DESCRIPTION
@@ -82,43 +110,6 @@ Name the section accordingly.
 In an object-oriented module, this section should begin with a sentence (of the
 form "An object of this class represents ...") to give the reader a high-level
 context to help them understand the methods that are subsequently described.
-
-
-=head3 C<new ( $search, )>
-
-Param: C<$search> - type (detail) - description
-
-Return: VCS::Which::Plugin::CVS -
-
-Description:
-
-=head3 C<name ()>
-
-Return: string - The pretty name for the System
-
-Description: Returns the pretty name for the CVS
-
-=head3 C<installed ()>
-
-Return: bool - True if the CVS is installed
-
-Description: Determines if CVS is actually installed and usable
-
-=head3 C<used ($dir)>
-
-Param: C<$dir> - string - Directory to check
-
-Return: bool - True if the directory is versioned by this CVS
-
-Description: Determines if the directory is under version control of this CVS
-
-=head3 C<uptodate ($dir)>
-
-Param: C<$dir> - string - Directory to check
-
-Return: bool - True if the directory has no uncommited changes
-
-Description: Determines if the directory has no uncommitted changes
 
 =head1 DIAGNOSTICS
 
@@ -168,7 +159,6 @@ Patches are welcome.
 =head1 AUTHOR
 
 ivan - (ivan@localhost)
-<Author name(s)>  (<contact address>)
 
 =head1 LICENSE AND COPYRIGHT
 

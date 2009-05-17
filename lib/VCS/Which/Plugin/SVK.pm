@@ -10,28 +10,26 @@ use strict;
 use warnings;
 use version;
 use Carp;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
-use CGI;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/Exporter/;
+use base qw/VCS::Which::Plugin/;
+use File::Class;
 
-our $VERSION     = version->new('0.0.1');
-our @EXPORT_OK   = qw//;
-our %EXPORT_TAGS = ();
-#our @EXPORT      = qw//;
+our $VERSION = version->new('0.0.1');
+our $name    = 'SVK';
 
-sub new {
-	my $caller = shift;
-	my $class  = ref $caller ? ref $caller : $caller;
-	my %param  = @_;
-	my $self   = \%param;
+sub installed {
+	my ($self) = @_;
 
-	bless $self, $class;
+	return $self->{installed} if exists $self->{installed};
 
-	return $self;
+	for my $path (split /[:;]/, $ENV{PATH}) {
+		next if !-x "$path/svk";
+
+		return $self->{installed} = 1;
+	}
+
+	return $self->{installed} = 0;
 }
 
 1;
@@ -86,7 +84,33 @@ Return: VCS::Which::Plugin::SVK -
 
 Description:
 
-=cut
+=head3 C<name ()>
+
+Return: string - The pretty name for the System
+
+Description: Returns the pretty name for the SVK
+
+=head3 C<installed ()>
+
+Return: bool - True if the SVK is installed
+
+Description: Determines if SVK is actually installed and usable
+
+=head3 C<used ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory is versioned by this SVK
+
+Description: Determines if the directory is under version control of this SVK
+
+=head3 C<uptodate ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory has no uncommited changes
+
+Description: Determines if the directory has no uncommitted changes
 
 =head1 DIAGNOSTICS
 

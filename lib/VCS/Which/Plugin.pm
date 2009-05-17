@@ -34,6 +34,32 @@ sub new {
 	return $self;
 }
 
+sub name {
+	my ($self) = @_;
+	my $package = ref $self ? ref $self : $self;
+
+	no strict qw/refs/;
+	return ${"$package\::name"};
+}
+
+sub installed {
+	my ($self) = @_;
+
+	return die $self->name . ' does not currently implement installed!';
+}
+
+sub used {
+	my ($self) = @_;
+
+	return die $self->name . ' does not currently implement used!';
+}
+
+sub uptodate {
+	my ($self) = @_;
+
+	return die $self->name . ' does not currently implement uptodate!';
+}
+
 1;
 
 __END__
@@ -58,25 +84,7 @@ This documentation refers to VCS::Which::Plugin version 0.1.
 
 =head1 DESCRIPTION
 
-A full description of the module and its features.
-
-May include numerous subsections (i.e., =head2, =head3, etc.).
-
-
 =head1 SUBROUTINES/METHODS
-
-A separate section listing the public components of the module's interface.
-
-These normally consist of either subroutines that may be exported, or methods
-that may be called on objects belonging to the classes that the module
-provides.
-
-Name the section accordingly.
-
-In an object-oriented module, this section should begin with a sentence (of the
-form "An object of this class represents ...") to give the reader a high-level
-context to help them understand the methods that are subsequently described.
-
 
 =head3 C<new ( $search, )>
 
@@ -86,7 +94,33 @@ Return: VCS::Which::Plugin -
 
 Description:
 
-=cut
+=head3 C<name ()>
+
+Return: string - The pretty name for the System
+
+Description: Returns the pretty name for the VCS
+
+=head3 C<installed ()>
+
+Return: bool - True if the VCS is installed
+
+Description: Determines if VCS is actually installed and usable
+
+=head3 C<used ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory is versioned by this VCS
+
+Description: Determines if the directory is under version control of this VCS
+
+=head3 C<uptodate ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory has no uncommited changes
+
+Description: Determines if the directory has no uncommitted changes
 
 =head1 DIAGNOSTICS
 

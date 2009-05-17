@@ -1,4 +1,4 @@
-package VCS::Which::SVN;
+package VCS::Which::Plugin::Subversion;
 
 # Created on: 2009-05-16 16:58:03
 # Create by:  ivan
@@ -10,28 +10,34 @@ use strict;
 use warnings;
 use version;
 use Carp;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
-use CGI;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/Exporter/;
+use base qw/VCS::Which::Plugin/;
+use File::Class;
 
-our $VERSION     = version->new('0.0.1');
-our @EXPORT_OK   = qw//;
-our %EXPORT_TAGS = ();
-#our @EXPORT      = qw//;
+our $VERSION = version->new('0.0.1');
+our $name    = 'Subversion';
 
-sub new {
-	my $caller = shift;
-	my $class  = ref $caller ? ref $caller : $caller;
-	my %param  = @_;
-	my $self   = \%param;
+sub installed {
+	my ($self) = @_;
 
-	bless $self, $class;
+	return $self->{installed} if exists $self->{installed};
 
-	return $self;
+	for my $path (split /[:;]/, $ENV{PATH}) {
+		next if !-x "$path/svn";
+
+		return $self->{installed} = 1;
+	}
+
+	return $self->{installed} = 0;
+}
+
+sub used {
+	my ( $self, $dir ) = @_;
+
+	croak "$dir is not a directory!" if !-d $dir;
+
+	return -d "$dir/.svn";
 }
 
 1;
@@ -40,16 +46,16 @@ __END__
 
 =head1 NAME
 
-VCS::Which::SVN - <One-line description of module's purpose>
+VCS::Which::Plugin::Subversion - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::SVN version 0.1.
+This documentation refers to VCS::Which::Plugin::Subversion version 0.1.
 
 
 =head1 SYNOPSIS
 
-   use VCS::Which::SVN;
+   use VCS::Which::Plugin::Subversion;
 
    # Brief but working code example(s) here showing the most common usage(s)
    # This section will be as far as many users bother reading, so make it as
@@ -82,11 +88,37 @@ context to help them understand the methods that are subsequently described.
 
 Param: C<$search> - type (detail) - description
 
-Return: VCS::Which::SVN -
+Return: VCS::Which::Plugin::Subversion -
 
 Description:
 
-=cut
+=head3 C<name ()>
+
+Return: string - The pretty name for the System
+
+Description: Returns the pretty name for the Subversion
+
+=head3 C<installed ()>
+
+Return: bool - True if the Subversion is installed
+
+Description: Determines if Subversion is actually installed and usable
+
+=head3 C<used ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory is versioned by this Subversion
+
+Description: Determines if the directory is under version control of this Subversion
+
+=head3 C<uptodate ($dir)>
+
+Param: C<$dir> - string - Directory to check
+
+Return: bool - True if the directory has no uncommited changes
+
+Description: Determines if the directory has no uncommitted changes
 
 =head1 DIAGNOSTICS
 
