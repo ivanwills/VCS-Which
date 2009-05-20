@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
-use File::Class;
+use Path::Class;
 
 our $VERSION = version->new('0.0.1');
 our $name    = 'Bazaar';
@@ -37,7 +37,7 @@ sub used {
 
 	croak "$dir is not a directory!" if !-d $dir;
 
-	my $current_dir = File::Class->new($dir);
+	my $current_dir = dir($dir);
 	my $level       = 1;
 
 	while ($current_dir->up) {
