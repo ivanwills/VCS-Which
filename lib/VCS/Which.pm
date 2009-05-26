@@ -243,6 +243,12 @@ Return: bool - True if the everything is checked in for the directory
 Description: Determines if there are any changes that have not been commited
 to the VCS running the directory.
 
+=head3 C<exec ( @args )>
+
+Param: C<@args> - array - Arguments to pass on to the appropriate vcs command
+
+Description: Runs the appropriate vcs command with the parameters supplied
+
 =head1 DIAGNOSTICS
 
 A list of every error and warning message that the module can generate (even
