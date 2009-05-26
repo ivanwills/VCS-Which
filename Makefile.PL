@@ -6,7 +6,9 @@ WriteMakefile
           'PL_FILES' => {},
           'INSTALLDIRS' => 'site',
           'NAME' => 'VCS::Which',
-          'EXE_FILES' => [],
+          'EXE_FILES' => [
+                           'bin/vcsw'
+                         ],
           'VERSION_FROM' => 'lib/VCS/Which.pm',
           'PREREQ_PM' => {
                            'Test::More' => 0

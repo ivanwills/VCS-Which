@@ -4,7 +4,7 @@ MANIFEST
 MANIFEST.SKIP
 README
 lib/VCS/Which.pm
-bin/vcs-which
+bin/vcsw
 lib/VCS/Which/Plugin.pm
 lib/VCS/Which/Plugin/Bazaar.pm
 lib/VCS/Which/Plugin/CVS.pm
@@ -15,5 +15,10 @@ t/00-load.t
 t/pod-coverage.t
 t/pod.t
 t/boilerplate.t
+t/critic.t
+t/kwalitee.t
+t/perlcriticrc
+t/spelling.t
 Makefile.PL
 META.yml
+LICENSE

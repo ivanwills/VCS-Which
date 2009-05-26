@@ -15,6 +15,24 @@ provides:
   VCS::Which:
     file: lib/VCS/Which.pm
     version: 0.0.1
+  VCS::Which::Plugin:
+    file: lib/VCS/Which/Plugin.pm
+    version: 0.0.1
+  VCS::Which::Plugin::Bazaar:
+    file: lib/VCS/Which/Plugin/Bazaar.pm
+    version: 0.0.1
+  VCS::Which::Plugin::CVS:
+    file: lib/VCS/Which/Plugin/CVS.pm
+    version: 0.0.1
+  VCS::Which::Plugin::Git:
+    file: lib/VCS/Which/Plugin/Git.pm
+    version: 0.0.1
+  VCS::Which::Plugin::SVK:
+    file: lib/VCS/Which/Plugin/SVK.pm
+    version: 0.0.1
+  VCS::Which::Plugin::Subversion:
+    file: lib/VCS/Which/Plugin/Subversion.pm
+    version: 0.0.1
 generated_by: Module::Build version 0.33
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
