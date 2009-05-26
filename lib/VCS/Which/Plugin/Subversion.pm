@@ -16,6 +16,7 @@ use base qw/VCS::Which::Plugin/;
 
 our $VERSION = version->new('0.0.1');
 our $name    = 'Subversion';
+our $exe     = 'svn';
 
 sub installed {
 	my ($self) = @_;

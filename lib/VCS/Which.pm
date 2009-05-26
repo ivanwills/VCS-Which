@@ -162,6 +162,18 @@ sub uptodate {
 	return $self->{uptodate}{$dir} = $system->uptodate($dir);
 }
 
+sub exec {
+	my ( $self, @args ) = @_;
+
+	my $dir = $self->{dir};
+
+	croak "No directory supplied!" if !$dir;
+
+	my $system = $self->which;
+
+	return $system->exec($dir, @args);
+}
+
 1;
 
 __END__

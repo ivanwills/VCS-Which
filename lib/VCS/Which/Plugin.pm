@@ -42,6 +42,14 @@ sub name {
 	return ${"$package\::name"};
 }
 
+sub exe {
+	my ($self) = @_;
+	my $package = ref $self ? ref $self : $self;
+
+	no strict qw/refs/;
+	return ${"$package\::exe"};
+}
+
 sub installed {
 	my ($self) = @_;
 
@@ -58,6 +66,16 @@ sub uptodate {
 	my ($self) = @_;
 
 	return die $self->name . ' does not currently implement uptodate!';
+}
+
+sub exec {
+	my ($self, $dir, @args) = @_;
+
+	die $self->name . " not installed\n" if !$self->installed();
+
+	my $cmd = $self->exe;
+
+	return CORE::exec( $cmd, @args );
 }
 
 1;

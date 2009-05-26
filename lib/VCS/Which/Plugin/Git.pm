@@ -17,6 +17,7 @@ use Path::Class;
 
 our $VERSION = version->new('0.0.1');
 our $name    = 'Git';
+our $exe     = 'git';
 
 sub installed {
 	my ($self) = @_;

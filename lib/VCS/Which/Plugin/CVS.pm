@@ -16,6 +16,7 @@ use base qw/VCS::Which::Plugin/;
 
 our $VERSION = version->new('0.0.1');
 our $name    = 'CVS';
+our $exe     = 'cvs';
 
 sub installed {
 	my ($self) = @_;
