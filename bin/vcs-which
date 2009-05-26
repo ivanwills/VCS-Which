@@ -9,14 +9,13 @@
 use strict;
 use warnings;
 use version;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
+use Path::Class qw/file/;
+use VCS::Which;
 
 our $VERSION = version->new('0.0.1');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -38,30 +37,23 @@ exit 0;
 
 sub main {
 
-	Getopt::Long::Configure('bundling');
-	GetOptions(
-		\%option,
-		'out|o=s',
-		'verbose|v+',
-		'man',
-		'help',
-		'VERSION!',
-	) or pod2usage(2);
-	#my $file = join ' ', @ARGV;
-
-	if ( $option{'VERSION'} ) {
-		print "$name Version = $VERSION\n";
-		exit 1;
-	}
-	elsif ( $option{'man'} ) {
-		pod2usage( -verbose => 2 );
-	}
-	elsif ( $option{'help'} ) {
-		pod2usage( -verbose => 1 );
+	my $dir;
+	ARG:
+	for my $arg (@ARGV[ 1 .. @ARGV -1 ]) {
+		if ( -e $arg ) {
+			$dir = $arg;
+			if ( -f $dir ) {
+				$dir = file($dir)->parent;
+			}
+			last ARG;
+		}
 	}
 
-	# do stuff here
+	$dir ||= '.';
 
+	my $vcsw = VCS::Which->new( dir => $dir );
+
+	$vcsw->exec(@ARGV);
 
 	return;
 }
