@@ -240,7 +240,7 @@ Param: C<$dir> - string - Directory to base out put on
 
 Return: bool - True if the everything is checked in for the directory
 
-Description: Determines if there are any changes that have not been commited
+Description: Determines if there are any changes that have not been committed
 to the VCS running the directory.
 
 =head3 C<exec ( @args )>

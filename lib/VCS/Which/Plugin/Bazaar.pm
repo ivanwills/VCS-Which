@@ -129,7 +129,7 @@ Description: Determines if the directory is under version control of this Bazaar
 
 Param: C<$dir> - string - Directory to check
 
-Return: bool - True if the directory has no uncommited changes
+Return: bool - True if the directory has no uncommitted changes
 
 Description: Determines if the directory has no uncommitted changes
 

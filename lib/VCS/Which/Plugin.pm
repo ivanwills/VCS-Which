@@ -38,7 +38,7 @@ sub name {
 	my ($self) = @_;
 	my $package = ref $self ? ref $self : $self;
 
-	no strict qw/refs/;
+	no strict qw/refs/;          ## no critic
 	return ${"$package\::name"};
 }
 
@@ -46,7 +46,7 @@ sub exe {
 	my ($self) = @_;
 	my $package = ref $self ? ref $self : $self;
 
-	no strict qw/refs/;
+	no strict qw/refs/;          ## no critic
 	return ${"$package\::exe"};
 }
 
@@ -120,7 +120,7 @@ Description: Returns the pretty name for the VCS
 
 =head3 C<exe ()>
 
-Return: string - The name of the executable that is used to run opperations
+Return: string - The name of the executable that is used to run operations
 with the appropriate plugin
 
 Description: Returns name of the executable for the appropriate version
@@ -144,7 +144,7 @@ Description: Determines if the directory is under version control of this VCS
 
 Param: C<$dir> - string - Directory to check
 
-Return: bool - True if the directory has no uncommited changes
+Return: bool - True if the directory has no uncommitted changes
 
 Description: Determines if the directory has no uncommitted changes
 
