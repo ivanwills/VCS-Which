@@ -1,6 +1,6 @@
 ---
 name: VCS-Which
-version: 0.0.2
+version: 0.0.3
 author:
   - 'Ivan Wills <ivan.wills@gmail.com>'
 abstract: Generically interface with version control systems
@@ -8,13 +8,15 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 requires:
+  Path::Class: 0.16
   perl: 5.008
+  version: 0
 build_requires:
   Test::More: 0
 provides:
   VCS::Which:
     file: lib/VCS/Which.pm
-    version: 0.0.2
+    version: 0.0.3
   VCS::Which::Plugin:
     file: lib/VCS/Which/Plugin.pm
     version: 0.0.2

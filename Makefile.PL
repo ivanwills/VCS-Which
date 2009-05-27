@@ -11,7 +11,9 @@ WriteMakefile
                          ],
           'VERSION_FROM' => 'lib/VCS/Which.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0
+                           'Test::More' => 0,
+                           'version' => 0,
+                           'Path::Class' => '0.16'
                          }
         )
 ;
