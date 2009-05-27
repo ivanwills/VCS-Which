@@ -18,7 +18,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = version->new('0.0.1');
+our $VERSION     = version->new('0.0.2');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 
@@ -180,31 +180,40 @@ __END__
 
 =head1 NAME
 
-VCS::Which - <One-line description of module's purpose>
+VCS::Which - Generically interface with version control systems
 
 =head1 VERSION
 
-This documentation refers to VCS::Which version 0.1.
+This documentation refers to VCS::Which version 0.0.2.
 
 
 =head1 SYNOPSIS
 
    use VCS::Which;
 
-   # Brief but working code example(s) here showing the most common usage(s)
-   # This section will be as far as many users bother reading, so make it as
-   # educational and exemplary as possible.
+   # create a new object
+   my $vcs = VCS::Which->new();
 
+   if ( !$vcs->uptodate('.') ) {
+       warn "Directory has uncommitted changes\n";
+   }
 
 =head1 DESCRIPTION
 
+This module provides methods to interface with a version control system
+(vcs) with out having to care which command to use or which sub command in
+needed for several basic opperations like checking if there are any
+uncommitted changes.
+
 =head1 SUBROUTINES/METHODS
 
-=head3 C<new ( $search, )>
+=head3 C<new ( %args )>
 
-Param: C<$search> - type (detail) - description
+Arg: C<dir> - string - (optional) a directory that will be used for
+determining the used version control system. It is used for other methods
+that require a directory and one is not supplied.
 
-Return: VCS::Which -
+Return: VCS::Which - A new object.
 
 Description:
 
@@ -225,7 +234,7 @@ Return: list context - The data for each system's capabilities
 
 Description: Gets the capabilities of each system and returns the results
 
-=head3 C<which ( $dir )>
+=head3 C<which ( [$dir] )>
 
 Param: C<$dir> - string - Directory to work out which system it is using
 
@@ -251,40 +260,13 @@ Description: Runs the appropriate vcs command with the parameters supplied
 
 =head1 DIAGNOSTICS
 
-A list of every error and warning message that the module can generate (even
-the ones that will "never happen"), with a full explanation of each problem,
-one or more likely causes, and any suggested remedies.
-
 =head1 CONFIGURATION AND ENVIRONMENT
-
-A full explanation of any configuration system(s) used by the module, including
-the names and locations of any configuration files, and the meaning of any
-environment variables or properties that can be set. These descriptions must
-also include details of any configuration language used.
 
 =head1 DEPENDENCIES
 
-A list of all of the other modules that this module relies upon, including any
-restrictions on versions, and an indication of whether these required modules
-are part of the standard Perl distribution, part of the module's distribution,
-or must be installed separately.
-
 =head1 INCOMPATIBILITIES
 
-A list of any modules that this module cannot be used in conjunction with.
-This may be due to name conflicts in the interface, or competition for system
-or program resources, or due to internal limitations of Perl (for example, many
-modules that use source code filters are mutually incompatible).
-
 =head1 BUGS AND LIMITATIONS
-
-A list of known problems with the module, together with some indication of
-whether they are likely to be fixed in an upcoming release.
-
-Also, a list of restrictions on the features the module does provide: data types
-that cannot be handled, performance issues and the circumstances in which they
-may arise, practical limitations on the size of data sets, special cases that
-are not (yet) handled, etc.
 
 The initial template usually just has:
 

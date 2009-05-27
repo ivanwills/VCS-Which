@@ -10,18 +10,13 @@ use strict;
 use warnings;
 use version;
 use Carp;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
-use CGI;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = version->new('0.0.1');
+our $VERSION     = version->new('0.0.2');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
-#our @EXPORT      = qw//;
 
 sub new {
 	my $caller = shift;
@@ -88,7 +83,7 @@ VCS::Which::Plugin - Base class for the various VCS plugins
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin version 0.1.
+This documentation refers to VCS::Which::Plugin version 0.0.2.
 
 
 =head1 SYNOPSIS
@@ -102,23 +97,45 @@ This documentation refers to VCS::Which::Plugin version 0.1.
 
 =head1 DESCRIPTION
 
+This is the base module for VCS::Which plugins. It is not used directly by
+itself. Many of the methods expect package variables to be defined by the
+plugin module.
+
+This module is also usually called by L<VCS::Which> and not the plugins
+directly as L<VCS::Which> is set up to do the work to determine which plugin
+to use.
+
+=head2 PLUGINS
+
+Plugins are expected to define the following variables
+
+=over 4
+
+=item C<our $name>
+
+A pretty name to describe the version control system.
+
+=item C<our $exe>
+
+The executable used by the vcs (eg svn, git etc)
+
+=back
+
 =head1 SUBROUTINES/METHODS
 
-=head3 C<new ( $search, )>
+=head2 C<new ()>
 
-Param: C<$search> - type (detail) - description
+Return: VCS::Which::Plugin - A new plugin object
 
-Return: VCS::Which::Plugin -
+Description: Simple constructor that should be inherited by plugins
 
-Description:
-
-=head3 C<name ()>
+=head2 C<name ()>
 
 Return: string - The pretty name for the System
 
 Description: Returns the pretty name for the VCS
 
-=head3 C<exe ()>
+=head2 C<exe ()>
 
 Return: string - The name of the executable that is used to run operations
 with the appropriate plugin
@@ -126,13 +143,13 @@ with the appropriate plugin
 Description: Returns name of the executable for the appropriate version
 control system.
 
-=head3 C<installed ()>
+=head2 C<installed ()>
 
 Return: bool - True if the VCS is installed
 
 Description: Determines if VCS is actually installed and usable
 
-=head3 C<used ($dir)>
+=head2 C<used ($dir)>
 
 Param: C<$dir> - string - Directory to check
 
@@ -140,7 +157,7 @@ Return: bool - True if the directory is versioned by this VCS
 
 Description: Determines if the directory is under version control of this VCS
 
-=head3 C<uptodate ($dir)>
+=head2 C<uptodate ($dir)>
 
 Param: C<$dir> - string - Directory to check
 
@@ -148,7 +165,7 @@ Return: bool - True if the directory has no uncommitted changes
 
 Description: Determines if the directory has no uncommitted changes
 
-=head3 C<exec (@params)>
+=head2 C<exec (@params)>
 
 Param: C<@params> - array of strings - The parameters that you wish to pass
 on to the vcs program.
