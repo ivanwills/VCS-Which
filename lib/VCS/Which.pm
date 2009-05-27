@@ -202,7 +202,7 @@ This documentation refers to VCS::Which version 0.0.2.
 
 This module provides methods to interface with a version control system
 (vcs) with out having to care which command to use or which sub command in
-needed for several basic opperations like checking if there are any
+needed for several basic operations like checking if there are any
 uncommitted changes.
 
 =head1 SUBROUTINES/METHODS

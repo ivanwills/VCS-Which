@@ -9,7 +9,7 @@ eval { require Test::Spelling; Test::Spelling->import() };
 
 # now check that the spell command is installed
 my $found;
-for my $dir ( split /:/, $ENV{PATH} ) {·
+for my $dir ( split /:/, $ENV{PATH} ) {
 	next if !-d $dir;
 	next if !-x "$dir/spell";
 
@@ -20,5 +20,5 @@ for my $dir ( split /:/, $ENV{PATH} ) {·
 plan skip_all => "Test::Spelling required for testing POD spelling" if $@;
 plan skip_all => "spell cmd required for testing POD spelling" if !$found;
 
-add_stopwords(qw/NSW Hornsby Param SVK CVS VCS vcs versioned plugins /);
+add_stopwords(qw/NSW Hornsby Param Arg svn SVK CVS VCS vcs vcsw versioned plugins eg /);
 all_pod_files_spelling_ok();
