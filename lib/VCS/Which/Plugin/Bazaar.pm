@@ -36,18 +36,27 @@ sub installed {
 sub used {
 	my ( $self, $dir ) = @_;
 
+	if (-f $dir) {
+		$dir = file($dir)->parent;
+	}
+
 	croak "$dir is not a directory!" if !-d $dir;
 
 	my $current_dir = dir($dir);
 	my $level       = 1;
 
-	while ($current_dir->up) {
+	while ($current_dir) {
 		if ( -d "$current_dir/.bzr" ) {
+			$self->{base} = $current_dir;
 			return $level;
 		}
 
 		$level++;
-		$current_dir = $current_dir->up;
+
+		# check that we still have a parent directory
+		last if $current_dir eq $current_dir->parent;
+
+		$current_dir = $current_dir->parent;
 	}
 
 	return 0;

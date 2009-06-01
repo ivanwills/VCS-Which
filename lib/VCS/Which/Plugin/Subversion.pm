@@ -35,6 +35,10 @@ sub installed {
 sub used {
 	my ( $self, $dir ) = @_;
 
+	if (-f $dir) {
+		$dir = file($dir)->parent;
+	}
+
 	croak "$dir is not a directory!" if !-d $dir;
 
 	return -d "$dir/.svn";

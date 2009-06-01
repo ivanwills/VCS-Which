@@ -170,6 +170,18 @@ sub exec {
 	return $system->exec($dir, @args);
 }
 
+sub cat {
+	my ( $self, $file, @args ) = @_;
+
+	my $dir = $self->{dir};
+
+	croak "No directory supplied!" if !$dir;
+
+	my $system = $self->which;
+
+	return $system->cat($file, @args);
+}
+
 1;
 
 __END__
@@ -253,6 +265,19 @@ to the VCS running the directory.
 Param: C<@args> - array - Arguments to pass on to the appropriate vcs command
 
 Description: Runs the appropriate vcs command with the parameters supplied
+
+=head3 C<cat ( $file[, $revision] )>
+
+Param: C<$file> - string - The name of the file to cat
+
+Param: C<$revision> - string - The revision to get. If the revision is negative
+it refers to the number of revisions old is desired. Any other value is
+assumed to be a version control specific revision. If no revision is specified
+the most recent revision is returned.
+
+Return: The file contents of the desired revision
+
+Description: Gets the contents of a specific revision of a file.
 
 =head1 DIAGNOSTICS
 
