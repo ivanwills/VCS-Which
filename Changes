@@ -1,5 +1,30 @@
 Revision history for VCS-Which
 
-0.01    2009-05-17
+0.0.3   2009-07-06
+        Made kwalitee test be author only
+        Added new log method for getting change log info
+        Added new words to spelling list, removed taint mode form test
+        Added new command to run vimdiffs, added capibalities to plugins to cat the contents of a file/revision
+        Removed unused modules
+        Added missing modules
+
+0.0.2   2009-05-27
+        Updated version numbers
+        Fixed spelling issues
+        Fixed documentation and upped the version number
+        Fixed issue where Test::Spelling is installed but the spell command is not
+        Fixed build issues
+        Fixed spelling mistakes and critic errors
+        Fixed incorrect details
+        Missing standard tests
+        Fixed up some documentation
+        Added the ability to get the executable for each version control system as well as exec to the appropriate vcs
+        Renamed script to be more usable
+        Added actual code to execute the appropriate vcs command
+        Updated the plugins to use Path::Class instead of File::Path
+        Updated the plugins to use Path::Class instead of File::Path
+        Basic implementation of uptodate
+
+0.0.1   2009-05-17
         First version, released on an unsuspecting world.
 
