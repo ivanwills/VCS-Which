@@ -43,7 +43,7 @@ sub used {
 
 	croak "$dir is not a directory!" if !-d $dir;
 
-	my $current_dir = dir($dir);
+	my $current_dir = dir($dir)->absolute;
 	my $level       = 1;
 
 	while ($current_dir) {
@@ -88,10 +88,21 @@ sub cat {
 		my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
 		my $rev = $revs[$revision];
 
-		return $repo->('show', $rev . ':' . $file);
+		return join "\n", $repo->command('show', $rev . ':' . $file);
+	}
+	elsif ( !defined $revision ) {
+		$revision = '';
 	}
 
 	return `git show $revision\:$file`;
+}
+
+sub log {
+	my ($self, @args) = @_;
+
+	my $args = join ' ', @args;
+
+	return `git log $args`;
 }
 
 1;
@@ -154,6 +165,10 @@ the most recent revision is returned.
 Return: The file contents of the desired revision
 
 Description: Gets the contents of a specific revision of a file.
+
+=head3 C<log ( @args )>
+
+TO DO: Body
 
 =head1 DIAGNOSTICS
 

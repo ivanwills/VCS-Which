@@ -13,6 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
+use Path::Class qw/file/;
 
 our $VERSION     = version->new('0.0.3');
 our @EXPORT_OK   = qw//;
@@ -33,6 +34,10 @@ sub new {
 	}
 
 	$self->load_systems();
+
+	if ( $self->{dir} && -f $self->{dir} ) {
+		$self->{dir} = file($self->{dir})->parent->cleanup;
+	}
 
 	return $self;
 }
@@ -153,7 +158,7 @@ sub uptodate {
 
 	return $self->{uptodate}{$dir} if exists $self->{uptodate}{$dir};
 
-	my $system = $self->which;
+	my $system = $self->which || die "Could not work out which version control system to use!\n";
 
 	return $self->{uptodate}{$dir} = $system->uptodate($dir);
 }
@@ -180,6 +185,18 @@ sub cat {
 	my $system = $self->which;
 
 	return $system->cat($file, @args);
+}
+
+sub log {
+	my ( $self, @args ) = @_;
+
+	my $dir = $self->{dir};
+
+	croak "No directory supplied!" if !$dir;
+
+	my $system = $self->which;
+
+	return $system->log(@args);
 }
 
 1;
@@ -278,6 +295,16 @@ the most recent revision is returned.
 Return: The file contents of the desired revision
 
 Description: Gets the contents of a specific revision of a file.
+
+=head3 C<log ( [$file], [@args] )>
+
+Param: C<$file> - string - The name of the file or directory to get the log of
+
+Param: C<@args> - strings - Any other arguments to pass to the log command
+
+Return: The log out put
+
+Description: Gets the log of changes (optionally limited to a file)
 
 =head1 DIAGNOSTICS
 

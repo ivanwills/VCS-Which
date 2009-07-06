@@ -42,7 +42,7 @@ sub used {
 
 	croak "$dir is not a directory!" if !-d $dir;
 
-	my $current_dir = dir($dir);
+	my $current_dir = dir($dir)->absolute;
 	my $level       = 1;
 
 	while ($current_dir) {
