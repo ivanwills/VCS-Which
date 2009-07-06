@@ -7,6 +7,7 @@ WriteMakefile
           'INSTALLDIRS' => 'site',
           'NAME' => 'VCS::Which',
           'EXE_FILES' => [
+                           'bin/vcsvimdiff',
                            'bin/vcsw'
                          ],
           'VERSION_FROM' => 'lib/VCS/Which.pm',
