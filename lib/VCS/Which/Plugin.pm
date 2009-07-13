@@ -70,7 +70,8 @@ sub exec {
 
 	my $cmd = $self->exe;
 
-	return CORE::exec( $cmd, @args );
+	my $run = join ' ', $cmd, @args;
+	return defined wantarray ? `$run` : CORE::exec($run);
 }
 
 sub cat {
@@ -179,7 +180,10 @@ Description: Determines if the directory has no uncommitted changes
 Param: C<@params> - array of strings - The parameters that you wish to pass
 on to the vcs program.
 
-Description: Runs a command for the appropriate vcs.
+Description: Runs a command for the appropriate vcs. In void context it
+actually exec()s the command so never returns if the context is scalar or
+array backticks are used to run the command and the results are returned to
+the caller.
 
 =head3 C<cat ( $file[, $revision] )>
 
