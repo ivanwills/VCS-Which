@@ -14,6 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use Path::Class;
+use File::chdir;
 
 our $VERSION = version->new('0.0.2');
 our $name    = 'Git';
@@ -70,6 +71,7 @@ sub uptodate {
 
 	croak "'$dir' is not a directory!" if !-e $dir;
 
+	local $CWD = $dir;
 	my $ans = `git status $dir`;
 
 	return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;

@@ -13,6 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
+use File::chdir;
 
 our $VERSION     = version->new('0.0.4');
 our @EXPORT_OK   = qw//;
@@ -68,6 +69,7 @@ sub exec {
 
 	die $self->name . " not installed\n" if !$self->installed();
 
+	local $CWD = $dir;
 	my $cmd = $self->exe;
 
 	my $run = join ' ', $cmd, @args;
