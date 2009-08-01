@@ -8,9 +8,13 @@ my $builder = Module::Build->new(
 	dist_author       => 'Ivan Wills <ivan.wills@gmail.com>',
 	dist_version_from => 'lib/VCS/Which.pm',
 	requires          => {
-		perl          => 5.008,
-		'Path::Class' => '0.16',
-		'version'     => 0,
+		perl             => 5.008,
+		'Path::Class'    => '0.16',
+		'File::chdir'    => 0,
+		'File::Slurp'    => 0,
+		'File::Basename' => 0,
+		'File::Spec'     => 0,
+		'version'        => 0,
 	},
 	build_requires => {
 		'Test::More' => 0,
