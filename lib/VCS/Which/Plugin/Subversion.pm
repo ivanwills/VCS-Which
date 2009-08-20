@@ -44,6 +44,30 @@ sub used {
 	return -d "$dir/.svn";
 }
 
+sub uptodate {
+	my ($self, $dir) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	return `svn status $dir`;
+}
+
+sub cat {
+	my ($self, $file, $revision) = @_;
+
+	if ( $revision && $revision =~ /^-\d+$/xms ) {
+		my @versions = reverse `svn log -q $file` =~ /^ r(\d+) \s/gxms;
+		$revision = $versions[$revision];
+	}
+	elsif ( !defined $revision ) {
+		$revision = '';
+	}
+
+	return `svn cat -r$revision $file`;
+}
+
 1;
 
 __END__
