@@ -65,7 +65,9 @@ sub cat {
 		$revision = '';
 	}
 
-	return `svn cat -r$revision $file`;
+	$revision &&= "-r$revision";
+
+	return `svn cat $revision $file`;
 }
 
 1;
