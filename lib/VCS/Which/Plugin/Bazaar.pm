@@ -14,6 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use Path::Class;
+use File::chdir;
 
 our $VERSION = version->new('0.0.2');
 our $name    = 'Bazaar';
@@ -60,6 +61,19 @@ sub used {
 	}
 
 	return 0;
+}
+
+sub uptodate {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	my $ans = `bzr status $dir`;
+
+	return $ans ? 1 : 0;
 }
 
 1;
