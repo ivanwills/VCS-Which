@@ -85,6 +85,10 @@ sub cat {
 	return `$exe cat $rev$file`;
 }
 
+sub versions {
+	die 'Not implemented for this Version Controll System!';
+}
+
 1;
 
 __END__
