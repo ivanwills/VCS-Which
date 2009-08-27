@@ -76,6 +76,17 @@ sub uptodate {
 	return $ans ? 1 : 0;
 }
 
+sub pull {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system 'bzr pull';
+}
+
 1;
 
 __END__

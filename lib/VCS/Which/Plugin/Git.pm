@@ -107,6 +107,17 @@ sub log {
 	return `git log $args`;
 }
 
+sub pull {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system 'git pull';
+}
+
 1;
 
 __END__

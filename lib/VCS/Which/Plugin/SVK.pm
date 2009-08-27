@@ -13,6 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
+use File::chdir;
 
 our $VERSION = version->new('0.0.2');
 our $name    = 'SVK';
@@ -30,6 +31,17 @@ sub installed {
 	}
 
 	return $self->{installed} = 0;
+}
+
+sub pull {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system 'svk pull';
 }
 
 1;

@@ -13,6 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
+use File::chdir;
 
 our $VERSION = version->new('0.0.2');
 our $name    = 'Subversion';
@@ -68,6 +69,17 @@ sub cat {
 	$revision &&= "-r$revision";
 
 	return `svn cat $revision $file`;
+}
+
+sub pull {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system 'svn update';
 }
 
 1;

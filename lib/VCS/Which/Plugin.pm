@@ -85,6 +85,10 @@ sub cat {
 	return `$exe cat $rev$file`;
 }
 
+sub pull {
+	die 'Not yet implemented';
+}
+
 1;
 
 __END__
