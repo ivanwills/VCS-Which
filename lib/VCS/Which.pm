@@ -175,18 +175,6 @@ sub exec {
 	return $system->exec($dir, @args);
 }
 
-sub cat {
-	my ( $self, $file, @args ) = @_;
-
-	my $dir = $self->{dir};
-
-	croak "No directory supplied!" if !$dir;
-
-	my $system = $self->which;
-
-	return $system->cat($file, @args);
-}
-
 sub log {
 	my ( $self, @args ) = @_;
 
@@ -197,6 +185,40 @@ sub log {
 	my $system = $self->which;
 
 	return $system->log(@args);
+}
+
+sub cat {
+	my ( $self, $file, @args ) = @_;
+
+	if ($file) {
+		$self->{dir} = $file;
+	}
+	else {
+		$file = $self->{dir};
+	}
+
+	croak "No file supplied!" if !$file;
+
+	my $system = $self->which;
+
+	return $system->cat($file, @args);
+}
+
+sub versions {
+	my ( $self, $file, @args ) = @_;
+
+	if ($file) {
+		$self->{dir} = $file;
+	}
+	else {
+		$file = $self->{dir};
+	}
+
+	croak "No file supplied!" if !$file;
+
+	my $system = $self->which;
+
+	return $system->versions(@args);
 }
 
 sub pull {

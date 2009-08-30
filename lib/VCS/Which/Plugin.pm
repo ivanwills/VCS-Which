@@ -86,7 +86,11 @@ sub cat {
 }
 
 sub pull {
-	die 'Not yet implemented';
+	die '"pull" not implemented for this Version Controll System!';
+}
+
+sub versions {
+	die '"versions" Not implemented for this Version Controll System!';
 }
 
 1;
