@@ -104,7 +104,23 @@ sub log {
 
 	my $args = join ' ', @args;
 
-	return `git log $args`;
+		SCALAR   { `git log $args` }
+		ARRAYREF { `git log $args` }
+		HASHREF  {
+			my $logs = `git log $args`;
+			my @logs = split /^commit\s*/xms, $logs;
+			shift @logs;
+			my $num = @logs;
+			my %log;
+			for my $log (@logs) {
+				my ($ver, $rest) = split /\n/, $log, 2;
+				my ($details, $description) = split /\n\n\s*/, $rest, 2;
+				$log{$num} = { map {split /:\s*/, $_, 2} split /\n/, $details };
+				$log{$num}{description} = $description;
+				$log{$num--}{rev} = $ver;
+			}
+			return \%log;
+		}
 }
 
 sub pull {

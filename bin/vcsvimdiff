@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use version;
 use Scalar::Util;
-use List::Util;
+use List::Util qw/max/;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
@@ -92,12 +92,15 @@ sub main {
 		exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
 	}
 	elsif ($rev_old) {
-		write_file $tmp, $vcs->cat($option{file}, $rev_old);
+		write_file "$tmp.$rev_old", $vcs->cat($option{file}, $rev_old);
 		exec "vimdiff $option{'file'} $tmp";
 	}
 	else {
-		write_file $tmp, $vcs->cat($option{file});
-		exec "vimdiff $option{'file'} $tmp";
+		my $log = $vcs->log($option{file});
+		my ($ver) = max keys %$log;
+		my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
+		write_file "$tmp$rev", $vcs->cat($option{file});
+		exec "vimdiff $option{'file'} $tmp$rev";
 	}
 
 	return;

@@ -14,6 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use File::chdir;
+use Contextual::Return;
 
 our $VERSION = version->new('0.0.2');
 our $name    = 'Subversion';
@@ -69,6 +70,36 @@ sub cat {
 	$revision &&= "-r$revision";
 
 	return `svn cat $revision $file`;
+}
+
+sub log {
+	my ($self, @args) = @_;
+
+	my $args = join ' ', @args;
+
+	return
+		SCALAR   { `svn log $args` }
+		ARRAYREF { `svn log $args` }
+		HASHREF  {
+			my $logs = `svn log $args`;
+			my @logs = split /^-+\n/xms, $logs;
+			shift @logs;
+			my $num = @logs;
+			my %log;
+			for my $log (@logs) {
+				my ($details, $description) = split /\n\n?/, $log, 2;
+				$details =~ s/^\s*(.*?)\s*/$1/;
+				my @details = split /\s+\|\s+/, $details;
+				$details[0] =~ s/^r//;
+				$log{$num--} = {
+					rev    => $details[0],
+					Author => $details[1],
+					Date   => $details[2],
+					description => $description,
+				},
+			}
+			return \%log;
+		}
 }
 
 sub pull {

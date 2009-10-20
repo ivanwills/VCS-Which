@@ -120,6 +120,10 @@ sub which {
 		$dir = $self->{dir};
 	}
 
+	if (-f $dir) {
+		$dir = $self->{dir} = file($dir)->parent;
+	}
+
 	croak "No directory supplied!" if !$dir;
 
 	return $self->{which}{$dir} if exists $self->{which}{$dir};
@@ -140,6 +144,8 @@ sub which {
 			$min = $used;
 		}
 	}
+
+	die "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
 
 	return $self->{which}{$dir};
 }
