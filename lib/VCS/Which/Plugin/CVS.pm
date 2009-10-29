@@ -16,7 +16,7 @@ use base qw/VCS::Which::Plugin/;
 use Path::Class;
 use File::chdir;
 
-our $VERSION = version->new('0.0.2');
+our $VERSION = version->new('0.1.0');
 our $name    = 'CVS';
 our $exe     = 'cvs';
 our $meta    = 'CVS';
@@ -124,7 +124,7 @@ VCS::Which::Plugin::CVS - CVS plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::CVS version 0.0.2.
+This documentation refers to VCS::Which::Plugin::CVS version 0.1.0.
 
 =head1 SYNOPSIS
 

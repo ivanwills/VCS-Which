@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use File::chdir;
 
-our $VERSION = version->new('0.0.2');
+our $VERSION = version->new('0.1.0');
 our $name    = 'SVK';
 our $exe     = 'svk';
 
@@ -54,7 +54,7 @@ VCS::Which::Plugin::SVK - The SVK plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::SVK version 0.0.2.
+This documentation refers to VCS::Which::Plugin::SVK version 0.1.0.
 
 =head1 SYNOPSIS
 
