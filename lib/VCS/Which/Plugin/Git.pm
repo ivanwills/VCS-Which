@@ -19,7 +19,7 @@ use File::chdir;
 our $VERSION = version->new('0.0.2');
 our $name    = 'Git';
 our $exe     = 'git';
-our $meta    = 'git';
+our $meta    = '.git';
 
 sub installed {
 	my ($self) = @_;
@@ -69,7 +69,7 @@ sub uptodate {
 
 	$dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+	croak "'$dir' is not a directory!" if !-d $dir;
 
 	local $CWD = $dir;
 	my $ans = `$exe status $dir`;
