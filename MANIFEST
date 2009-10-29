@@ -4,6 +4,7 @@ MANIFEST
 MANIFEST.SKIP
 README
 lib/VCS/Which.pm
+bin/vcsblame
 bin/vcsw
 bin/vcsvimdiff
 lib/VCS/Which/Plugin.pm
