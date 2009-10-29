@@ -210,6 +210,14 @@ Description: Gets the contents of a specific revision of a file. This
 implementation works for many version control systems so may not be overloaded
 by specific plugins
 
+=head3 C<versions ( [$file], [@args] )>
+
+Description: Gets all the versions of $file
+
+=head3 C<pull ( [$dir] )>
+
+Description: Pulls or updates the directory $dir to the newest version
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT

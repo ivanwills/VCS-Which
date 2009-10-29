@@ -19,6 +19,7 @@ use File::chdir;
 our $VERSION = version->new('0.0.2');
 our $name    = 'Git';
 our $exe     = 'git';
+our $meta    = 'git';
 
 sub installed {
 	my ($self) = @_;
@@ -26,8 +27,7 @@ sub installed {
 	return $self->{installed} if exists $self->{installed};
 
 	for my $path (split /[:;]/, $ENV{PATH}) {
-		next if !-e "$path/git";
-		warn "$path/git\n";
+		next if !-x "$path/$exe";
 
 		return $self->{installed} = 1;
 	}
@@ -48,7 +48,7 @@ sub used {
 	my $level       = 1;
 
 	while ($current_dir) {
-		if ( -d "$current_dir/.git" ) {
+		if ( -d "$current_dir/$meta" ) {
 			$self->{base} = $current_dir;
 			return $level;
 		}
@@ -72,9 +72,20 @@ sub uptodate {
 	croak "'$dir' is not a directory!" if !-e $dir;
 
 	local $CWD = $dir;
-	my $ans = `git status $dir`;
+	my $ans = `$exe status $dir`;
 
 	return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
+}
+
+sub pull {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system '$exe pull';
 }
 
 sub cat {
@@ -96,7 +107,7 @@ sub cat {
 		$revision = '';
 	}
 
-	return `git show $revision\:$file`;
+	return `$exe show $revision\:$file`;
 }
 
 sub log {
@@ -104,10 +115,10 @@ sub log {
 
 	my $args = join ' ', @args;
 
-		SCALAR   { `git log $args` }
-		ARRAYREF { `git log $args` }
+		SCALAR   { `$exe log $args` }
+		ARRAYREF { `$exe log $args` }
 		HASHREF  {
-			my $logs = `git log $args`;
+			my $logs = `$exe log $args`;
 			my @logs = split /^commit\s*/xms, $logs;
 			shift @logs;
 			my $num = @logs;
@@ -121,17 +132,6 @@ sub log {
 			}
 			return \%log;
 		}
-}
-
-sub pull {
-	my ( $self, $dir ) = @_;
-
-	$dir ||= $self->{base};
-
-	croak "'$dir' is not a directory!" if !-e $dir;
-
-	local $CWD = $dir;
-	return !system 'git pull';
 }
 
 1;
@@ -198,6 +198,14 @@ Description: Gets the contents of a specific revision of a file.
 =head3 C<log ( @args )>
 
 TO DO: Body
+
+=head3 C<versions ( [$file], [@args] )>
+
+Description: Gets all the versions of $file
+
+=head3 C<pull ( [$dir] )>
+
+Description: Pulls or updates the directory $dir to the newest version
 
 =head1 DIAGNOSTICS
 
