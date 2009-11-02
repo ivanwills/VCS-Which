@@ -20,6 +20,7 @@ use File::Slurp;
 use File::Basename;
 use File::Spec;
 use VCS::Which;
+use IO::Prompt qw/prompt/;
 
 our $VERSION = version->new('0.1.0');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -47,6 +48,8 @@ sub main {
 		'file|f=s',
 		'revision|r=s',
 		'change|c=i',
+		'replay|R',
+		'max|m=i',
 		'verbose|v+',
 		'man',
 		'help',
@@ -81,25 +84,37 @@ sub main {
 	}
 
 	# create the temporary file object name
-	my $tmp = "/tmp/$name.$$." . basename($option{'file'});
+	my $tmp = "/tmp/$$.$name." . basename($option{'file'});
 
 	# create a new VCS::Which object for the file of interest
 	my $vcs = VCS::Which->new(dir => $option{file});
 
-	if ($rev_new) {
-		write_file "$tmp.$rev_new", $vcs->cat($option{file}, $rev_new);
-		write_file "$tmp.$rev_old", $vcs->cat($option{file}, $rev_old);
+	if ($option{replay}) {
+		my $first = 1;
+		my @versions = $vcs->versions($option{file}, $rev_old ? $rev_old : 0, $option{max});
+		while ($first || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')) {
+			$first = 0;
+			unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+			$rev_old = pop @versions;
+			write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+			system "vimdiff $option{'file'} $tmp.$rev_old";
+		}
+		unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+	}
+	elsif ($rev_new) {
+		write_file "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new);
+		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
 		exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
 	}
 	elsif ($rev_old) {
-		write_file "$tmp.$rev_old", $vcs->cat($option{file}, $rev_old);
-		exec "vimdiff $option{'file'} $tmp";
+		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+		exec "vimdiff $option{'file'} $tmp.$rev_old";
 	}
 	else {
 		my $log = $vcs->log($option{file});
 		my ($ver) = max keys %$log;
 		my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
-		write_file "$tmp$rev", $vcs->cat($option{file});
+		write_file "$tmp$rev", scalar $vcs->cat($option{file});
 		exec "vimdiff $option{'file'} $tmp$rev";
 	}
 

@@ -224,7 +224,7 @@ sub versions {
 
 	my $system = $self->which;
 
-	return $system->versions(@args);
+	return $system->versions($file, @args);
 }
 
 sub pull {
