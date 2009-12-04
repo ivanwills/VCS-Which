@@ -50,6 +50,7 @@ sub main {
 		'change|c=i',
 		'replay|R',
 		'max|m=i',
+		'test|t!',
 		'verbose|v+',
 		'man',
 		'help',
@@ -97,25 +98,45 @@ sub main {
 			unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
 			$rev_old = pop @versions;
 			write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-			system "vimdiff $option{'file'} $tmp.$rev_old";
+			if ($option{test} || $option{verbose}) {
+				print "vimdiff $option{'file'} $tmp.$rev_old\n";
+			}
+			if (!$option{test}) {
+				system "vimdiff $option{'file'} $tmp.$rev_old";
+			}
 		}
 		unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
 	}
 	elsif ($rev_new) {
 		write_file "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new);
 		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-		exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
+		if ($option{test} || $option{verbose}) {
+			print "vimdiff $tmp.$rev_new $tmp.$rev_old\n";
+		}
+		if (!$option{test}) {
+			exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
+		}
 	}
 	elsif ($rev_old) {
 		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-		exec "vimdiff $option{'file'} $tmp.$rev_old";
+		if ($option{test} || $option{verbose}) {
+			print "vimdiff $option{'file'} $tmp.$rev_old\n";
+		}
+		if (!$option{test}) {
+			exec "vimdiff $option{'file'} $tmp.$rev_old";
+		}
 	}
 	else {
 		my $log = $vcs->log($option{file});
 		my ($ver) = max keys %$log;
 		my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
 		write_file "$tmp$rev", scalar $vcs->cat($option{file});
-		exec "vimdiff $option{'file'} $tmp$rev";
+		if ($option{test} || $option{verbose}) {
+			print "vimdiff $option{'file'} $tmp$rev\n";
+		}
+		if (!$option{test}) {
+			exec "vimdiff $option{'file'} $tmp$rev";
+		}
 	}
 
 	return;
