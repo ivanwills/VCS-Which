@@ -134,6 +134,20 @@ sub log {
 		}
 }
 
+sub versions {
+	my ($self, $file, $revision) = @_;
+
+	eval { require Git };
+	if ($EVAL_ERROR) {
+		die "Git.pm is not installed only propper revision names can be used\n";
+	}
+
+	my $repo = Git->repository(Directory => $self->{base});
+	my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
+
+	return @revs;
+}
+
 1;
 
 __END__

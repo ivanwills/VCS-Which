@@ -90,8 +90,18 @@ sub pull {
 }
 
 sub versions {
-	die '"versions" Not implemented for this Version Controll System!';
+	my ($self, $file, $before_version, $max) = @_;
+
+	my %logs = %{ $self->log($file, $max ? "--limit $max" : '') };
+	my @versions;
+
+	for my $log (sort {$a <=> $b} keys %logs) {
+		push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
+	}
+
+	return @versions;
 }
+
 
 1;
 

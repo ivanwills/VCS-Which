@@ -65,7 +65,7 @@ sub pull {
 	croak "'$dir' is not a directory!" if !-e $dir;
 
 	local $CWD = $dir;
-	return !system '$exe update';
+	return !system "$exe update";
 }
 
 sub cat {
