@@ -120,15 +120,13 @@ sub log {
 			my $num = @logs;
 			my %log;
 			for my $log (@logs) {
-				next if $log =~ /(\n)/g < 4;
-				my ($details, $description) = split /\n\n?/, $log, 2;
-				$details =~ s/message:\s*\n/ /;
+				my ($details, $description) = $log =~ /^(.*)\nmessage:\s*(.*)$/xms;
 				my %details = map {split /:\s+/, $_, 2} split /\n/, $details, 5;
 				$log{$num--} = {
-					rev         => $details{revno},
-					Author      => $details{committer},
-					Date        => $details{timestamp},
-					description => $details{message},
+					rev    => $details{revno},
+					Author => $details{committer},
+					Date   => $details{timestamp},
+					description => $description,
 				},
 			}
 			return \%log;
