@@ -15,6 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use Path::Class;
 use File::chdir;
+use Contextual::Return;
 
 our $VERSION = version->new('0.1.0');
 our $name    = 'Git';

@@ -15,6 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use Path::Class;
 use File::chdir;
+use Contextual::Return;
 
 our $VERSION = version->new('0.1.0');
 our $name    = 'Bazaar';
@@ -112,26 +113,26 @@ sub log {
 	return
 		SCALAR   { `$exe log $args` }
 		ARRAYREF { `$exe log $args` }
-#		HASHREF  {
-#			my $logs = `$exe log $args`;
-#			my @logs = split /^-+\n/xms, $logs;
-#			shift @logs;
-#			my $num = @logs;
-#			my %log;
-#			for my $log (@logs) {
-#				my ($details, $description) = split /\n\n?/, $log, 2;
-#				$details =~ s/^\s*(.*?)\s*/$1/;
-#				my @details = split /\s+\|\s+/, $details;
-#				$details[0] =~ s/^r//;
-#				$log{$num--} = {
-#					rev    => $details[0],
-#					Author => $details[1],
-#					Date   => $details[2],
-#					description => $description,
-#				},
-#			}
-#			return \%log;
-#		}
+		HASHREF  {
+			my $logs = `$exe log $args`;
+			my @logs = split /^-+\n/xms, $logs;
+			shift @logs;
+			my $num = @logs;
+			my %log;
+			for my $log (@logs) {
+				next if $log =~ /(\n)/g < 4;
+				my ($details, $description) = split /\n\n?/, $log, 2;
+				$details =~ s/message:\s*\n/ /;
+				my %details = map {split /:\s+/, $_, 2} split /\n/, $details, 5;
+				$log{$num--} = {
+					rev         => $details{revno},
+					Author      => $details{committer},
+					Date        => $details{timestamp},
+					description => $details{message},
+				},
+			}
+			return \%log;
+		}
 }
 
 1;
