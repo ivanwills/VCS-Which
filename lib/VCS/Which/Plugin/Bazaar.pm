@@ -120,7 +120,12 @@ sub log {
 			my $num = @logs;
 			my %log;
 			for my $log (@logs) {
+				next if $log =~ /--include-merges/;
 				my ($details, $description) = $log =~ /^(.*)\nmessage:\s*(.*)$/xms;
+				if (!defined $details) {
+					warn "Error in reading line:\n$log\n";
+					next;
+				}
 				my %details = map {split /:\s+/, $_, 2} split /\n/, $details, 5;
 				$log{$num--} = {
 					rev    => $details{revno},
