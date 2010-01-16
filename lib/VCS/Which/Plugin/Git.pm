@@ -144,7 +144,7 @@ sub versions {
 	}
 
 	my $repo = Git->repository(Directory => $self->{base});
-	my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
+	my @revs = reverse $repo->command('rev-list', '--all', '--', file($file)->absolute->resolve);
 
 	return @revs;
 }

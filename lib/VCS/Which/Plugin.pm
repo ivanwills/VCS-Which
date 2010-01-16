@@ -70,8 +70,14 @@ sub exec {
 	die $self->name . " not installed\n" if !$self->installed();
 
 	local $CWD = $dir;
-	my $cmd = $self->exe;
 
+	if ($CWD ne $dir) {
+		for my $arg (@args) {
+			$arg = $CWD if $arg eq $dir;
+		}
+	}
+
+	my $cmd = $self->exe;
 	my $run = join ' ', $cmd, @args;
 	return defined wantarray ? `$run` : CORE::exec($run);
 }
