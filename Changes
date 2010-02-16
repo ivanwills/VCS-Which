@@ -1,5 +1,18 @@
 Revision history for VCS-Which
 
+0.1.1   2010-02-16
+        Added experimental test directory
+        Fixed revision regex
+        Added special handling of the cat command so that the Git module cat handle it properly
+        Fixed and issue with getting bzr repo revisions
+        Fixed issue when working with git via symlinked working copies
+        Fixed single quotes meant to be double quotes
+        Fixed log field extraction logic
+        Made Bazaar log able to return hashrefs and fixed missing module Contextual::Return
+        Fixed versions generation in default and in git and svn plugins
+        Added test mode
+        Added the ability for vcsvimdiff to replay changes to a file
+
 0.1.0   2009-10-30
         Upped the version of all files
         Fixed meta dir name and exists test instead of dir test
