@@ -17,25 +17,25 @@ name: VCS-Which
 provides:
   VCS::Which:
     file: lib/VCS/Which.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin:
     file: lib/VCS/Which/Plugin.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin::Bazaar:
     file: lib/VCS/Which/Plugin/Bazaar.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin::CVS:
     file: lib/VCS/Which/Plugin/CVS.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin::Git:
     file: lib/VCS/Which/Plugin/Git.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin::SVK:
     file: lib/VCS/Which/Plugin/SVK.pm
-    version: v0.1.0
+    version: v0.1.1
   VCS::Which::Plugin::Subversion:
     file: lib/VCS/Which/Plugin/Subversion.pm
-    version: v0.1.0
+    version: v0.1.1
 requires:
   Contextual::Return: 0
   File::Basename: 0
@@ -48,4 +48,4 @@ requires:
   version: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: v0.1.0
+version: v0.1.1
