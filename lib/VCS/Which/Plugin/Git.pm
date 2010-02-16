@@ -92,7 +92,7 @@ sub pull {
 sub cat {
 	my ($self, $file, $revision) = @_;
 
-	if ( $revision && $revision =~ /^-\d+$/xms ) {
+	if ( $revision && $revision =~ /^-?\d+$/xms ) {
 		eval { require Git };
 		if ($EVAL_ERROR) {
 			die "Git.pm is not installed only propper revision names can be used\n";
