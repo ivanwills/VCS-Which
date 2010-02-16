@@ -45,6 +45,22 @@ sub main {
 
 	my $vcsw = VCS::Which->new( dir => $dir );
 
+	if ($ARGV[0] eq 'cat') {
+		shift @ARGV;
+		my ($file, $revision);
+		for my $arg (@ARGV) {
+			if ( -f $arg ) {
+				$file = $arg;
+			}
+			elsif ($arg =~ /^-r/ || $revision eq '-r') {
+				($revision) = $arg =~ /(\d+)/xms;
+				$revision ||= '-r';
+			}
+		}
+		print $vcsw->cat($file, $revision);
+		exit;
+	}
+
 	$vcsw->exec(@ARGV);
 
 	return;
