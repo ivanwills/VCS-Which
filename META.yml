@@ -17,7 +17,7 @@ name: VCS-Which
 provides:
   VCS::Which:
     file: lib/VCS/Which.pm
-    version: v0.1.1
+    version: v0.1.2
   VCS::Which::Plugin:
     file: lib/VCS/Which/Plugin.pm
     version: v0.1.1
@@ -48,4 +48,4 @@ requires:
   version: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: v0.1.1
+version: v0.1.2

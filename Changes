@@ -1,5 +1,8 @@
 Revision history for VCS-Which
 
+0.1.2   2010-02-18
+        Fixed up kwalitee issues
+
 0.1.1   2010-02-16
         Added experimental test directory
         Fixed revision regex
