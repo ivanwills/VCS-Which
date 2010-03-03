@@ -2,3 +2,5 @@
 .git
 Debian_CPANTS.txt
 vim.sh
+pm_to_blib
+^MYMETA.yml$

@@ -17,7 +17,7 @@ use FindBin qw/$Bin/;
 use Path::Class qw/file/;
 use VCS::Which;
 
-our $VERSION = version->new('0.1.0');
+our $VERSION = version->new('0.1.1');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 if ( !@ARGV ) {
@@ -45,6 +45,22 @@ sub main {
 
 	my $vcsw = VCS::Which->new( dir => $dir );
 
+	if ($ARGV[0] eq 'cat') {
+		shift @ARGV;
+		my ($file, $revision);
+		for my $arg (@ARGV) {
+			if ( -f $arg ) {
+				$file = $arg;
+			}
+			elsif ($arg =~ /^-r/ || $revision eq '-r') {
+				($revision) = $arg =~ /(\d+)/xms;
+				$revision ||= '-r';
+			}
+		}
+		print $vcsw->cat($file, $revision);
+		exit;
+	}
+
 	$vcsw->exec(@ARGV);
 
 	return;
@@ -58,7 +74,7 @@ vcsw - One command to rule version control systems
 
 =head1 VERSION
 
-This documentation refers to vcsw version 0.1.0.
+This documentation refers to vcsw version 0.1.1.
 
 =head1 SYNOPSIS
 

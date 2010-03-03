@@ -24,3 +24,5 @@ t/spelling.t
 Makefile.PL
 META.yml
 LICENSE
+Makefile
+tx/minver.t

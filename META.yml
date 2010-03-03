@@ -1,49 +1,51 @@
 ---
-name: VCS-Which
-version: v0.1.0
+abstract: 'Generically interface with version control systems'
 author:
   - 'Ivan Wills <ivan.wills@gmail.com>'
-abstract: Generically interface with version control systems
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
 build_requires:
+  Test::MinimumVersion: 0
   Test::More: 0
   Test::NoWarnings: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3603'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: VCS-Which
+provides:
+  VCS::Which:
+    file: lib/VCS/Which.pm
+    version: v0.1.1
+  VCS::Which::Plugin:
+    file: lib/VCS/Which/Plugin.pm
+    version: v0.1.1
+  VCS::Which::Plugin::Bazaar:
+    file: lib/VCS/Which/Plugin/Bazaar.pm
+    version: v0.1.1
+  VCS::Which::Plugin::CVS:
+    file: lib/VCS/Which/Plugin/CVS.pm
+    version: v0.1.1
+  VCS::Which::Plugin::Git:
+    file: lib/VCS/Which/Plugin/Git.pm
+    version: v0.1.1
+  VCS::Which::Plugin::SVK:
+    file: lib/VCS/Which/Plugin/SVK.pm
+    version: v0.1.1
+  VCS::Which::Plugin::Subversion:
+    file: lib/VCS/Which/Plugin/Subversion.pm
+    version: v0.1.1
 requires:
   Contextual::Return: 0
   File::Basename: 0
   File::Slurp: 0
   File::Spec: 0
   File::chdir: 0
+  IO::Prompt: 0
   Path::Class: 0.16
   perl: 5.008
   version: 0
-configure_requires:
-  Module::Build: 0.35
-provides:
-  VCS::Which:
-    file: lib/VCS/Which.pm
-    version: v0.1.0
-  VCS::Which::Plugin:
-    file: lib/VCS/Which/Plugin.pm
-    version: v0.1.0
-  VCS::Which::Plugin::Bazaar:
-    file: lib/VCS/Which/Plugin/Bazaar.pm
-    version: v0.1.0
-  VCS::Which::Plugin::CVS:
-    file: lib/VCS/Which/Plugin/CVS.pm
-    version: v0.1.0
-  VCS::Which::Plugin::Git:
-    file: lib/VCS/Which/Plugin/Git.pm
-    version: v0.1.0
-  VCS::Which::Plugin::SVK:
-    file: lib/VCS/Which/Plugin/SVK.pm
-    version: v0.1.0
-  VCS::Which::Plugin::Subversion:
-    file: lib/VCS/Which/Plugin/Subversion.pm
-    version: v0.1.0
-generated_by: Module::Build version 0.35
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+resources:
+  license: http://dev.perl.org/licenses/
+version: v0.1.1

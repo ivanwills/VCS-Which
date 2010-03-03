@@ -15,8 +15,9 @@ use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use Path::Class;
 use File::chdir;
+use Contextual::Return;
 
-our $VERSION = version->new('0.1.0');
+our $VERSION = version->new('0.1.1');
 our $name    = 'Git';
 our $exe     = 'git';
 our $meta    = '.git';
@@ -91,7 +92,7 @@ sub pull {
 sub cat {
 	my ($self, $file, $revision) = @_;
 
-	if ( $revision && $revision =~ /^-\d+$/xms ) {
+	if ( $revision && $revision =~ /^-?\d+$/xms ) {
 		eval { require Git };
 		if ($EVAL_ERROR) {
 			die "Git.pm is not installed only propper revision names can be used\n";
@@ -143,7 +144,7 @@ sub versions {
 	}
 
 	my $repo = Git->repository(Directory => $self->{base});
-	my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
+	my @revs = reverse $repo->command('rev-list', '--all', '--', file($file)->absolute->resolve);
 
 	return @revs;
 }
@@ -158,7 +159,7 @@ VCS::Which::Plugin::Git - The Git plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Git version 0.1.0.
+This documentation refers to VCS::Which::Plugin::Git version 0.1.1.
 
 =head1 SYNOPSIS
 
