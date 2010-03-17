@@ -54,7 +54,10 @@ sub uptodate {
 
 	croak "'$dir' is not a directory!" if !-e $dir;
 
-	return `$exe status $dir`;
+	my @lines = `$exe status $dir`;
+	pop @lines;
+
+	return scalar @lines;
 }
 
 sub pull {
@@ -65,7 +68,7 @@ sub pull {
 	croak "'$dir' is not a directory!" if !-e $dir;
 
 	local $CWD = $dir;
-	return !system "$exe update";
+	return !system "$exe update > /dev/null 2> /dev/null";
 }
 
 sub cat {
