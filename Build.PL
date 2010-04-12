@@ -26,6 +26,12 @@ my $builder = Module::Build->new(
 	add_to_cleanup     => [ 'VCS-Which-*' ],
 	create_makefile_pl => 'traditional',
 	create_license     => 1,
+	meta_merge         => {
+		resources => {
+			repository => 'git://github.com/ivanwills/VCS-Which.git',
+			bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=VCS-Which',
+		},
+	},
 );
 
 $builder->create_build_script();
