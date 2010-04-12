@@ -72,8 +72,8 @@ sub uptodate {
 
 	croak "'$dir' is not a directory!" if !-d $dir;
 
-	local $CWD = $dir;
-	my $ans = `$exe status $dir`;
+	local $CWD = dir($dir)->resolve->absolute;
+	my $ans = `$exe status`;
 
 	return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
 }
