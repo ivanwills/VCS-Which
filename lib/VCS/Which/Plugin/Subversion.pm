@@ -15,6 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
 use File::chdir;
 use Contextual::Return;
+use Path::Class;
 
 our $VERSION = version->new('0.1.1');
 our $name    = 'Subversion';
@@ -120,7 +121,9 @@ sub log {
 sub versions {
 	my ($self, $file, $before_version, $max) = @_;
 
-	my %logs = %{ $self->log($file, $max ? "--limit $max" : '') };
+	$file = file($file);
+	local $CWD = -d $file ? $file : $file->parent;
+	my %logs = %{ $self->log(-d $file ? '.' : $file->basename, $max ? "--limit $max" : '') };
 	my @versions;
 
 	for my $log (sort {$a <=> $b} keys %logs) {
