@@ -12,7 +12,6 @@ lib/VCS/Which/Plugin/Bazaar.pm
 lib/VCS/Which/Plugin/CVS.pm
 lib/VCS/Which/Plugin/Git.pm
 lib/VCS/Which/Plugin/Subversion.pm
-lib/VCS/Which/Plugin/SVK.pm
 t/00-load.t
 t/boilerplate.t
 t/critic.t
