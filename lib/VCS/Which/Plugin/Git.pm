@@ -89,6 +89,17 @@ sub pull {
 	return !system "$exe pull > /dev/null 2> /dev/null";
 }
 
+sub push {
+	my ( $self, $dir ) = @_;
+
+	$dir ||= $self->{base};
+
+	croak "'$dir' is not a directory!" if !-e $dir;
+
+	local $CWD = $dir;
+	return !system "$exe push origin master > /dev/null 2> /dev/null";
+}
+
 sub cat {
 	my ($self, $file, $revision) = @_;
 

@@ -95,6 +95,10 @@ sub pull {
 	die '"pull" not implemented for this Version Controll System!';
 }
 
+sub push {
+	die '"push" not implemented for this Version Controll System!';
+}
+
 sub versions {
 	my ($self, $file, $before_version, $max) = @_;
 
@@ -102,7 +106,7 @@ sub versions {
 	my @versions;
 
 	for my $log (sort {$a <=> $b} keys %logs) {
-		push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
+		CORE::push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
 	}
 
 	return @versions;
