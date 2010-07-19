@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 use File::chdir;
 
-our $VERSION     = version->new('0.1.1');
+our $VERSION     = version->new('0.2.0');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 
@@ -123,7 +123,7 @@ VCS::Which::Plugin - Base class for the various VCS plugins
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin version 0.1.1.
+This documentation refers to VCS::Which::Plugin version 0.2.0.
 
 
 =head1 SYNOPSIS
