@@ -1,5 +1,15 @@
 Revision history for VCS-Which
 
+0.2.0   2010-07-20
+        Added push method documentation
+        Added exit for kwalitee test with out TEST_AUTHOR set
+        Added a push command, implemented it for GIT
+        Fixed issue when calling log outside of the subversion directory tree
+        Removed as SVK has been deprecated
+        Fixed issue when $dir is a symlink
+        Cleaned tests and package files
+        Fixed single quotes instead of double and sent out put of pull to /dev/null
+
 0.1.2   2010-02-18
         Fixed up kwalitee issues
 
