@@ -233,6 +233,10 @@ Description: Gets all the versions of $file
 
 Description: Pulls or updates the directory $dir to the newest version
 
+=head3 C<push ( [$dir] )>
+
+Description: push updates to the master repository
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT

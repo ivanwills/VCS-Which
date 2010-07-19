@@ -376,6 +376,10 @@ Description: Gets all the versions of $file
 
 Description: Pulls or updates the directory $dir to the newest version
 
+=head3 C<push ( [$dir] )>
+
+Description: Pushes content to master repository for distributed VCS systems
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
