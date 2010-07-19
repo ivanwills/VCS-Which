@@ -8,6 +8,7 @@ if ( not $ENV{TEST_AUTHOR} ) {
 	Test::More->import;
 	my $msg = 'Author test.  Set TEST_AUTHOR environment variable to a true value to run.';
 	plan( skip_all => $msg );
+	exit;
 }
 
 eval { require Test::Kwalitee; Test::Kwalitee->import() };
