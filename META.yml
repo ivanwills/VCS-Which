@@ -47,4 +47,4 @@ resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=VCS-Which
   license: http://dev.perl.org/licenses/
   repository: git://github.com/ivanwills/VCS-Which.git
-version: v0.1.2
+version: v0.2.0
