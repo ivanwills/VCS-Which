@@ -1,6 +1,9 @@
 Revision history for VCS-Which
 
 0.2.0   2010-07-20
+        Removed references to SVK that were left behind
+
+0.2.0   2010-07-20
         Added push method documentation
         Added exit for kwalitee test with out TEST_AUTHOR set
         Added a push command, implemented it for GIT
