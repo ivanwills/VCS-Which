@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 use Path::Class qw/file/;
 
-our $VERSION     = version->new('0.2.0');
+our $VERSION     = version->new('0.2.1');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 
