@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7 + 1;
+use Test::More tests => 6 + 1;
 use Test::NoWarnings;
 
 BEGIN {
@@ -13,7 +13,6 @@ BEGIN {
 	use_ok( 'VCS::Which::Plugin::CVS' );
 	use_ok( 'VCS::Which::Plugin::Git' );
 	use_ok( 'VCS::Which::Plugin::Subversion' );
-	use_ok( 'VCS::Which::Plugin::SVK' );
 }
 
 diag( "Testing VCS::Which $VCS::Which::VERSION, Perl $], $^X" );
