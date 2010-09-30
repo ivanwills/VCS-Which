@@ -93,6 +93,12 @@ sub main {
 	if ($option{replay}) {
 		my $first = 1;
 		my @versions = $vcs->versions($option{file}, $rev_old ? $rev_old : 0, $option{max});
+		if ( $option{verbose} ) {
+			my $i = 0;
+			my $j = -2;
+			print map {$i++ . "\t" . $j-- . "\t$_\n"} @versions;
+		}
+
 		while ($first || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')) {
 			$first = 0;
 			unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
