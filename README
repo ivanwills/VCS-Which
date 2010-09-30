@@ -1,8 +1,12 @@
 VCS-Which
 
 This module lets you perform some basic operations with unknown version
-control systems on a directory. Currently it only supports determining if
-the directory is up to date or not
+control systems on a directory. The interface is still only at an early
+stage but trys to harmonise differences between distributed and non-
+distributed VCS's eg calling pull on on a non-distributed VCS will call
+update instead.
+
+The currently supported VCS's are GIT, SVN, CVS and Bazzar.
 
 INSTALLATION
 
