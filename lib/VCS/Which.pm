@@ -120,7 +120,7 @@ sub which {
 		$dir = $self->{dir};
 	}
 
-	if (-f $dir) {
+	if (-f $dir || !-e $dir) {
 		$dir = $self->{dir} = file($dir)->parent;
 	}
 
