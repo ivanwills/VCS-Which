@@ -161,13 +161,18 @@ This documentation refers to vcsvimdiff version 0.1.1.
 
 =head1 SYNOPSIS
 
-   vcsvimdiff [option]
+   vcsvimdiff [option] file
 
  OPTIONS:
   -r --revision=rev1[:rev2]
                 Specify revisions to use for full details see vcs help diff
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
+  -f --file=str Explisitly specify the file name
+  -R --replay   Replay each change vs the current file
+  -m --max=int  Maximum number of revisions to replay
+  -t --test     Turn on testing (vimdiff wont actually be run)
+     --no-test  Trurn off testing
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
