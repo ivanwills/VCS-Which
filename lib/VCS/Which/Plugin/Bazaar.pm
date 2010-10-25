@@ -75,7 +75,7 @@ sub uptodate {
 	local $CWD = $dir;
 	my $ans = `$exe status $dir`;
 
-	return $ans ? 1 : 0;
+	return $ans ? 0 : 1;
 }
 
 sub pull {
