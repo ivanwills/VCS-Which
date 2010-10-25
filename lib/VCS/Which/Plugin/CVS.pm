@@ -55,7 +55,7 @@ sub uptodate {
 
 	croak "'$dir' is not a directory!" if !-e $dir;
 
-	return `$exe status $dir`;
+	return !`$exe status $dir`;
 }
 
 sub pull {
