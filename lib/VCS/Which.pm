@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 use Path::Class qw/file/;
 
-our $VERSION     = version->new('0.2.1');
+our $VERSION     = version->new('0.3.0');
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 
@@ -271,7 +271,7 @@ VCS::Which - Generically interface with version control systems
 
 =head1 VERSION
 
-This documentation refers to VCS::Which version 0.2.0.
+This documentation refers to VCS::Which version 0.3.0.
 
 
 =head1 SYNOPSIS
