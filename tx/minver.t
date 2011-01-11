@@ -1,14 +1,14 @@
 #!perl
 
 eval {
-	require Test::MinimumVersion;
+    require Test::MinimumVersion;
 };
 
 if ($@) {
-	require Test::More;
-	Test::More->import;
+    require Test::More;
+    Test::More->import;
 
-	plan( skip_all => 'Test::MinimumVersion required to run this test' );
+    plan( skip_all => 'Test::MinimumVersion required to run this test' );
 }
 
 Test::MinimumVersion->import;
