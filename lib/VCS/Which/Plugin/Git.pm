@@ -138,6 +138,7 @@ sub log {
             for my $log (@logs) {
                 my ($ver, $rest) = split /\n/, $log, 2;
                 my ($details, $description) = split /\n\n\s*/, $rest, 2;
+                $description =~ s/\s+\Z//xms;
                 $log{$num} = { map {split /:\s*/, $_, 2} split /\n/, $details };
                 $log{$num}{description} = $description;
                 $log{$num--}{rev} = $ver;

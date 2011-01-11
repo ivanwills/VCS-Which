@@ -122,6 +122,7 @@ sub log {
             for my $log (@logs) {
                 next if $log =~ /--include-merges/;
                 my ($details, $description) = $log =~ /^(.*)\nmessage:\s*(.*)$/xms;
+                $description =~ s/\s+\Z//xms;
                 if (!defined $details) {
                     warn "Error in reading line:\n$log\n";
                     next;

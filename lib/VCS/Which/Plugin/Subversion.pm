@@ -104,6 +104,7 @@ sub log {
             my %log;
             for my $log (@logs) {
                 my ($details, $description) = split /\n\n?/, $log, 2;
+                $description =~ s/\s+\Z//xms;
                 $details =~ s/^\s*(.*?)\s*/$1/;
                 my @details = split /\s+\|\s+/, $details;
                 $details[0] =~ s/^r//;
