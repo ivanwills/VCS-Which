@@ -21,7 +21,7 @@ our $VERSION = version->new('0.1.1');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 if ( !@ARGV ) {
-	pod2usage( -verbose => 1 );
+    pod2usage( -verbose => 1 );
 }
 
 main();
@@ -29,41 +29,41 @@ exit 0;
 
 sub main {
 
-	my $dir;
-	ARG:
-	for my $arg (@ARGV[ 1 .. @ARGV -1 ]) {
-		if ( -e $arg ) {
-			$dir = $arg;
-			if ( -f $dir ) {
-				$dir = file($dir)->parent;
-			}
-			last ARG;
-		}
-	}
+    my $dir;
+    ARG:
+    for my $arg (@ARGV[ 1 .. @ARGV -1 ]) {
+        if ( -e $arg ) {
+            $dir = $arg;
+            if ( -f $dir ) {
+                $dir = file($dir)->parent;
+            }
+            last ARG;
+        }
+    }
 
-	$dir ||= '.';
+    $dir ||= '.';
 
-	my $vcsw = VCS::Which->new( dir => $dir );
+    my $vcsw = VCS::Which->new( dir => $dir );
 
-	if ($ARGV[0] eq 'cat') {
-		shift @ARGV;
-		my ($file, $revision);
-		for my $arg (@ARGV) {
-			if ( -f $arg ) {
-				$file = $arg;
-			}
-			elsif ($arg =~ /^-r/ || $revision eq '-r') {
-				($revision) = $arg =~ /(\d+)/xms;
-				$revision ||= '-r';
-			}
-		}
-		print $vcsw->cat($file, $revision);
-		exit;
-	}
+    if ($ARGV[0] eq 'cat') {
+        shift @ARGV;
+        my ($file, $revision);
+        for my $arg (@ARGV) {
+            if ( -f $arg ) {
+                $file = $arg;
+            }
+            elsif ($arg =~ /^-r/ || $revision eq '-r') {
+                ($revision) = $arg =~ /(\d+)/xms;
+                $revision ||= '-r';
+            }
+        }
+        print $vcsw->cat($file, $revision);
+        exit;
+    }
 
-	$vcsw->exec(@ARGV);
+    $vcsw->exec(@ARGV);
 
-	return;
+    return;
 }
 
 __DATA__

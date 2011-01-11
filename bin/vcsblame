@@ -23,15 +23,15 @@ our $VERSION = version->new('0.1.1');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-	limit   => 10,
-	verbose => 0,
-	man     => 0,
-	help    => 0,
-	VERSION => 0,
+    limit   => 10,
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
 );
 
 if ( !@ARGV ) {
-	pod2usage( -verbose => 1 );
+    pod2usage( -verbose => 1 );
 }
 
 main();
@@ -39,37 +39,37 @@ exit 0;
 
 sub main {
 
-	Getopt::Long::Configure('bundling');
-	GetOptions(
-		\%option,
-		'suround|s=i',
-		'limit|l=i',
-		'verbose|v+',
-		'man',
-		'help',
-		'VERSION!',
-	) or pod2usage(2);
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'suround|s=i',
+        'limit|l=i',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or pod2usage(2);
 
-	if ( $option{'VERSION'} ) {
-		print "$name Version = $VERSION\n";
-		exit 1;
-	}
-	elsif ( $option{'man'} ) {
-		pod2usage( -verbose => 2 );
-	}
-	elsif ( $option{'help'} ) {
-		pod2usage( -verbose => 1 );
-	}
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        pod2usage( -verbose => 1 );
+    }
 
-	# do stuff here
-	my $vcs = VCS::Which->new();
+    # do stuff here
+    my $vcs = VCS::Which->new();
 
-	for my $file (@ARGV) {
-		my $vcsw     = $vcs->which($file);
-		my @versions = $vcsw->versions();
-	}
+    for my $file (@ARGV) {
+        my $vcsw     = $vcs->which($file);
+        my @versions = $vcsw->versions();
+    }
 
-	return;
+    return;
 }
 
 __DATA__

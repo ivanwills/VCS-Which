@@ -20,96 +20,96 @@ our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 
 sub new {
-	my $caller = shift;
-	my $class  = ref $caller ? ref $caller : $caller;
-	my %param  = @_;
-	my $self   = \%param;
+    my $caller = shift;
+    my $class  = ref $caller ? ref $caller : $caller;
+    my %param  = @_;
+    my $self   = \%param;
 
-	bless $self, $class;
+    bless $self, $class;
 
-	return $self;
+    return $self;
 }
 
 sub name {
-	my ($self) = @_;
-	my $package = ref $self ? ref $self : $self;
+    my ($self) = @_;
+    my $package = ref $self ? ref $self : $self;
 
-	no strict qw/refs/;          ## no critic
-	return ${"$package\::name"};
+    no strict qw/refs/;          ## no critic
+    return ${"$package\::name"};
 }
 
 sub exe {
-	my ($self) = @_;
-	my $package = ref $self ? ref $self : $self;
+    my ($self) = @_;
+    my $package = ref $self ? ref $self : $self;
 
-	no strict qw/refs/;          ## no critic
-	return ${"$package\::exe"};
+    no strict qw/refs/;          ## no critic
+    return ${"$package\::exe"};
 }
 
 sub installed {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return die $self->name . ' does not currently implement installed!';
+    return die $self->name . ' does not currently implement installed!';
 }
 
 sub used {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return die $self->name . ' does not currently implement used!';
+    return die $self->name . ' does not currently implement used!';
 }
 
 sub uptodate {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return die $self->name . ' does not currently implement uptodate!';
+    return die $self->name . ' does not currently implement uptodate!';
 }
 
 sub exec {
-	my ($self, $dir, @args) = @_;
+    my ($self, $dir, @args) = @_;
 
-	die $self->name . " not installed\n" if !$self->installed();
+    die $self->name . " not installed\n" if !$self->installed();
 
-	local $CWD = $dir;
+    local $CWD = $dir;
 
-	if ($CWD ne $dir) {
-		for my $arg (@args) {
-			$arg = $CWD if $arg eq $dir;
-		}
-	}
+    if ($CWD ne $dir) {
+        for my $arg (@args) {
+            $arg = $CWD if $arg eq $dir;
+        }
+    }
 
-	my $cmd = $self->exe;
-	my $run = join ' ', $cmd, @args;
-	return defined wantarray ? `$run` : CORE::exec($run);
+    my $cmd = $self->exe;
+    my $run = join ' ', $cmd, @args;
+    return defined wantarray ? `$run` : CORE::exec($run);
 }
 
 sub cat {
-	my ($self, $file, $revision) = @_;
+    my ($self, $file, $revision) = @_;
 
-	my $exe = $self->exe;
-	my $rev = $revision ? "-r$revision " : '';
+    my $exe = $self->exe;
+    my $rev = $revision ? "-r$revision " : '';
 
-	return `$exe cat $rev$file`;
+    return `$exe cat $rev$file`;
 }
 
 sub pull {
-	die '"pull" not implemented for this Version Controll System!';
+    die '"pull" not implemented for this Version Controll System!';
 }
 
 sub push {
-	die '"push" not implemented for this Version Controll System!';
+    die '"push" not implemented for this Version Controll System!';
 }
 
 sub versions {
-	my ($self, $file, $before_version, $max) = @_;
+    my ($self, $file, $before_version, $max) = @_;
 
-	my %logs = %{ $self->log($file, $max ? "--limit $max" : '') };
-	my @versions;
+    my %logs = %{ $self->log($file, $max ? "--limit $max" : '') };
+    my @versions;
 
-	for my $log (sort {$a <=> $b} keys %logs) {
-		CORE::push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
-	}
+    for my $log (sort {$a <=> $b} keys %logs) {
+        CORE::push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
+    }
 
-	return @versions;
+    return @versions;
 }
 
 

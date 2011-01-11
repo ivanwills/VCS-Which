@@ -22,243 +22,243 @@ our %EXPORT_TAGS = ();
 our %systems;
 
 sub new {
-	my $caller = shift;
-	my $class  = ref $caller ? ref $caller : $caller;
-	my %param  = @_;
-	my $self   = \%param;
+    my $caller = shift;
+    my $class  = ref $caller ? ref $caller : $caller;
+    my %param  = @_;
+    my $self   = \%param;
 
-	bless $self, $class;
+    bless $self, $class;
 
-	if ( !%systems ) {
-		$self->get_systems();
-	}
+    if ( !%systems ) {
+        $self->get_systems();
+    }
 
-	$self->load_systems();
+    $self->load_systems();
 
-	if ( $self->{dir} && -f $self->{dir} ) {
-		$self->{dir} = file($self->{dir})->parent->cleanup;
-	}
+    if ( $self->{dir} && -f $self->{dir} ) {
+        $self->{dir} = file($self->{dir})->parent->cleanup;
+    }
 
-	return $self;
+    return $self;
 }
 
 sub load_systems {
-	my ( $self ) = @_;
+    my ( $self ) = @_;
 
-	for my $module (keys %systems) {
-		$self->{systems}{$module} = $module->new;
-	}
+    for my $module (keys %systems) {
+        $self->{systems}{$module} = $module->new;
+    }
 
-	return;
+    return;
 }
 
 sub get_systems {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	for my $dir (@INC) {
-		my @files = glob "$dir/VCS/Which/Plugin/*.pm";
+    for my $dir (@INC) {
+        my @files = glob "$dir/VCS/Which/Plugin/*.pm";
 
-		for my $file (@files) {
-			my $module = $file;
-			$module =~ s{$dir/}{}xms;
-			$module =~ s{/}{::}gxms;
-			$module =~ s{[.]pm$}{}xms;
+        for my $file (@files) {
+            my $module = $file;
+            $module =~ s{$dir/}{}xms;
+            $module =~ s{/}{::}gxms;
+            $module =~ s{[.]pm$}{}xms;
 
-			next if $systems{$module};
+            next if $systems{$module};
 
-			require $file;
-			$systems{$module} = 1;
-		}
-	}
+            require $file;
+            $systems{$module} = 1;
+        }
+    }
 
-	return;
+    return;
 }
 
 sub capabilities {
-	my ($self, $dir) = @_;
-	my $out;
-	my %out;
+    my ($self, $dir) = @_;
+    my $out;
+    my %out;
 
-	if ($dir) {
-		$self->{dir} = $dir;
-	}
-	else {
-		$dir = $self->{dir};
-	}
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
-	for my $system (values %{ $self->{systems} }) {
+    for my $system (values %{ $self->{systems} }) {
 
-		$out .= $system->name . ' ' x (10 - length $system->name);
-		$out .= $system->installed  ? ' installed    ' : ' not installed';
-		$out{$system->name}{installed} = $system->installed;
+        $out .= $system->name . ' ' x (10 - length $system->name);
+        $out .= $system->installed  ? ' installed    ' : ' not installed';
+        $out{$system->name}{installed} = $system->installed;
 
-		if ($dir) {
-			eval {
-				$out .= $system->used($dir) ? ' versioning' : ' not versioning';
-				$out{$system->name}{installed} = $system->used($dir);
-			};
-			if ($EVAL_ERROR) {
-				warn "$system error in determining if the directory is used: $EVAL_ERROR\n";
-				$out .= ' NA';
-				$out{$system->name}{installed} = ' NA';
-			}
-		}
+        if ($dir) {
+            eval {
+                $out .= $system->used($dir) ? ' versioning' : ' not versioning';
+                $out{$system->name}{installed} = $system->used($dir);
+            };
+            if ($EVAL_ERROR) {
+                warn "$system error in determining if the directory is used: $EVAL_ERROR\n";
+                $out .= ' NA';
+                $out{$system->name}{installed} = ' NA';
+            }
+        }
 
-		$out .= "\n";
-	}
+        $out .= "\n";
+    }
 
-	return wantarray ? %out : $out;
+    return wantarray ? %out : $out;
 }
 
 sub which {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if ($dir) {
-		$self->{dir} = $dir;
-	}
-	else {
-		$dir = $self->{dir};
-	}
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
-	if (-f $dir || !-e $dir) {
-		$dir = $self->{dir} = file($dir)->parent;
-	}
+    if (-f $dir || !-e $dir) {
+        $dir = $self->{dir} = file($dir)->parent;
+    }
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	return $self->{which}{$dir} if exists $self->{which}{$dir};
+    return $self->{which}{$dir} if exists $self->{which}{$dir};
 
-	$self->{which}{$dir} = undef;
-	my %used;
-	my $min;
+    $self->{which}{$dir} = undef;
+    my %used;
+    my $min;
 
-	for my $system (values %{ $self->{systems} }) {
-		my $used = eval { $system->used($dir) || 0 };
-		next if $EVAL_ERROR;
+    for my $system (values %{ $self->{systems} }) {
+        my $used = eval { $system->used($dir) || 0 };
+        next if $EVAL_ERROR;
 
-		$min ||= $used if $used;
+        $min ||= $used if $used;
 
-		# check that the directory is used and that it was found at a level closer to $dir that the last found system
-		if ( $used && $used <= $min ) {
-			$self->{which}{$dir} = $system;
-			$min = $used;
-		}
-	}
+        # check that the directory is used and that it was found at a level closer to $dir that the last found system
+        if ( $used && $used <= $min ) {
+            $self->{which}{$dir} = $system;
+            $min = $used;
+        }
+    }
 
-	die "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
+    die "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
 
-	return $self->{which}{$dir};
+    return $self->{which}{$dir};
 }
 
 sub uptodate {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if ($dir) {
-		$self->{dir} = $dir;
-	}
-	else {
-		$dir = $self->{dir};
-	}
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	return $self->{uptodate}{$dir} if exists $self->{uptodate}{$dir};
+    return $self->{uptodate}{$dir} if exists $self->{uptodate}{$dir};
 
-	my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || die "Could not work out which version control system to use!\n";
 
-	return $self->{uptodate}{$dir} = $system->uptodate($dir);
+    return $self->{uptodate}{$dir} = $system->uptodate($dir);
 }
 
 sub exec {
-	my ( $self, @args ) = @_;
+    my ( $self, @args ) = @_;
 
-	my $dir = $self->{dir};
+    my $dir = $self->{dir};
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	my $system = $self->which;
+    my $system = $self->which;
 
-	return $system->exec($dir, @args);
+    return $system->exec($dir, @args);
 }
 
 sub log {
-	my ( $self, @args ) = @_;
+    my ( $self, @args ) = @_;
 
-	my $dir = $self->{dir};
+    my $dir = $self->{dir};
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	my $system = $self->which;
+    my $system = $self->which;
 
-	return $system->log(@args);
+    return $system->log(@args);
 }
 
 sub cat {
-	my ( $self, $file, @args ) = @_;
+    my ( $self, $file, @args ) = @_;
 
-	if ($file) {
-		$self->{dir} = $file;
-	}
-	else {
-		$file = $self->{dir};
-	}
+    if ($file) {
+        $self->{dir} = $file;
+    }
+    else {
+        $file = $self->{dir};
+    }
 
-	croak "No file supplied!" if !$file;
+    croak "No file supplied!" if !$file;
 
-	my $system = $self->which;
+    my $system = $self->which;
 
-	return $system->cat($file, @args);
+    return $system->cat($file, @args);
 }
 
 sub versions {
-	my ( $self, $file, @args ) = @_;
+    my ( $self, $file, @args ) = @_;
 
-	if ($file) {
-		$self->{dir} = $file;
-	}
-	else {
-		$file = $self->{dir};
-	}
+    if ($file) {
+        $self->{dir} = $file;
+    }
+    else {
+        $file = $self->{dir};
+    }
 
-	croak "No file supplied!" if !$file;
+    croak "No file supplied!" if !$file;
 
-	my $system = $self->which;
+    my $system = $self->which;
 
-	return $system->versions($file, @args);
+    return $system->versions($file, @args);
 }
 
 sub pull {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if ($dir) {
-		$self->{dir} = $dir;
-	}
-	else {
-		$dir = $self->{dir};
-	}
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || die "Could not work out which version control system to use!\n";
 
-	return $system->pull($dir);
+    return $system->pull($dir);
 }
 
 sub push {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if ($dir) {
-		$self->{dir} = $dir;
-	}
-	else {
-		$dir = $self->{dir};
-	}
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
-	croak "No directory supplied!" if !$dir;
+    croak "No directory supplied!" if !$dir;
 
-	my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || die "Could not work out which version control system to use!\n";
 
-	return $system->push($dir);
+    return $system->push($dir);
 }
 
 1;

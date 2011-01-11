@@ -23,119 +23,119 @@ our $exe     = 'bzr';
 our $meta    = '.bzr';
 
 sub installed {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return $self->{installed} if exists $self->{installed};
+    return $self->{installed} if exists $self->{installed};
 
-	for my $path (split /[:;]/, $ENV{PATH}) {
-		next if !-x "$path/$exe";
+    for my $path (split /[:;]/, $ENV{PATH}) {
+        next if !-x "$path/$exe";
 
-		return $self->{installed} = 1;
-	}
+        return $self->{installed} = 1;
+    }
 
-	return $self->{installed} = 0;
+    return $self->{installed} = 0;
 }
 
 sub used {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if (-f $dir) {
-		$dir = file($dir)->parent;
-	}
+    if (-f $dir) {
+        $dir = file($dir)->parent;
+    }
 
-	croak "$dir is not a directory!" if !-d $dir;
+    croak "$dir is not a directory!" if !-d $dir;
 
-	my $current_dir = dir($dir)->absolute;
-	my $level       = 1;
+    my $current_dir = dir($dir)->absolute;
+    my $level       = 1;
 
-	while ($current_dir) {
-		if ( -d "$current_dir/$meta" ) {
-			$self->{base} = $current_dir;
-			return $level;
-		}
+    while ($current_dir) {
+        if ( -d "$current_dir/$meta" ) {
+            $self->{base} = $current_dir;
+            return $level;
+        }
 
-		$level++;
+        $level++;
 
-		# check that we still have a parent directory
-		last if $current_dir eq $current_dir->parent;
+        # check that we still have a parent directory
+        last if $current_dir eq $current_dir->parent;
 
-		$current_dir = $current_dir->parent;
-	}
+        $current_dir = $current_dir->parent;
+    }
 
-	return 0;
+    return 0;
 }
 
 sub uptodate {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	local $CWD = $dir;
-	my $ans = `$exe status $dir`;
+    local $CWD = $dir;
+    my $ans = `$exe status $dir`;
 
-	return $ans ? 0 : 1;
+    return $ans ? 0 : 1;
 }
 
 sub pull {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	local $CWD = $dir;
-	return !system "$exe pull > /dev/null 2> /dev/null";
+    local $CWD = $dir;
+    return !system "$exe pull > /dev/null 2> /dev/null";
 }
 
 sub cat {
-	my ($self, $file, $revision) = @_;
+    my ($self, $file, $revision) = @_;
 
-	if ( $revision && $revision =~ /^-\d+$/xms ) {
-		my @versions = reverse `$exe log -q $file` =~ /^ revno: \s+ (\d+)/gxms;
-		$revision = $versions[$revision];
-	}
-	elsif ( !defined $revision ) {
-		$revision = '';
-	}
+    if ( $revision && $revision =~ /^-\d+$/xms ) {
+        my @versions = reverse `$exe log -q $file` =~ /^ revno: \s+ (\d+)/gxms;
+        $revision = $versions[$revision];
+    }
+    elsif ( !defined $revision ) {
+        $revision = '';
+    }
 
-	$revision &&= "-r$revision";
+    $revision &&= "-r$revision";
 
-	return `$exe cat $revision $file`;
+    return `$exe cat $revision $file`;
 }
 
 sub log {
-	my ($self, @args) = @_;
+    my ($self, @args) = @_;
 
-	my $args = join ' ', @args;
+    my $args = join ' ', @args;
 
-	return
-		SCALAR   { `$exe log $args` }
-		ARRAYREF { `$exe log $args` }
-		HASHREF  {
-			my $logs = `$exe log $args`;
-			my @logs = split /^-+\n/xms, $logs;
-			shift @logs;
-			my $num = @logs;
-			my %log;
-			for my $log (@logs) {
-				next if $log =~ /--include-merges/;
-				my ($details, $description) = $log =~ /^(.*)\nmessage:\s*(.*)$/xms;
-				if (!defined $details) {
-					warn "Error in reading line:\n$log\n";
-					next;
-				}
-				my %details = map {split /:\s+/, $_, 2} split /\n/, $details, 5;
-				$log{$num--} = {
-					rev    => $details{revno},
-					Author => $details{committer},
-					Date   => $details{timestamp},
-					description => $description,
-				},
-			}
-			return \%log;
-		}
+    return
+        SCALAR   { `$exe log $args` }
+        ARRAYREF { `$exe log $args` }
+        HASHREF  {
+            my $logs = `$exe log $args`;
+            my @logs = split /^-+\n/xms, $logs;
+            shift @logs;
+            my $num = @logs;
+            my %log;
+            for my $log (@logs) {
+                next if $log =~ /--include-merges/;
+                my ($details, $description) = $log =~ /^(.*)\nmessage:\s*(.*)$/xms;
+                if (!defined $details) {
+                    warn "Error in reading line:\n$log\n";
+                    next;
+                }
+                my %details = map {split /:\s+/, $_, 2} split /\n/, $details, 5;
+                $log{$num--} = {
+                    rev    => $details{revno},
+                    Author => $details{committer},
+                    Date   => $details{timestamp},
+                    description => $description,
+                },
+            }
+            return \%log;
+        }
 }
 
 1;

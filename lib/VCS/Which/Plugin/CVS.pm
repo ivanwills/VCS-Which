@@ -23,96 +23,96 @@ our $exe     = 'cvs';
 our $meta    = 'CVS';
 
 sub installed {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return $self->{installed} if exists $self->{installed};
+    return $self->{installed} if exists $self->{installed};
 
-	for my $path (split /[:;]/, $ENV{PATH}) {
-		next if !-x "$path/$exe";
+    for my $path (split /[:;]/, $ENV{PATH}) {
+        next if !-x "$path/$exe";
 
-		return $self->{installed} = 1;
-	}
+        return $self->{installed} = 1;
+    }
 
-	return $self->{installed} = 0;
+    return $self->{installed} = 0;
 }
 
 sub used {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if (-f $dir) {
-		$dir = file($dir)->parent;
-	}
+    if (-f $dir) {
+        $dir = file($dir)->parent;
+    }
 
-	croak "$dir is not a directory!" if !-d $dir;
+    croak "$dir is not a directory!" if !-d $dir;
 
-	return -d "$dir/$meta";
+    return -d "$dir/$meta";
 }
 
 sub uptodate {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	return !`$exe status $dir`;
+    return !`$exe status $dir`;
 }
 
 sub pull {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	local $CWD = $dir;
-	return !system "$exe update > /dev/null 2> /dev/null";
+    local $CWD = $dir;
+    return !system "$exe update > /dev/null 2> /dev/null";
 }
 
 sub cat {
-	my ($self, $file, $revision) = @_;
+    my ($self, $file, $revision) = @_;
 
-	if ( $revision && $revision =~ /^-\d+$/xms ) {
-		my @versions = reverse `$exe log -q $file` =~ /^ revision \s+ (\d+[.]\d+)/gxms;
-		$revision = $versions[$revision];
-	}
-	elsif ( !defined $revision ) {
-		$revision = '';
-	}
+    if ( $revision && $revision =~ /^-\d+$/xms ) {
+        my @versions = reverse `$exe log -q $file` =~ /^ revision \s+ (\d+[.]\d+)/gxms;
+        $revision = $versions[$revision];
+    }
+    elsif ( !defined $revision ) {
+        $revision = '';
+    }
 
-	$revision &&= "-r$revision";
+    $revision &&= "-r$revision";
 
-	return `$exe cat $revision $file`;
+    return `$exe cat $revision $file`;
 }
 
 sub log {
-	my ($self, @args) = @_;
+    my ($self, @args) = @_;
 
-	my $args = join ' ', @args;
+    my $args = join ' ', @args;
 
-	return
-		SCALAR   { `$exe log $args` }
-		ARRAYREF { `$exe log $args` }
-#		HASHREF  {
-#			my $logs = `$exe log $args`;
-#			my @logs = split /^-+\n/xms, $logs;
-#			shift @logs;
-#			my $num = @logs;
-#			my %log;
-#			for my $log (@logs) {
-#				my ($details, $description) = split /\n\n?/, $log, 2;
-#				$details =~ s/^\s*(.*?)\s*/$1/;
-#				my @details = split /\s+\|\s+/, $details;
-#				$details[0] =~ s/^r//;
-#				$log{$num--} = {
-#					rev    => $details[0],
-#					Author => $details[1],
-#					Date   => $details[2],
-#					description => $description,
-#				},
-#			}
-#			return \%log;
-#		}
+    return
+        SCALAR   { `$exe log $args` }
+        ARRAYREF { `$exe log $args` }
+#       HASHREF  {
+#           my $logs = `$exe log $args`;
+#           my @logs = split /^-+\n/xms, $logs;
+#           shift @logs;
+#           my $num = @logs;
+#           my %log;
+#           for my $log (@logs) {
+#               my ($details, $description) = split /\n\n?/, $log, 2;
+#               $details =~ s/^\s*(.*?)\s*/$1/;
+#               my @details = split /\s+\|\s+/, $details;
+#               $details[0] =~ s/^r//;
+#               $log{$num--} = {
+#                   rev    => $details[0],
+#                   Author => $details[1],
+#                   Date   => $details[2],
+#                   description => $description,
+#               },
+#           }
+#           return \%log;
+#       }
 }
 
 1;

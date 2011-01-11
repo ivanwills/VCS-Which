@@ -26,15 +26,15 @@ our $VERSION = version->new('0.1.1');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-	revision => '',
-	verbose  => 0,
-	man      => 0,
-	help     => 0,
-	VERSION  => 0,
+    revision => '',
+    verbose  => 0,
+    man      => 0,
+    help     => 0,
+    VERSION  => 0,
 );
 
 if ( !@ARGV ) {
-	pod2usage( -verbose => 1 );
+    pod2usage( -verbose => 1 );
 }
 
 main();
@@ -42,110 +42,110 @@ exit 0;
 
 sub main {
 
-	Getopt::Long::Configure('bundling');
-	GetOptions(
-		\%option,
-		'file|f=s',
-		'revision|r=s',
-		'change|c=i',
-		'replay|R',
-		'max|m=i',
-		'test|t!',
-		'verbose|v+',
-		'man',
-		'help',
-		'VERSION!',
-	) or pod2usage(2);
-	$option{'file'} ||= shift @ARGV;
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'file|f=s',
+        'revision|r=s',
+        'change|c=i',
+        'replay|R',
+        'max|m=i',
+        'test|t!',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or pod2usage(2);
+    $option{'file'} ||= shift @ARGV;
 
-	if ( $option{'VERSION'} ) {
-		print "$name Version = $VERSION\n";
-		exit 1;
-	}
-	elsif ( $option{'man'} ) {
-		pod2usage( -verbose => 2 );
-	}
-	elsif ( $option{'help'} || !-e $option{'file'} ) {
-		pod2usage( -verbose => 1 );
-	}
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} || !-e $option{'file'} ) {
+        pod2usage( -verbose => 1 );
+    }
 
-	# sort out the revision names
-	my ( $rev_old, $rev_new ) = ('', '');
-	if ( $option{'revision'} ) {
-		($rev_old, $rev_new) =
-			$option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
-			:                               ( $option{'revision'} );
-	}
+    # sort out the revision names
+    my ( $rev_old, $rev_new ) = ('', '');
+    if ( $option{'revision'} ) {
+        ($rev_old, $rev_new) =
+            $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
+            :                               ( $option{'revision'} );
+    }
 
-	if ( $option{'change'} ) {
-		( $rev_old, $rev_new ) =
-			$option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
-			:                       ( $option{'change'}, $option{'change'} - 1 );
-		$option{'revision'} = "$rev_old\:$rev_new";
-	}
+    if ( $option{'change'} ) {
+        ( $rev_old, $rev_new ) =
+            $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
+            :                       ( $option{'change'}, $option{'change'} - 1 );
+        $option{'revision'} = "$rev_old\:$rev_new";
+    }
 
-	# create the temporary file object name
-	my $tmp = "/tmp/$$.$name." . basename($option{'file'});
+    # create the temporary file object name
+    my $tmp = "/tmp/$$.$name." . basename($option{'file'});
 
-	# create a new VCS::Which object for the file of interest
-	my $vcs = VCS::Which->new(dir => $option{file});
+    # create a new VCS::Which object for the file of interest
+    my $vcs = VCS::Which->new(dir => $option{file});
 
-	if ($option{replay}) {
-		my $first = 1;
-		my @versions = $vcs->versions($option{file}, $rev_old ? $rev_old : 0, $option{max});
-		if ( $option{verbose} ) {
-			my $i = 0;
-			my $j = -2;
-			print map {$i++ . "\t" . $j-- . "\t$_\n"} @versions;
-		}
+    if ($option{replay}) {
+        my $first = 1;
+        my @versions = $vcs->versions($option{file}, $rev_old ? $rev_old : 0, $option{max});
+        if ( $option{verbose} ) {
+            my $i = 0;
+            my $j = -2;
+            print map {$i++ . "\t" . $j-- . "\t$_\n"} @versions;
+        }
 
-		while ($first || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')) {
-			$first = 0;
-			unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-			$rev_old = pop @versions;
-			write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-			if ($option{test} || $option{verbose}) {
-				print "vimdiff $option{'file'} $tmp.$rev_old\n";
-			}
-			if (!$option{test}) {
-				system "vimdiff $option{'file'} $tmp.$rev_old";
-			}
-		}
-		unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-	}
-	elsif ($rev_new) {
-		write_file "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new);
-		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-		if ($option{test} || $option{verbose}) {
-			print "vimdiff $tmp.$rev_new $tmp.$rev_old\n";
-		}
-		if (!$option{test}) {
-			exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
-		}
-	}
-	elsif ($rev_old) {
-		write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
-		if ($option{test} || $option{verbose}) {
-			print "vimdiff $option{'file'} $tmp.$rev_old\n";
-		}
-		if (!$option{test}) {
-			exec "vimdiff $option{'file'} $tmp.$rev_old";
-		}
-	}
-	else {
-		my $log = $vcs->log($option{file});
-		my ($ver) = max keys %$log;
-		my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
-		write_file "$tmp$rev", scalar $vcs->cat($option{file});
-		if ($option{test} || $option{verbose}) {
-			print "vimdiff $option{'file'} $tmp$rev\n";
-		}
-		if (!$option{test}) {
-			exec "vimdiff $option{'file'} $tmp$rev";
-		}
-	}
+        while ($first || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')) {
+            $first = 0;
+            unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+            $rev_old = pop @versions;
+            write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+            if ($option{test} || $option{verbose}) {
+                print "vimdiff $option{'file'} $tmp.$rev_old\n";
+            }
+            if (!$option{test}) {
+                system "vimdiff $option{'file'} $tmp.$rev_old";
+            }
+        }
+        unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+    }
+    elsif ($rev_new) {
+        write_file "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new);
+        write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+        if ($option{test} || $option{verbose}) {
+            print "vimdiff $tmp.$rev_new $tmp.$rev_old\n";
+        }
+        if (!$option{test}) {
+            exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
+        }
+    }
+    elsif ($rev_old) {
+        write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+        if ($option{test} || $option{verbose}) {
+            print "vimdiff $option{'file'} $tmp.$rev_old\n";
+        }
+        if (!$option{test}) {
+            exec "vimdiff $option{'file'} $tmp.$rev_old";
+        }
+    }
+    else {
+        my $log = $vcs->log($option{file});
+        my ($ver) = max keys %$log;
+        my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
+        write_file "$tmp$rev", scalar $vcs->cat($option{file});
+        if ($option{test} || $option{verbose}) {
+            print "vimdiff $option{'file'} $tmp$rev\n";
+        }
+        if (!$option{test}) {
+            exec "vimdiff $option{'file'} $tmp$rev";
+        }
+    }
 
-	return;
+    return;
 }
 
 __DATA__

@@ -23,141 +23,141 @@ our $exe     = 'git';
 our $meta    = '.git';
 
 sub installed {
-	my ($self) = @_;
+    my ($self) = @_;
 
-	return $self->{installed} if exists $self->{installed};
+    return $self->{installed} if exists $self->{installed};
 
-	for my $path (split /[:;]/, $ENV{PATH}) {
-		next if !-x "$path/$exe";
+    for my $path (split /[:;]/, $ENV{PATH}) {
+        next if !-x "$path/$exe";
 
-		return $self->{installed} = 1;
-	}
+        return $self->{installed} = 1;
+    }
 
-	return $self->{installed} = 0;
+    return $self->{installed} = 0;
 }
 
 sub used {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	if (-f $dir) {
-		$dir = file($dir)->parent;
-	}
+    if (-f $dir) {
+        $dir = file($dir)->parent;
+    }
 
-	croak "$dir is not a directory!" if !-d $dir;
+    croak "$dir is not a directory!" if !-d $dir;
 
-	my $current_dir = dir($dir)->absolute;
-	my $level       = 1;
+    my $current_dir = dir($dir)->absolute;
+    my $level       = 1;
 
-	while ($current_dir) {
-		if ( -d "$current_dir/$meta" ) {
-			$self->{base} = $current_dir;
-			return $level;
-		}
+    while ($current_dir) {
+        if ( -d "$current_dir/$meta" ) {
+            $self->{base} = $current_dir;
+            return $level;
+        }
 
-		$level++;
+        $level++;
 
-		# check that we still have a parent directory
-		last if $current_dir eq $current_dir->parent;
+        # check that we still have a parent directory
+        last if $current_dir eq $current_dir->parent;
 
-		$current_dir = $current_dir->parent;
-	}
+        $current_dir = $current_dir->parent;
+    }
 
-	return 0;
+    return 0;
 }
 
 sub uptodate {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-d $dir;
+    croak "'$dir' is not a directory!" if !-d $dir;
 
-	local $CWD = dir($dir)->resolve->absolute;
-	my $ans = `$exe status`;
+    local $CWD = dir($dir)->resolve->absolute;
+    my $ans = `$exe status`;
 
-	return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
+    return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
 }
 
 sub pull {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	local $CWD = $dir;
-	return !system "$exe pull > /dev/null 2> /dev/null";
+    local $CWD = $dir;
+    return !system "$exe pull > /dev/null 2> /dev/null";
 }
 
 sub push {
-	my ( $self, $dir ) = @_;
+    my ( $self, $dir ) = @_;
 
-	$dir ||= $self->{base};
+    $dir ||= $self->{base};
 
-	croak "'$dir' is not a directory!" if !-e $dir;
+    croak "'$dir' is not a directory!" if !-e $dir;
 
-	local $CWD = $dir;
-	return !system "$exe push origin master > /dev/null 2> /dev/null";
+    local $CWD = $dir;
+    return !system "$exe push origin master > /dev/null 2> /dev/null";
 }
 
 sub cat {
-	my ($self, $file, $revision) = @_;
+    my ($self, $file, $revision) = @_;
 
-	if ( $revision && $revision =~ /^-?\d+$/xms ) {
-		eval { require Git };
-		if ($EVAL_ERROR) {
-			die "Git.pm is not installed only propper revision names can be used\n";
-		}
+    if ( $revision && $revision =~ /^-?\d+$/xms ) {
+        eval { require Git };
+        if ($EVAL_ERROR) {
+            die "Git.pm is not installed only propper revision names can be used\n";
+        }
 
-		my $repo = Git->repository(Directory => $self->{base});
-		my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
-		my $rev = $revs[$revision];
+        my $repo = Git->repository(Directory => $self->{base});
+        my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
+        my $rev = $revs[$revision];
 
-		return join "\n", $repo->command('show', $rev . ':' . $file);
-	}
-	elsif ( !defined $revision ) {
-		$revision = '';
-	}
+        return join "\n", $repo->command('show', $rev . ':' . $file);
+    }
+    elsif ( !defined $revision ) {
+        $revision = '';
+    }
 
-	return `$exe show $revision\:$file`;
+    return `$exe show $revision\:$file`;
 }
 
 sub log {
-	my ($self, @args) = @_;
+    my ($self, @args) = @_;
 
-	my $args = join ' ', @args;
+    my $args = join ' ', @args;
 
-		SCALAR   { `$exe log $args` }
-		ARRAYREF { `$exe log $args` }
-		HASHREF  {
-			my $logs = `$exe log $args`;
-			my @logs = split /^commit\s*/xms, $logs;
-			shift @logs;
-			my $num = @logs;
-			my %log;
-			for my $log (@logs) {
-				my ($ver, $rest) = split /\n/, $log, 2;
-				my ($details, $description) = split /\n\n\s*/, $rest, 2;
-				$log{$num} = { map {split /:\s*/, $_, 2} split /\n/, $details };
-				$log{$num}{description} = $description;
-				$log{$num--}{rev} = $ver;
-			}
-			return \%log;
-		}
+        SCALAR   { `$exe log $args` }
+        ARRAYREF { `$exe log $args` }
+        HASHREF  {
+            my $logs = `$exe log $args`;
+            my @logs = split /^commit\s*/xms, $logs;
+            shift @logs;
+            my $num = @logs;
+            my %log;
+            for my $log (@logs) {
+                my ($ver, $rest) = split /\n/, $log, 2;
+                my ($details, $description) = split /\n\n\s*/, $rest, 2;
+                $log{$num} = { map {split /:\s*/, $_, 2} split /\n/, $details };
+                $log{$num}{description} = $description;
+                $log{$num--}{rev} = $ver;
+            }
+            return \%log;
+        }
 }
 
 sub versions {
-	my ($self, $file, $revision) = @_;
+    my ($self, $file, $revision) = @_;
 
-	eval { require Git };
-	if ($EVAL_ERROR) {
-		die "Git.pm is not installed only propper revision names can be used\n";
-	}
+    eval { require Git };
+    if ($EVAL_ERROR) {
+        die "Git.pm is not installed only propper revision names can be used\n";
+    }
 
-	my $repo = Git->repository(Directory => $self->{base});
-	my @revs = reverse $repo->command('rev-list', '--all', '--', file($file)->absolute->resolve);
+    my $repo = Git->repository(Directory => $self->{base});
+    my @revs = reverse $repo->command('rev-list', '--all', '--', file($file)->absolute->resolve);
 
-	return @revs;
+    return @revs;
 }
 
 1;
