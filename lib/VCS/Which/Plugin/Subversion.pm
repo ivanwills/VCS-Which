@@ -58,7 +58,7 @@ sub uptodate {
     my @lines = `$exe status $dir`;
     pop @lines;
 
-    return scalar @lines;
+    return !@lines;
 }
 
 sub pull {
