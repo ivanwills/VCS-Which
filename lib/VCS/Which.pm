@@ -182,15 +182,23 @@ sub exec {
 }
 
 sub log {
-    my ( $self, @args ) = @_;
+    my ( $self, $file, @args ) = @_;
 
     my $dir = $self->{dir};
+    if ( defined $file ) {
+        if ( -f $file ) {
+            $dir = $file;
+        }
+        else {
+            unshift @args, $file;
+        }
+    }
 
     croak "No directory supplied!" if !$dir;
 
     my $system = $self->which;
 
-    return $system->log(@args);
+    return $system->log($dir, @args);
 }
 
 sub cat {
