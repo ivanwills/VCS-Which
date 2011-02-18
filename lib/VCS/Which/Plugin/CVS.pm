@@ -55,7 +55,9 @@ sub uptodate {
 
     croak "'$dir' is not a directory!" if !-e $dir;
 
-    return !`$exe status $dir`;
+    chdir $dir;
+
+    return !grep {!/Up-to-date/} grep { /Status:/ } `$exe status 2>/dev/null`;
 }
 
 sub pull {
