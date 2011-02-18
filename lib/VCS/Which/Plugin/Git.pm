@@ -127,6 +127,7 @@ sub log {
 
     my $args = join ' ', @args;
 
+    return
         SCALAR   { `$exe log $args` }
         ARRAYREF { `$exe log $args` }
         HASHREF  {
