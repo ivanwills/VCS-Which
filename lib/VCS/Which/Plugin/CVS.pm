@@ -86,34 +86,43 @@ sub cat {
 }
 
 sub log {
-    my ($self, @args) = @_;
+    my ($self, $file, @args) = @_;
 
     my $args = join ' ', @args;
+    my $dir  = -d $file ? dir $file : file($file)->parent;
 
+    chdir $dir;
     return
-        SCALAR   { `$exe log $args` }
-        ARRAYREF { `$exe log $args` }
-#       HASHREF  {
-#           my $logs = `$exe log $args`;
-#           my @logs = split /^-+\n/xms, $logs;
-#           shift @logs;
-#           my $num = @logs;
-#           my %log;
-#           for my $log (@logs) {
-#               my ($details, $description) = split /\n\n?/, $log, 2;
-#               $description =~ s/\s+\Z//xms;
-#               $details =~ s/^\s*(.*?)\s*/$1/;
-#               my @details = split /\s+\|\s+/, $details;
-#               $details[0] =~ s/^r//;
-#               $log{$num--} = {
-#                   rev    => $details[0],
-#                   Author => $details[1],
-#                   Date   => $details[2],
-#                   description => $description,
-#               },
-#           }
-#           return \%log;
-#       }
+        SCALAR   { `$exe $args log 2> /dev/null` }
+        ARRAYREF { `$exe $args log 2> /dev/null` }
+        HASHREF  {
+            my $logs = `$exe $args log 2> /dev/null`;
+            my %log_by_date;
+            for my $file ( split /^={77}$/xms, $logs ) {
+                my ($details, @log) = split /^-{28}$/xms, $file;
+                for my $log (@log) {
+                    my (undef, $rev_line, $data_line, $description) = split /\r?\n/xms, $log, 4;
+
+                    chomp $description;
+                    my ($rev) = $rev_line =~ /^revision \s+ (.)$/xms;
+                    my ($date, $author) = $data_line =~ /^date: \s* ([^;]+); \s* author: \s* ([^;]+)/xms;
+
+                    push @{ $log_by_date{$date} }, {
+                        rev         => $rev,
+                        description => $description,
+                        Date        => $date,
+                        Author      => $author,
+                    };
+                }
+            }
+
+            my %log;
+            my $i = 1;
+            for my $date ( sort keys %log_by_date ) {
+                $log{$i++} = $log_by_date{$date}[0];
+            }
+            return \%log;
+        }
 }
 
 1;
