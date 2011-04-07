@@ -99,7 +99,13 @@ sub main {
             print map {$i++ . "\t" . $j-- . "\t$_\n"} @versions;
         }
 
-        while ($first || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')) {
+        while (
+            @versions
+            && (
+                $first
+                || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')
+            )
+        ) {
             $first = 0;
             unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
             $rev_old = pop @versions;
