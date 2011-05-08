@@ -162,6 +162,37 @@ sub versions {
     return @revs;
 }
 
+sub status {
+    my ($self, $dir) = @_;
+    my %status;
+    local $CWD = dir($dir)->resolve->absolute;
+    my $status = `$exe status`;
+
+    my @modified = split /\n?[#]\s+modified:\s+/, $status;
+    if ( @modified > 1 ) {
+        shift @modified;
+        $modified[-1] =~ s/\n.*//xms;
+        $status{modified} = \@modified;
+    }
+
+    my @added = split /\n?[#]\s+new\sfile:\s+/, $status;
+    if ( @added > 1 ) {
+        shift @added;
+        $added[-1] =~ s/\n.*//xms;
+        $status{added} = \@added;
+    }
+
+    my @untracked = split /Untracked files:\n/, $status;
+    if ( @untracked > 1 ) {
+        my $untracked = pop @untracked;
+        $untracked =~ s/^[#].*?\n//xms;
+        $untracked =~ s/^[#].*?\n//xms;
+        $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]\s+/, $untracked ];
+    }
+
+    return \%status;
+}
+
 1;
 
 __END__

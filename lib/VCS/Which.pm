@@ -269,6 +269,23 @@ sub push {
     return $system->push($dir);
 }
 
+sub status {
+    my ( $self, $dir ) = @_;
+
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
+
+    croak "No directory supplied!" if !$dir;
+
+    my $system = $self->which || die "Could not work out which version control system to use!\n";
+
+    return $system->status($dir);
+}
+
 1;
 
 __END__
