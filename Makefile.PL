@@ -7,11 +7,9 @@ WriteMakefile
           'VERSION_FROM' => 'lib/VCS/Which.pm',
           'PREREQ_PM' => {
                            'Contextual::Return' => 0,
-                           'File::Basename' => 0,
-                           'File::Slurp' => 0,
-                           'File::Spec' => 0,
                            'File::chdir' => 0,
                            'IO::Prompt' => 0,
+                           'List::MoreUtils' => 0,
                            'Path::Class' => '0.16',
                            'Test::MinimumVersion' => 0,
                            'Test::More' => 0,
