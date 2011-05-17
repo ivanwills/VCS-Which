@@ -270,6 +270,10 @@ Description: Pulls or updates the directory $dir to the newest version
 
 Description: push updates to the master repository
 
+=head3 C<status ( $dir )>
+
+Description: push updates to the master repository
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT

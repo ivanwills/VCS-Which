@@ -405,6 +405,13 @@ Description: Pulls or updates the directory $dir to the newest version
 
 Description: Pushes content to master repository for distributed VCS systems
 
+=head3 C<status ( [$dir] )>
+
+Return: HASHREF - Status of files
+
+Description: Get the statuses of all files not added or not committed in the
+repository.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
