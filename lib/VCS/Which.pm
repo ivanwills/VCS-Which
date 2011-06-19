@@ -124,7 +124,7 @@ sub which {
         $dir = $self->{dir} = file($dir)->parent;
     }
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
     return $self->{which}{$dir} if exists $self->{which}{$dir};
 
@@ -145,7 +145,7 @@ sub which {
         }
     }
 
-    die "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
+    confess "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
 
     return $self->{which}{$dir};
 }
@@ -160,11 +160,11 @@ sub uptodate {
         $dir = $self->{dir};
     }
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
     return $self->{uptodate}{$dir} if exists $self->{uptodate}{$dir};
 
-    my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
     return $self->{uptodate}{$dir} = $system->uptodate($dir);
 }
@@ -174,7 +174,7 @@ sub exec {
 
     my $dir = $self->{dir};
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
     my $system = $self->which;
 
@@ -184,17 +184,13 @@ sub exec {
 sub log {
     my ( $self, $file, @args ) = @_;
 
-    my $dir = $self->{dir};
-    if ( defined $file ) {
-        if ( -f $file ) {
-            $dir = $file;
-        }
-        else {
-            unshift @args, $file;
-        }
-    }
+    my $dir
+        = !defined $file ? $self->{dir}
+        : -f $file       ? file($file)->parent
+        : -d $file       ? $file
+        :                  confess('No file passed and no default directory setup!');
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied! '$dir'" if !$dir;
 
     my $system = $self->which;
 
@@ -211,7 +207,7 @@ sub cat {
         $file = $self->{dir};
     }
 
-    croak "No file supplied!" if !$file;
+    confess "No file supplied!" if !$file;
 
     my $system = $self->which;
 
@@ -228,7 +224,7 @@ sub versions {
         $file = $self->{dir};
     }
 
-    croak "No file supplied!" if !$file;
+    confess "No file supplied!" if !$file;
 
     my $system = $self->which;
 
@@ -245,9 +241,9 @@ sub pull {
         $dir = $self->{dir};
     }
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
     return $system->pull($dir);
 }
@@ -262,9 +258,9 @@ sub push {
         $dir = $self->{dir};
     }
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
     return $system->push($dir);
 }
@@ -279,9 +275,9 @@ sub status {
         $dir = $self->{dir};
     }
 
-    croak "No directory supplied!" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || die "Could not work out which version control system to use!\n";
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
     return $system->status($dir);
 }
