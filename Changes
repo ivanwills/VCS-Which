@@ -1,5 +1,27 @@
 Revision history for VCS-Which
 
+0.3.0   2011-06-??
+        Added documentation about the status method
+        Added status command, which returns a hash with the files of various statuses
+        Fixed diffing after running out of file versions
+        Fixed copyright
+        More ignore sorting
+        Fixed update not working correctly
+        Fixed log to actually return a hash ref
+        Fixed log to explicitly pass in either a passed file or the repo directory
+        Added vcsw example file for getting log statistics
+        Added cleaning white space from the end of log descriptions
+        Fixed bad logic for BZR, CVS & SVN' plugin's checking weather a project is up to date
+        Added skipping vim files
+        Added default ignored files
+        Fixed missing info from help
+        Fixed kwalitee test failure when missing parts
+        Added to verbose output
+        Fixed problem when $dir is a deleted file
+        Improved docs
+        Added more verbose output
+        Removed references to SVK
+
 0.2.1   2010-07-20
         Removed references to SVK that were left behind
 
