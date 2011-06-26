@@ -120,7 +120,7 @@ sub which {
         $dir = $self->{dir};
     }
 
-    if (-f $dir || !-e $dir) {
+    if ( $dir && ( -f $dir || !-e $dir ) ) {
         $dir = $self->{dir} = file($dir)->parent;
     }
 
@@ -192,7 +192,7 @@ sub log {
 
     confess "No directory supplied! '$dir'" if !$dir;
 
-    my $system = $self->which;
+    my $system = $self->which($dir);
 
     return $system->log($dir, @args);
 }
