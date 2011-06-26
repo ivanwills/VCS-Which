@@ -125,11 +125,31 @@ sub cat {
 sub log {
     my ($self, @args) = @_;
 
+    my $dir;
+    if ( -d $args[0] && $args[0] =~ m{^/} ) {
+        $dir = shift @args;
+        chdir $dir;
+    }
     my $args = join ' ', @args;
 
     return
-        SCALAR   { `$exe log $args` }
-        ARRAYREF { `$exe log $args` }
+        SCALAR   { scalar `$exe log $args` }
+        ARRAYREF {
+            my @raw_log = `$exe log $args`;
+            my @log;
+            my $line = '';
+            for my $raw (@raw_log) {
+                if ( $raw =~ /^commit / && $line ) {
+                    CORE::push @log, $line;
+                    $line = $raw;
+                }
+                else {
+                    $line .= $raw;
+                }
+
+            }
+            return \@log;
+        }
         HASHREF  {
             my $logs = `$exe log $args`;
             my @logs = split /^commit\s*/xms, $logs;
