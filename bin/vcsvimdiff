@@ -18,7 +18,9 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use VCS::Which;
 use IO::Prompt qw/prompt/;
+use Path::Class;
 
+sub write_file($@);
 our $VERSION = version->new('0.3.0');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
@@ -82,7 +84,7 @@ sub main {
     }
 
     # create the temporary file object name
-    my $tmp = "/tmp/$$.$name." . basename($option{'file'});
+    my $tmp = "/tmp/$$.$name." . file($option{'file'})->basename;
 
     # create a new VCS::Which object for the file of interest
     my $vcs = VCS::Which->new(dir => $option{file});
@@ -149,6 +151,13 @@ sub main {
     }
 
     return;
+}
+
+sub write_file($@) {
+    my ($file, @contents) = @_;
+    my $fh = file($file)->openw;
+    print {$fh} @contents;
+    close $fh;
 }
 
 __DATA__
