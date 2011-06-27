@@ -1,6 +1,13 @@
 Revision history for VCS-Which
 
-0.3.0   2011-06-??
+0.3.0   2011-06-27
+        Removed sub prototypes
+        Fixed log array ref returns
+        Fixed up not actually unused module removal
+        Fixed passing on directory to use
+        Fixed log's array ref return value
+        Started work on next release
+        Fixed issue with log not getting the propper directory
         Added documentation about the status method
         Added status command, which returns a hash with the files of various statuses
         Fixed diffing after running out of file versions
