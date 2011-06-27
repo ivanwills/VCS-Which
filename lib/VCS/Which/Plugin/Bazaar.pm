@@ -111,8 +111,23 @@ sub log {
     my $args = join ' ', @args;
 
     return
-        SCALAR   { `$exe log $args` }
-        ARRAYREF { `$exe log $args` }
+        SCALAR   { scalar `$exe log $args` }
+        ARRAYREF {
+            my @raw_log = `$exe log $args`;
+            my @log;
+            my $line = '';
+            for my $raw (@raw_log) {
+                if ( $raw eq ( '-' x 60 ) . "\n"  && $line ) {
+                    CORE::push @log, $line;
+                    $line = '';
+                }
+                elsif ( $raw ne ( '-' x 60 ) . "\n"  ) {
+                    $line .= $raw;
+                }
+
+            }
+            return \@log;
+        }
         HASHREF  {
             my $logs = `$exe log $args`;
             my @logs = split /^-+\n/xms, $logs;

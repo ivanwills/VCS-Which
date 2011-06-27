@@ -95,8 +95,17 @@ sub log {
 
     chdir $dir;
     return
-        SCALAR   { `$exe $args log 2> /dev/null` }
-        ARRAYREF { `$exe $args log 2> /dev/null` }
+        SCALAR   { scalar `$exe log $args` }
+        ARRAYREF {
+            my $logs = `$exe $args log 2> /dev/null`;
+            my @logs;
+            for my $file ( split /^={77}$/xms, $logs ) {
+                my ($details, @log) = split /^-{28}$/xms, $file;
+                push @logs, @log;
+            }
+
+            return \@logs;
+        }
         HASHREF  {
             my $logs = `$exe $args log 2> /dev/null`;
             my %log_by_date;

@@ -13,9 +13,9 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
+use Path::Class;
 use File::chdir;
 use Contextual::Return;
-use Path::Class;
 
 our $VERSION = version->new('0.3.0');
 our $name    = 'Subversion';
@@ -49,7 +49,7 @@ sub used {
 }
 
 sub uptodate {
-    my ($self, $dir) = @_;
+    my ( $self, $dir ) = @_;
 
     $dir ||= $self->{base};
 
@@ -94,8 +94,23 @@ sub log {
     my $args = join ' ', @args;
 
     return
-        SCALAR   { `$exe log $args` }
-        ARRAYREF { `$exe log $args` }
+        SCALAR   { scalar `$exe log $args` }
+        ARRAYREF {
+            my @raw_log = `$exe log $args`;
+            my @log;
+            my $line = '';
+            for my $raw (@raw_log) {
+                if ( $raw eq ( '-' x 72 ) . "\n"  && $line ) {
+                    CORE::push @log, $line;
+                    $line = '';
+                }
+                elsif ( $raw ne ( '-' x 72 ) . "\n"  ) {
+                    $line .= $raw;
+                }
+
+            }
+            return \@log;
+        }
         HASHREF  {
             my $logs = `$exe log $args`;
             my @logs = split /^-+\n/xms, $logs;
