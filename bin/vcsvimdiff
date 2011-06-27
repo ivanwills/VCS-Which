@@ -20,7 +20,6 @@ use VCS::Which;
 use IO::Prompt qw/prompt/;
 use Path::Class;
 
-sub write_file($@);
 our $VERSION = version->new('0.3.0');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
@@ -108,7 +107,7 @@ sub main {
             $first = 0;
             unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
             $rev_old = pop @versions;
-            write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+            write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
             if ($option{test} || $option{verbose}) {
                 print "vimdiff $option{'file'} $tmp.$rev_old\n";
             }
@@ -119,8 +118,8 @@ sub main {
         unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
     }
     elsif ($rev_new) {
-        write_file "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new);
-        write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+        write_file( "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new) );
+        write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
         if ($option{test} || $option{verbose}) {
             print "vimdiff $tmp.$rev_new $tmp.$rev_old\n";
         }
@@ -129,7 +128,7 @@ sub main {
         }
     }
     elsif ($rev_old) {
-        write_file "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old);
+        write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
         if ($option{test} || $option{verbose}) {
             print "vimdiff $option{'file'} $tmp.$rev_old\n";
         }
@@ -141,7 +140,7 @@ sub main {
         my $log = $vcs->log($option{file});
         my ($ver) = max keys %$log;
         my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
-        write_file "$tmp$rev", scalar $vcs->cat($option{file});
+        write_file( "$tmp$rev", scalar $vcs->cat($option{file}) );
         if ($option{test} || $option{verbose}) {
             print "vimdiff $option{'file'} $tmp$rev\n";
         }
@@ -153,7 +152,7 @@ sub main {
     return;
 }
 
-sub write_file($@) {
+sub write_file {
     my ($file, @contents) = @_;
     my $fh = file($file)->openw;
     print {$fh} @contents;
