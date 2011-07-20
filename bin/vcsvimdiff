@@ -25,6 +25,7 @@ my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
     revision => '',
+    diff     => 'vimdiff',
     verbose  => 0,
     man      => 0,
     help     => 0,
@@ -48,6 +49,7 @@ sub main {
         'change|c=i',
         'replay|R',
         'max|m=i',
+        'diff|d=s',
         'test|t!',
         'verbose|v+',
         'man',
@@ -109,10 +111,10 @@ sub main {
             $rev_old = pop @versions;
             write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
             if ($option{test} || $option{verbose}) {
-                print "vimdiff $option{'file'} $tmp.$rev_old\n";
+                print "$option{diff} $option{'file'} $tmp.$rev_old\n";
             }
             if (!$option{test}) {
-                system "vimdiff $option{'file'} $tmp.$rev_old";
+                system "$option{diff} $option{'file'} $tmp.$rev_old";
             }
         }
         unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
@@ -121,19 +123,19 @@ sub main {
         write_file( "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new) );
         write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
         if ($option{test} || $option{verbose}) {
-            print "vimdiff $tmp.$rev_new $tmp.$rev_old\n";
+            print "$option{diff} $tmp.$rev_new $tmp.$rev_old\n";
         }
         if (!$option{test}) {
-            exec "vimdiff $tmp.$rev_new $tmp.$rev_old";
+            exec "$option{diff} $tmp.$rev_new $tmp.$rev_old";
         }
     }
     elsif ($rev_old) {
         write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
         if ($option{test} || $option{verbose}) {
-            print "vimdiff $option{'file'} $tmp.$rev_old\n";
+            print "$option{diff} $option{'file'} $tmp.$rev_old\n";
         }
         if (!$option{test}) {
-            exec "vimdiff $option{'file'} $tmp.$rev_old";
+            exec "$option{diff} $option{'file'} $tmp.$rev_old";
         }
     }
     else {
@@ -142,10 +144,10 @@ sub main {
         my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
         write_file( "$tmp$rev", scalar $vcs->cat($option{file}) );
         if ($option{test} || $option{verbose}) {
-            print "vimdiff $option{'file'} $tmp$rev\n";
+            print "$option{diff} $option{'file'} $tmp$rev\n";
         }
         if (!$option{test}) {
-            exec "vimdiff $option{'file'} $tmp$rev";
+            exec "$option{diff} $option{'file'} $tmp$rev";
         }
     }
 
@@ -184,6 +186,7 @@ This documentation refers to vcsvimdiff version 0.3.0.
   -m --max=int  Maximum number of revisions to replay
   -t --test     Turn on testing (vimdiff wont actually be run)
      --no-test  Trurn off testing
+  -d --diff=str Allows you to specify a diffing program (Default vimdiff)
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
