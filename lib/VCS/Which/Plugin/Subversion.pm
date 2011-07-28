@@ -135,7 +135,7 @@ sub log {
 }
 
 sub versions {
-    my ($self, $file, $before_version, $max) = @_;
+    my ($self, $file, $oldest, $newest, $max) = @_;
 
     $file = file($file);
     local $CWD = -d $file ? $file : $file->parent;
@@ -143,7 +143,7 @@ sub versions {
     my @versions;
 
     for my $log (sort {$a <=> $b} keys %logs) {
-        push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
+        push @versions, $logs{$log}{rev};# if $oldest && $logs{$log}{rev} <= $oldest;
     }
 
     return @versions;

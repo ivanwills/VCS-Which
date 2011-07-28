@@ -100,13 +100,13 @@ sub push {
 }
 
 sub versions {
-    my ($self, $file, $before_version, $max) = @_;
+    my ($self, $file, $oldest, $newest, $max) = @_;
 
     my %logs = %{ $self->log($file, $max ? "--limit $max" : '') };
     my @versions;
 
     for my $log (sort {$a <=> $b} keys %logs) {
-        CORE::push @versions, $logs{$log}{rev};# if $before_version && $logs{$log}{rev} <= $before_version;
+        CORE::push @versions, $logs{$log}{rev};# if $oldest && $logs{$log}{rev} <= $oldest;
     }
 
     return @versions;

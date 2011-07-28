@@ -72,9 +72,9 @@ sub main {
     # sort out the revision names
     my ( $rev_old, $rev_new ) = ('', '');
     if ( $option{'revision'} ) {
-        ($rev_old, $rev_new) =
-            $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
-            :                               ( $option{'revision'} );
+        ( $rev_old, $rev_new )
+            = $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
+            :                                 ( $option{'revision'} );
     }
 
     if ( $option{'change'} ) {

@@ -169,7 +169,7 @@ sub log {
 }
 
 sub versions {
-    my ($self, $file, $revision) = @_;
+    my ($self, $file, $oldest, $newest, $max) = @_;
 
     eval { require Git };
     if ($EVAL_ERROR) {
