@@ -157,15 +157,39 @@ sub log {
             my $num = @logs;
             my %log;
             for my $log (@logs) {
-                my ($ver, $rest) = split /\n/, $log, 2;
-                my ($details, $description) = split /\n\n\s*/, $rest, 2;
-                $description =~ s/\s+\Z//xms;
-                $log{$num} = { map {split /:\s*/, $_, 2} split /\n/, $details };
-                $log{$num}{description} = $description;
-                $log{$num--}{rev} = $ver;
+                $log{$num--} = $self->_log_expand($log);
             }
             return \%log;
         }
+}
+
+sub _log_expand {
+    my ($self, $log) = @_;
+
+    # split the commit from the reset of the message
+    my ($ver, $rest) = split /\n/, $log, 2;
+
+    # split log details and the description
+    my ($details, $description) = split /\n\n\s*/, $rest, 2;
+
+    # remove excess whitespace at the end of the description
+    $description =~ s/\s+\Z//xms;
+    my ($conflicts) = $description =~ /\s+Conflicts:\s+(.*)\Z/xms;
+    $description =~ s/\s+Conflicts:\s+(.*)\Z//xms;
+
+    # split up the details
+    my %log = map {split /:\s*/, $_, 2} split /\n/, $details;
+
+    # add in the description
+    $log{description} = $description;
+
+    # add in the revision
+    $log{rev} = $ver;
+
+    # add conflicts if any
+    $log{conflicts} = [ split /\n\s+/, $conflicts ] if $conflicts;
+
+    return \%log;
 }
 
 sub versions {
