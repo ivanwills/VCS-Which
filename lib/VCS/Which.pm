@@ -194,7 +194,7 @@ sub log {
 
     my $system = $self->which($dir);
 
-    return $system->log($dir, @args);
+    return $system->log($file, @args);
 }
 
 sub cat {
