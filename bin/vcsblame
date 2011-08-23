@@ -1,4 +1,4 @@
-3!/usr/bin/perl
+#!/usr/bin/perl
 
 # Created on: 2009-08-25 16:00:46
 # Create by:  iwills
@@ -76,15 +76,15 @@ __DATA__
 
 =head1 NAME
 
-bin/vcsblame - <One-line description of commands purpose>
+vcsblame - <One-line description of commands purpose>
 
 =head1 VERSION
 
-This documentation refers to bin/vcsblame version 0.3.0.
+This documentation refers to vcsblame version 0.3.0.
 
 =head1 SYNOPSIS
 
-   bin/vcsblame [option]
+   vcsblame [option]
 
  OPTIONS:
   -o --other         other option
@@ -92,7 +92,7 @@ This documentation refers to bin/vcsblame version 0.3.0.
   -v --verbose       Show more detailed option
      --version       Prints the version information
      --help          Prints this help information
-     --man           Prints the full documentation for bin/vcsblame
+     --man           Prints the full documentation for vcsblame
 
 =head1 DESCRIPTION
 
