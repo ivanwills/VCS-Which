@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use version;
 use Scalar::Util;
-use List::Util qw/max/;
+use List::Util qw/max min/;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
@@ -49,6 +49,8 @@ sub main {
         'change|c=i',
         'replay|R',
         'max|m=i',
+        'first|1',
+        'three|3',
         'diff|d=s',
         'test|t!',
         'verbose|v+',
@@ -91,33 +93,62 @@ sub main {
     my $vcs = VCS::Which->new(dir => $option{file});
 
     if ($option{replay}) {
-        my $first = 1;
-        my @versions = $vcs->versions($option{file}, $rev_old ? $rev_old : 0, $option{max});
-        if ( $option{verbose} ) {
+        my $first    = 1;
+        my $warned   = 0;
+        my $versions = $vcs->log( $option{file} );
+        if ( $option{verbose} > 1 ) {
             my $i = 0;
             my $j = -2;
-            print map {$i++ . "\t" . $j-- . "\t$_\n"} @versions;
+            print map {$i++ . "\t" . $j-- . "\t$versions->{$_}{rev}\n"} sort keys %$versions;
         }
+        my $last;
 
-        while (
-            @versions
-            && (
-                $first
-                || prompt("Next revision $versions[-1]: Continue? ", -nd => 'y')
-            )
-        ) {
-            $first = 0;
-            unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-            $rev_old = pop @versions;
-            write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
+        while ( %$versions ) {
+            if ( ( $option{first} || $option{three} ) && $rev_old ) {
+                unlink $last if $last && -e $last;
+                $last = "$tmp.$rev_old";
+            }
+            else {
+                unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+            }
+
+            my $rev_no = max keys %$versions;
+            my $rev    = delete $versions->{$rev_no};
+            $rev_old = $rev->{rev};
+
+            my $third = $option{three} && $last ? "$last " : '';
+            my $first = $option{first} && $last ? $last : $option{'file'};
+            my $diff = "$option{diff} $first $third$tmp.$rev_old";
+
             if ($option{test} || $option{verbose}) {
-                print "$option{diff} $option{'file'} $tmp.$rev_old\n";
+                print "$diff\n" if $option{verbose} > 1;
+                print Dumper { $rev_no => $rev };
             }
-            if (!$option{test}) {
-                system "$option{diff} $option{'file'} $tmp.$rev_old";
+
+            # write the revisioned file to disk
+            write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
+
+            if ( !$first || $option{verbose} ) {
+                print "y = yes continue, n = not stop processing, s = skip this revision\n" if !$warned++;
+                my $ans = prompt(
+                    "Next revision $rev_old: Continue? [yns] ",
+                    '-tty',
+                    '-1',
+                    -d => 'y',
+                );
+                print "\n\n";
+                $ans = lc $ans;
+                last if $ans eq 'n' || $ans eq 'q';
+                next if $ans eq 's';
             }
+
+            # run the diff if not testing
+            system $diff if !$option{test};
+
+            $first = 0;
         }
         unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+        unlink $last           if -e $last;
     }
     elsif ($rev_new) {
         write_file( "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new) );
@@ -184,6 +215,9 @@ This documentation refers to vcsvimdiff version 0.3.0.
   -f --file=str Explisitly specify the file name
   -R --replay   Replay each change vs the current file
   -m --max=int  Maximum number of revisions to replay
+  -3 --three    Three way diff for --replay, showing the file on disk, the
+                revision one newer than the current revision and the current
+                revision.
   -t --test     Turn on testing (vimdiff wont actually be run)
      --no-test  Trurn off testing
   -d --diff=str Allows you to specify a diffing program (Default vimdiff)
