@@ -117,8 +117,8 @@ sub main {
             $rev_old = $rev->{rev};
 
             my $third = $option{three} && $last ? "$last " : '';
-            my $first = $option{first} && $last ? $last : $option{'file'};
-            my $diff = "$option{diff} $first $third$tmp.$rev_old";
+            my $file1 = $option{first} && $last ? $last : $option{'file'};
+            my $diff = "$option{diff} $file1 $third$tmp.$rev_old";
 
             if ($option{test} || $option{verbose}) {
                 print "$diff\n" if $option{verbose} > 1;
