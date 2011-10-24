@@ -103,6 +103,19 @@ sub push {
 sub cat {
     my ($self, $file, $revision) = @_;
 
+    # git expects $file to be relative to the base of the git repo not the
+    # current directory so we change it to being relative to the repo if nessesary
+    my $repo_dir = dir($self->{base}) or confess "How did I get here with out a base directory?\n";
+    my $cwd      = dir('.')->absolute;
+
+    if ( -f $file && $cwd ne $repo_dir ) {
+        # get relavie directory of $cwd to $repo_dir
+        my ($relative) = $cwd =~ m{^ $repo_dir / (.*) $}xms;
+        my $old = $file;
+        $file = file("$relative/$file");
+        warn "Using repo absolute file $file from $old\n"
+    }
+
     if ( $revision && $revision =~ /^-?\d+$/xms ) {
         eval { require Git };
         if ($EVAL_ERROR) {
