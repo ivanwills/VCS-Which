@@ -82,9 +82,9 @@ sub cat {
         $revision = '';
     }
 
-    $revision &&= "-r$revision";
+    $revision &&= "-r $revision";
 
-    return `$exe cat $revision $file`;
+    return `$exe update -p $revision $file`;
 }
 
 sub log {
@@ -115,7 +115,7 @@ sub log {
                     my (undef, $rev_line, $data_line, $description) = split /\r?\n/xms, $log, 4;
 
                     chomp $description;
-                    my ($rev) = $rev_line =~ /^revision \s+ (.)$/xms;
+                    my ($rev) = $rev_line =~ /^revision \s+ ([\d.]+)$/xms;
                     my ($date, $author) = $data_line =~ /^date: \s* ([^;]+); \s* author: \s* ([^;]+)/xms;
 
                     push @{ $log_by_date{$date} }, {
