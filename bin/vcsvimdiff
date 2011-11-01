@@ -102,6 +102,7 @@ sub main {
             print map {$i++ . "\t" . $j-- . "\t$versions->{$_}{rev}\n"} sort keys %$versions;
         }
         my $last;
+        die "Could not find any versions for $option{file}!\n" if !%$versions;
 
         while ( %$versions ) {
             if ( ( $option{prev} || $option{three} ) && $rev_old ) {
@@ -162,7 +163,7 @@ sub main {
             $first = 0;
         }
         unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-        unlink $last           if -e $last;
+        unlink $last           if $last && -e $last;
     }
     elsif ($rev_new) {
         write_file( "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new) );
