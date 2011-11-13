@@ -107,13 +107,15 @@ sub cat {
     # current directory so we change it to being relative to the repo if nessesary
     my $repo_dir = dir($self->{base}) or confess "How did I get here with out a base directory?\n";
     my $cwd      = dir('.')->absolute;
+    my $use_one  = 0;
 
     if ( -f $file && $cwd ne $repo_dir ) {
         # get relavie directory of $cwd to $repo_dir
         my ($relative) = $cwd =~ m{^ $repo_dir / (.*) $}xms;
         my $old = $file;
         $file = file("$relative/$file");
-        warn "Using repo absolute file $file from $old\n"
+        warn "Using repo absolute file $file from $old\n";
+        $use_one = 1;
     }
 
     if ( $revision && $revision =~ /^-?\d+$/xms ) {
@@ -127,6 +129,9 @@ sub cat {
         my $rev = $revs[$revision];
 
         return join "\n", $repo->command('show', $rev . ':' . $file);
+    }
+    elsif ( !defined $revision && $use_one ) {
+        $revision = ':1';
     }
     elsif ( !defined $revision ) {
         $revision = '';
