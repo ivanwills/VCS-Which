@@ -4,7 +4,7 @@ VCS-Which-*
 .vimtagsdisplay
 tags
 Build
-MYMETA.yml
+MYMETA.*
 _build*
 blib*
 Makefile
