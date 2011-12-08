@@ -64,4 +64,6 @@ Debian_CPANTS.txt
 vim.sh
 .vimtagsdisplay
 tags
-
+tmp*
+temp*
+errors.err
