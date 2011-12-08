@@ -5,6 +5,8 @@ VCS-Which-*
 tags
 Build
 MYMETA.*
+META.*
+Makefile.PL
 _build*
 blib*
 Makefile
@@ -14,3 +16,5 @@ cover_db
 nytprof*
 tmp*
 *~
+temp*
+errors.err
