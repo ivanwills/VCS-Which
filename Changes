@@ -1,6 +1,9 @@
 Revision history for VCS-Which
 
 0.4.0   2011-12-09
+        Added prove save state file to be ignored / skipped
+        Added more words to ignore spelling of
+        Updated file versions and added entries to change log file for version 0.4
         Updated licence file
         Removed from repo generated files, added them to ignore list and added new generated file META.json to manifest
         Added more files to skip
