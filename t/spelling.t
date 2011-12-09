@@ -23,12 +23,13 @@ for my $dir ( split /:/, $ENV{PATH} ) {
 }
 
 plan skip_all => "Test::Spelling required for testing POD spelling" if $@;
-plan skip_all => "spell cmd required for testing POD spelling" if !$found;
+plan skip_all => "spell command required for testing POD spelling" if !$found;
 
 add_stopwords(qw/
     NSW
     Hornsby
     Param
+    eg
     Arg
     svn
     CVS
@@ -39,7 +40,6 @@ add_stopwords(qw/
     vimdiff
     versioned
     plugins
-    eg
     vcsblame
     Versioning
 /);

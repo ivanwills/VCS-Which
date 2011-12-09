@@ -1,4 +1,4 @@
-.*.sw[ponx]
+.*.sw[ponxmn]
 Debian_CPANTS.txt
 VCS-Which-*
 .vimtagsdisplay
@@ -17,5 +17,6 @@ nytprof*
 .prove
 tmp*
 *~
+vim.sh
 temp*
 errors.err

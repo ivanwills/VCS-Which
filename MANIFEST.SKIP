@@ -16,7 +16,7 @@
 \bblibdirs$
 ^MANIFEST\.SKIP$
 
-# Avoid VMS specific Makmaker generated files
+# Avoid VMS specific Makemaker generated files
 \bDescrip.MMS$
 \bDESCRIP.MMS$
 \bdescrip.mms$
@@ -48,7 +48,7 @@
 \B\._
 
 # Avoid vim temporary file and other vim generated files
-.*\.sw[po]$
+.*\.sw[ponxmn]$
 .vimtagsdisplay
 tags
 
