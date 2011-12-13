@@ -188,7 +188,14 @@ sub main {
         my $log = $vcs->log($option{file});
         my ($ver) = max keys %$log;
         my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
-        write_file( "$tmp$rev", scalar $vcs->cat($option{file}) );
+
+        my $content;
+        my $i = -1;
+        while ( !$content && $i++ < 10 ) {
+            $content = $vcs->cat($option{file}, $i ? ":$i" : '');
+        }
+        write_file( "$tmp$rev", $content );
+
         if ($option{test} || $option{verbose}) {
             print "$option{diff} $option{'file'} $tmp$rev\n";
         }

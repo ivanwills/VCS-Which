@@ -133,6 +133,7 @@ sub cat {
     elsif ( !defined $revision ) {
         $revision = '';
     }
+    warn "$exe show $revision\:$file\n" if $ENV{VERBOSE};
 
     return `$exe show $revision\:$file`;
 }
