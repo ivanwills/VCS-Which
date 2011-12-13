@@ -1,5 +1,27 @@
 Revision history for VCS-Which
 
+0.4.0   2011-12-09
+        Added prove save state file to be ignored / skipped
+        Added more words to ignore spelling of
+        Updated file versions and added entries to change log file for version 0.4
+        Updated licence file
+        Removed from repo generated files, added them to ignore list and added new generated file META.json to manifest
+        Added more files to skip
+        Added ignoring MYMETA.json
+        Better fix for non absolute files
+        Fixed handling absoluted catted files
+        Added die when no versions found, fixed warn when there is not last value
+        Fixed getting revision numbers for CVS files, fixed catting old revisions
+        Fixed GIT show not linking relative paths to files
+        Making more flexible
+        Fixed $first variable naming conflict
+        Changed vcsvimdiff so that it can use vimdiff's ability to diff more than two files
+        Worked on documentation
+        Factored out the git log parsing
+        Fixed getting log of directory rather that the file asked for
+        Did some reorganisation of versions to allow more options for retrieve file versions
+        Changed so that you can specify other diffing programs eg gvimdiff for diffing
+
 0.3.0   2011-06-27
         Removed sub prototypes
         Fixed log array ref returns
@@ -7,7 +29,7 @@ Revision history for VCS-Which
         Fixed passing on directory to use
         Fixed log's array ref return value
         Started work on next release
-        Fixed issue with log not getting the propper directory
+        Fixed issue with log not getting the proper directory
         Added documentation about the status method
         Added status command, which returns a hash with the files of various statuses
         Fixed diffing after running out of file versions

@@ -4,6 +4,7 @@ LICENSE
 MANIFEST
 MANIFEST.SKIP
 META.yml
+META.json
 Makefile.PL
 README
 lib/VCS/Which.pm
@@ -25,3 +26,4 @@ bin/vcsblame
 bin/vcsw
 bin/vcsvimdiff
 eg/vcslogstat
+META.json
