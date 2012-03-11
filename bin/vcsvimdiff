@@ -93,7 +93,6 @@ sub main {
     my $vcs = VCS::Which->new(dir => $option{file});
 
     if ($option{replay}) {
-        my $first    = 1;
         my $warned   = 0;
         my $versions = $vcs->log( $option{file} );
         if ( $option{verbose} > 2 ) {
@@ -141,26 +140,24 @@ sub main {
                 local $Data::Dumper::Indent = 1;
                 local $Data::Dumper::Sortkeys = 1;
                 print Data::Dumper->Dump([$other], ["*$rev_no"]);
+
+                next if @files == 2 && $other->{'Lines added'} == 0 && $other->{'Lines removed'} == 0;
             }
 
-            if ( !$first || $option{verbose} ) {
-                print "y = yes continue (Default), n = not stop processing, s = skip this revision\n" if !$warned++;
-                my $ans = prompt(
-                    "Next revision $rev_old: Continue? [yns] ",
-                    '-tty',
-                    '-1',
-                    -d => 'y',
-                );
-                print "\n\n";
-                $ans = lc $ans;
-                last if $ans eq 'n' || $ans eq 'q';
-                next if $ans eq 's';
-            }
+            print "y = yes continue (Default), n = not stop processing, s = skip this revision\n" if !$warned++;
+            my $ans = prompt(
+                "Next revision $rev_old: Continue? [yns] ",
+                '-tty',
+                '-1',
+                -d => 'y',
+            );
+            print "\n\n";
+            $ans = lc $ans;
+            last if $ans eq 'n' || $ans eq 'q';
+            next if $ans eq 's';
 
             # run the diff if not testing
             system $diff if !$option{test};
-
-            $first = 0;
         }
         unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
         unlink $last           if $last && -e $last;
