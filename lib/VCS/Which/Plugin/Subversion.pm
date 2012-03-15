@@ -55,7 +55,8 @@ sub uptodate {
 
     croak "'$dir' is not a directory!" if !-e $dir;
 
-    my @lines = `$exe status $dir`;
+    local $CWD = $dir;
+    my @lines = `$exe status`;
     pop @lines;
 
     return !@lines;
@@ -91,7 +92,7 @@ sub cat {
 sub log {
     my ($self, @args) = @_;
 
-    my $args = join ' ', @args;
+    my $args = join ' ', map {"'$_'"} @args;
 
     return
         SCALAR   { scalar `$exe log $args` }
