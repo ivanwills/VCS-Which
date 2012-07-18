@@ -26,4 +26,3 @@ bin/vcsblame
 bin/vcsw
 bin/vcsvimdiff
 eg/vcslogstat
-META.json
