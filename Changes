@@ -1,5 +1,12 @@
 Revision history for VCS-Which
 
+0.4.1   2012-07-19
+        Updated version number
+        Fixed extra META.json declaration
+        Fixed handling directories with spaces in them
+        Fixed running vimdiff when their are no changes (only available in verbose mode)
+        Added helper for GIT where a revision is needed in some cases
+
 0.4.0   2011-12-09
         Added prove save state file to be ignored / skipped
         Added more words to ignore spelling of
