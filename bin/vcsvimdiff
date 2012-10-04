@@ -44,7 +44,6 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'file|f=s',
         'revision|r=s',
         'change|c=i',
         'replay|R',
@@ -58,7 +57,6 @@ sub main {
         'help',
         'VERSION!',
     ) or pod2usage(2);
-    $option{'file'} ||= shift @ARGV;
 
     if ( $option{'VERSION'} ) {
         print "$name Version = $VERSION\n";
@@ -67,137 +65,140 @@ sub main {
     elsif ( $option{'man'} ) {
         pod2usage( -verbose => 2 );
     }
-    elsif ( $option{'help'} || !-e $option{'file'} ) {
+    elsif ( $option{'help'} || !@ARGV || !-e $ARGV[0] ) {
         pod2usage( -verbose => 1 );
     }
 
-    # sort out the revision names
-    my ( $rev_old, $rev_new ) = ('', '');
-    if ( $option{'revision'} ) {
-        ( $rev_old, $rev_new )
-            = $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
-            :                                 ( $option{'revision'} );
-    }
-
-    if ( $option{'change'} ) {
-        ( $rev_old, $rev_new ) =
-            $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
-            :                       ( $option{'change'}, $option{'change'} - 1 );
-        $option{'revision'} = "$rev_old\:$rev_new";
-    }
-
-    # create the temporary file object name
-    my $tmp = "/tmp/$$.$name." . file($option{'file'})->basename;
-
-    # create a new VCS::Which object for the file of interest
-    my $vcs = VCS::Which->new(dir => $option{file});
-
-    if ($option{replay}) {
-        my $warned   = 0;
-        my $versions = $vcs->log( $option{file} );
-        if ( $option{verbose} > 2 ) {
-            my $i = 0;
-            my $j = -2;
-            print map {$i++ . "\t" . $j-- . "\t$versions->{$_}{rev}\n"} sort keys %$versions;
+    for my $file (@ARGV) {
+        warn $file;
+        # sort out the revision names
+        my ( $rev_old, $rev_new ) = ('', '');
+        if ( $option{'revision'} ) {
+            ( $rev_old, $rev_new )
+                = $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
+                :                                 ( $option{'revision'} );
         }
-        my $last;
-        die "Could not find any versions for $option{file}!\n" if !%$versions;
 
-        while ( %$versions ) {
-            if ( ( $option{prev} || $option{three} ) && $rev_old ) {
-                unlink $last if $last && -e $last;
-                $last = "$tmp.$rev_old";
+        if ( $option{'change'} ) {
+            ( $rev_old, $rev_new ) =
+                $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
+                :                       ( $option{'change'}, $option{'change'} - 1 );
+            $option{'revision'} = "$rev_old\:$rev_new";
+        }
+
+        # create the temporary file object name
+        my $tmp = "/tmp/$$.$name." . file($file)->basename;
+
+        # create a new VCS::Which object for the file of interest
+        my $vcs = VCS::Which->new(dir => $file);
+
+        if ($option{replay}) {
+            my $warned   = 0;
+            my $versions = $vcs->log( $file );
+            if ( $option{verbose} > 2 ) {
+                my $i = 0;
+                my $j = -2;
+                print map {$i++ . "\t" . $j-- . "\t$versions->{$_}{rev}\n"} sort keys %$versions;
             }
-            else {
-                unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-            }
+            my $last;
+            die "Could not find any versions for $file!\n" if !%$versions;
 
-            my $rev_no = max keys %$versions;
-            my $rev    = delete $versions->{$rev_no};
-            $rev_old = $rev->{rev};
-
-            my @files
-                = $option{three} && $last ? ( $option{'file'}, $last, "$tmp.$rev_old" )
-                : $option{prev} && $last  ? ( $last, "$tmp.$rev_old" )
-                :                           ( $option{'file'}, "$tmp.$rev_old" );
-
-            my $diff = "$option{diff} " . join ' ', @files;
-
-            # write the revisioned file to disk
-            write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
-
-            if ($option{test} || $option{verbose}) {
-                print "$diff\n" if $option{verbose} > 1;
-                my $other = { %$rev };
-
-                if ( @files == 2 ) {
-                    my $diff = "diff -wuN " . join ' ', @files;
-                    my @diff = `$diff`;
-                    $other->{'Lines added'}   = grep {/^([+] [^+] )/gxms} @diff;
-                    $other->{'Lines removed'} = grep {/^([-] [^-] )/gxms} @diff;
+            while ( %$versions ) {
+                if ( ( $option{prev} || $option{three} ) && $rev_old ) {
+                    unlink $last if $last && -e $last;
+                    $last = "$tmp.$rev_old";
+                }
+                else {
+                    unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
                 }
 
-                local $Data::Dumper::Indent = 1;
-                local $Data::Dumper::Sortkeys = 1;
-                print Data::Dumper->Dump([$other], ["*$rev_no"]);
+                my $rev_no = max keys %$versions;
+                my $rev    = delete $versions->{$rev_no};
+                $rev_old = $rev->{rev};
 
-                next if @files == 2 && $other->{'Lines added'} == 0 && $other->{'Lines removed'} == 0;
+                my @files
+                    = $option{three} && $last ? ( $file, $last, "$tmp.$rev_old" )
+                    : $option{prev} && $last  ? ( $last, "$tmp.$rev_old" )
+                    :                           ( $file, "$tmp.$rev_old" );
+
+                my $diff = "$option{diff} " . join ' ', @files;
+
+                # write the revisioned file to disk
+                write_file( "$tmp.$rev_old", scalar $vcs->cat($file, $rev_old) );
+
+                if ($option{test} || $option{verbose}) {
+                    print "$diff\n" if $option{verbose} > 1;
+                    my $other = { %$rev };
+
+                    if ( @files == 2 ) {
+                        my $diff = "diff -wuN " . join ' ', @files;
+                        my @diff = `$diff`;
+                        $other->{'Lines added'}   = grep {/^([+] [^+] )/gxms} @diff;
+                        $other->{'Lines removed'} = grep {/^([-] [^-] )/gxms} @diff;
+                    }
+
+                    local $Data::Dumper::Indent = 1;
+                    local $Data::Dumper::Sortkeys = 1;
+                    print Data::Dumper->Dump([$other], ["*$rev_no"]);
+
+                    next if @files == 2 && $other->{'Lines added'} == 0 && $other->{'Lines removed'} == 0;
+                }
+
+                print "y = yes continue (Default), n = not stop processing, s = skip this revision\n" if !$warned++;
+                my $ans = prompt(
+                    "Next revision $rev_old: Continue? [yns] ",
+                    '-tty',
+                    '-1',
+                    -d => 'y',
+                );
+                print "\n\n";
+                $ans = lc $ans;
+                last if $ans eq 'n' || $ans eq 'q';
+                next if $ans eq 's';
+
+                # run the diff if not testing
+                system $diff if !$option{test};
             }
+            unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
+            unlink $last           if $last && -e $last;
+        }
+        elsif ($rev_new) {
+            write_file( "$tmp.$rev_new", scalar $vcs->cat($file, $rev_new) );
+            write_file( "$tmp.$rev_old", scalar $vcs->cat($file, $rev_old) );
+            if ($option{test} || $option{verbose}) {
+                print "$option{diff} $tmp.$rev_new $tmp.$rev_old\n";
+            }
+            if (!$option{test}) {
+                system "$option{diff} $tmp.$rev_new $tmp.$rev_old";
+            }
+        }
+        elsif ($rev_old) {
+            write_file( "$tmp.$rev_old", scalar $vcs->cat($file, $rev_old) );
+            if ($option{test} || $option{verbose}) {
+                print "$option{diff} $file $tmp.$rev_old\n";
+            }
+            if (!$option{test}) {
+                system "$option{diff} $file $tmp.$rev_old";
+            }
+        }
+        else {
+            my $log = $vcs->log($file);
+            my ($ver) = max keys %$log;
+            my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
 
-            print "y = yes continue (Default), n = not stop processing, s = skip this revision\n" if !$warned++;
-            my $ans = prompt(
-                "Next revision $rev_old: Continue? [yns] ",
-                '-tty',
-                '-1',
-                -d => 'y',
-            );
-            print "\n\n";
-            $ans = lc $ans;
-            last if $ans eq 'n' || $ans eq 'q';
-            next if $ans eq 's';
+            my $content;
+            my $i = -1;
+            while ( !$content && $i++ < 10 ) {
+                $content = $vcs->cat($file, $i ? ":$i" : '');
+            }
+            write_file( "$tmp$rev", $content );
 
-            # run the diff if not testing
-            system $diff if !$option{test};
-        }
-        unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
-        unlink $last           if $last && -e $last;
-    }
-    elsif ($rev_new) {
-        write_file( "$tmp.$rev_new", scalar $vcs->cat($option{file}, $rev_new) );
-        write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
-        if ($option{test} || $option{verbose}) {
-            print "$option{diff} $tmp.$rev_new $tmp.$rev_old\n";
-        }
-        if (!$option{test}) {
-            exec "$option{diff} $tmp.$rev_new $tmp.$rev_old";
-        }
-    }
-    elsif ($rev_old) {
-        write_file( "$tmp.$rev_old", scalar $vcs->cat($option{file}, $rev_old) );
-        if ($option{test} || $option{verbose}) {
-            print "$option{diff} $option{'file'} $tmp.$rev_old\n";
-        }
-        if (!$option{test}) {
-            exec "$option{diff} $option{'file'} $tmp.$rev_old";
-        }
-    }
-    else {
-        my $log = $vcs->log($option{file});
-        my ($ver) = max keys %$log;
-        my $rev = $log->{$ver}{rev} ? ".$log->{$ver}{rev}" : '';
-
-        my $content;
-        my $i = -1;
-        while ( !$content && $i++ < 10 ) {
-            $content = $vcs->cat($option{file}, $i ? ":$i" : '');
-        }
-        write_file( "$tmp$rev", $content );
-
-        if ($option{test} || $option{verbose}) {
-            print "$option{diff} $option{'file'} $tmp$rev\n";
-        }
-        if (!$option{test}) {
-            exec "$option{diff} $option{'file'} $tmp$rev";
+            if ($option{test} || $option{verbose}) {
+                print "$option{diff} $file $tmp$rev\n";
+            }
+            if (!$option{test}) {
+                system "$option{diff} $file $tmp$rev";
+            }
         }
     }
 
