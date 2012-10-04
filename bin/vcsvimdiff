@@ -45,8 +45,9 @@ sub main {
     GetOptions(
         \%option,
         'revision|r=s',
-        'change|c=i',
         'replay|R',
+        'change|c=i',
+        'changed|changed-only|C',
         'max|m=i',
         'prev|previous|p',
         'three|3',
@@ -157,7 +158,7 @@ sub main {
                 next if $ans eq 's';
 
                 # run the diff if not testing
-                system $diff if !$option{test};
+                diff(@files) if !$option{test};
             }
             unlink "$tmp.$rev_old" if -e "$tmp.$rev_old";
             unlink $last           if $last && -e $last;
@@ -169,7 +170,7 @@ sub main {
                 print "$option{diff} $tmp.$rev_new $tmp.$rev_old\n";
             }
             if (!$option{test}) {
-                system "$option{diff} $tmp.$rev_new $tmp.$rev_old";
+                diff( "$tmp.$rev_new", "$tmp.$rev_old" );
             }
         }
         elsif ($rev_old) {
@@ -178,7 +179,7 @@ sub main {
                 print "$option{diff} $file $tmp.$rev_old\n";
             }
             if (!$option{test}) {
-                system "$option{diff} $file $tmp.$rev_old";
+                diff( $file, "$tmp.$rev_old" );
             }
         }
         else {
@@ -197,7 +198,7 @@ sub main {
                 print "$option{diff} $file $tmp$rev\n";
             }
             if (!$option{test}) {
-                system "$option{diff} $file $tmp$rev";
+                diff( $file, "$tmp$rev" );
             }
         }
     }
@@ -210,6 +211,16 @@ sub write_file {
     my $fh = file($file)->openw;
     print {$fh} @contents;
     close $fh;
+}
+
+sub diff {
+    my (@files) = @_;
+
+    if ( $option{changed} && @files == 2 ) {
+        return unless `diff '$files[0]' '$files[1]'`;
+    }
+
+    system $option{diff}, @files;
 }
 
 __DATA__
@@ -232,7 +243,6 @@ This documentation refers to vcsvimdiff version 0.4.1.
                 Specify revisions to use for full details see vcs help diff
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
-  -f --file=str Explisitly specify the file name
   -R --replay   Replay each change vs the current file
   -m --max=int  Maximum number of revisions to replay
   -3 --three    Three way diff for --replay, showing the file on disk, the
@@ -241,6 +251,8 @@ This documentation refers to vcsvimdiff version 0.4.1.
   -p --previous
                 If set diff are between the revision currently being used and
                 the either the last looked revision or the file on disk
+  -C --changed-only
+                Don't run vimdiff unless the files actually differ
   -t --test     Turn on testing (vimdiff wont actually be run)
      --no-test  Trurn off testing
   -d --diff=str Allows you to specify a diffing program (Default vimdiff)
