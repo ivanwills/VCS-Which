@@ -1,5 +1,11 @@
 Revision history for VCS-Which
 
+0.4.2   2013-05-23
+        Updated the manifest files
+        Added --changed-only flag, so that files with no changes are skipped
+        Changed to allow for checking multiple files at once
+        Fixed file permissions
+
 0.4.1   2012-07-19
         Updated version number
         Fixed extra META.json declaration
