@@ -16,6 +16,9 @@ my $builder = Module::Build->new(
         'Path::Class'        => '0.16',
         'version'            => 0,
     },
+    configure_requires => {
+        'Module::Build' => 0.38,
+    },
     build_requires => {
         'Test::More'           => 0,
         'Test::NoWarnings'     => 0,
