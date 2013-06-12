@@ -2,7 +2,7 @@
 #!start included /usr/share/perl/5.14/ExtUtils/MANIFEST.SKIP
 # Avoid version control files.
 \bRCS\b
-\bCVS\b
+\bCVS\b/
 \bSCCS\b
 ,v$
 \B\.svn\b

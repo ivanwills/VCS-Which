@@ -8,6 +8,7 @@ eg/vcslogstat
 lib/VCS/Which.pm
 lib/VCS/Which/Plugin.pm
 lib/VCS/Which/Plugin/Bazaar.pm
+lib/VCS/Which/Plugin/CVS.pm
 lib/VCS/Which/Plugin/Git.pm
 lib/VCS/Which/Plugin/Subversion.pm
 LICENSE
