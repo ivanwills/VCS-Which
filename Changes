@@ -1,5 +1,8 @@
 Revision history for VCS-Which
 
+0.4.3   2013-05-13
+        Fixed CSV library being not loaded
+
 0.4.2   2013-05-23
         Updated the manifest files
         Added --changed-only flag, so that files with no changes are skipped
