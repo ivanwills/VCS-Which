@@ -208,7 +208,9 @@ sub main {
 
 sub write_file {
     my ($file, @contents) = @_;
-    my $fh = file($file)->openw;
+    $file = file $file;
+    $file->parent->mkpath;
+    my $fh = $file->openw;
     print {$fh} @contents;
     close $fh;
 }
