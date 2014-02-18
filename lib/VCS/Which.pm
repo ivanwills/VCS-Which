@@ -282,6 +282,23 @@ sub status {
     return $system->status($dir);
 }
 
+sub checkout {
+    my ( $self, $dir ) = @_;
+
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
+
+    confess "No directory supplied!" if !$dir;
+
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+
+    return $system->checkout($dir);
+}
+
 1;
 
 __END__

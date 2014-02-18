@@ -118,7 +118,7 @@ sub cat {
         $CWD = $repo_dir;
     }
 
-    if ( $revision && $revision =~ /^-?\d+$/xms ) {
+    if ( $revision && $revision =~ /^-?\d+$|[^0-9a-fA-F]/xms ) {
         eval { require Git };
         if ($EVAL_ERROR) {
             die "Git.pm is not installed only propper revision names can be used\n";
@@ -126,7 +126,7 @@ sub cat {
 
         my $repo = Git->repository(Directory => $self->{base});
         my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
-        my $rev = $revs[$revision];
+        my $rev = $revs[$revision] || $revision;
 
         return join "\n", $repo->command('show', $rev . ':' . $file);
     }
@@ -225,8 +225,12 @@ sub versions {
 sub status {
     my ($self, $dir) = @_;
     my %status;
-    local $CWD = dir($dir)->resolve->absolute;
-    my $status = `$exe status`;
+    my $name = '';
+    if ( -f $dir ) {
+        $name = file($dir)->resolve->absolute->basename;
+    }
+    local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
+    my $status = `$exe status $name`;
 
     my @modified = split /\n?[#]\s+modified:\s+/, $status;
     if ( @modified > 1 ) {
@@ -251,6 +255,18 @@ sub status {
     }
 
     return \%status;
+}
+
+sub checkout {
+    my ($self, $dir) = @_;
+    my $name = '';
+    if ( -f $dir ) {
+        $name = file($dir)->resolve->absolute->basename;
+    }
+    local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
+    `$exe checkout $name`;
+
+    return;
 }
 
 1;
