@@ -283,7 +283,7 @@ sub status {
 }
 
 sub checkout {
-    my ( $self, $dir ) = @_;
+    my ( $self, $dir, @extra ) = @_;
 
     if ($dir) {
         $self->{dir} = $dir;
@@ -296,7 +296,7 @@ sub checkout {
 
     my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
-    return $system->checkout($dir);
+    return $system->checkout($dir, @extra);
 }
 
 1;

@@ -258,13 +258,14 @@ sub status {
 }
 
 sub checkout {
-    my ($self, $dir) = @_;
+    my ($self, $dir, @extra) = @_;
     my $name = '';
     if ( -f $dir ) {
         $name = file($dir)->resolve->absolute->basename;
     }
     local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
-    `$exe checkout $name`;
+    my $extra = join ' ', @extra;
+    `$exe checkout $extra $name`;
 
     return;
 }
