@@ -140,11 +140,12 @@ sub cat {
 
 sub log {
     my ($self, @args) = @_;
+    local $CWD = $CWD;
 
     my $dir;
     if ( -d $args[0] && $args[0] =~ m{^/} ) {
         $dir = shift @args;
-        chdir $dir;
+        $CWD = $dir;
     }
     my $args = join ' ', @args;
 

@@ -93,7 +93,7 @@ sub log {
     my $args = join ' ', @args;
     my $dir  = -d $file ? dir $file : file($file)->parent;
 
-    chdir $dir;
+    local $CWD = $dir;
     return
         SCALAR   { scalar `$exe log $args` }
         ARRAYREF {
