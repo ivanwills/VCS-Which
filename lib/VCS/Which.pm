@@ -120,8 +120,8 @@ sub which {
         $dir = $self->{dir};
     }
 
-    if ( $dir && ( -f $dir || !-e $dir ) ) {
-        $dir = $self->{dir} = file($dir)->parent;
+    if ( $dir && -f $dir ) {
+        $self->{dir} ||= $dir = file($dir)->parent;
     }
 
     confess "No directory supplied!" if !$dir;
