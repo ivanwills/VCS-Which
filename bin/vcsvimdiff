@@ -76,7 +76,6 @@ sub main {
 
     my $temp_dir = $ENV{TEMP} || '/tmp';
     for my $file (@ARGV) {
-        warn $file;
         # sort out the revision names
         my ( $rev_old, $rev_new ) = ('', '');
         if ( $option{'revision'} ) {
