@@ -112,6 +112,14 @@ sub versions {
     return @versions;
 }
 
+sub add {
+    my ($self, $file, $revision) = @_;
+
+    my $exe = $self->exe;
+    my $rev = $revision ? "-r$revision " : '';
+
+    return `$exe add $rev$file`;
+}
 
 1;
 

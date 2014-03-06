@@ -299,6 +299,23 @@ sub checkout {
     return $system->checkout($dir, @extra);
 }
 
+sub add {
+    my ( $self, $dir, @extra ) = @_;
+
+    if ($dir) {
+        $self->{dir} = $dir;
+    }
+    else {
+        $dir = $self->{dir};
+    }
+
+    confess "No directory supplied!" if !$dir;
+
+    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+
+    return $system->add($dir, @extra);
+}
+
 1;
 
 __END__
