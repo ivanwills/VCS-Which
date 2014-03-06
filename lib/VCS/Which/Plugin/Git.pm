@@ -233,6 +233,13 @@ sub status {
     local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
     my $status = `$exe status $name`;
 
+    my @both = split /\n?[#]\s+both\s+modified:\s+/, $status;
+    if ( @both > 1 ) {
+        shift @both;
+        $both[-1] =~ s/\n.*//xms;
+        $status{both} = \@both;
+    }
+
     my @modified = split /\n?[#]\s+modified:\s+/, $status;
     if ( @modified > 1 ) {
         shift @modified;
@@ -254,6 +261,12 @@ sub status {
         $untracked =~ s/^[#].*?\n//xms;
         $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]\s+/, $untracked ];
     }
+
+    $status{merge} = $status =~ /
+        You \s+ have \s+ unmerged \s+ paths[.]$
+        |
+        All \s+ conflicts \s+ fixed \s+ but \s+ you \s+ are \s+ still \s+ merging[.]$
+    /xms;
 
     return \%status;
 }
