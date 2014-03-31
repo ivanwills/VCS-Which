@@ -126,7 +126,7 @@ sub cat {
 
         my $repo = Git->repository(Directory => $self->{base});
         my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
-        my $rev = $revs[$revision] || $revision;
+        my $rev = $revision =~ /^[-]?\d+$/xms && $revs[$revision] ? $revs[$revision] : $revision;
 
         return join "\n", $repo->command('show', $rev . ':' . $file);
     }
@@ -232,6 +232,8 @@ sub status {
     }
     local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
     my $status = `$exe status $name`;
+    $status =~ s/^no \s+ changes (.*?) $//xms;
+    chomp $status;
 
     my @both = split /\n?[#]\s+both\s+modified:\s+/, $status;
     if ( @both > 1 ) {
