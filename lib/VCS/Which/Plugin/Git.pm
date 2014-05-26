@@ -143,11 +143,11 @@ sub log {
     local $CWD = $CWD;
 
     my $dir;
-    if ( -d $args[0] && $args[0] =~ m{^/} ) {
+    if ( defined $args[0] && -d $args[0] && $args[0] =~ m{^/} ) {
         $dir = shift @args;
         $CWD = $dir;
     }
-    my $args = join ' ', @args;
+    my $args = join ' ', grep {defined $_} @args;
 
     return
         SCALAR   { scalar `$exe log $args` }

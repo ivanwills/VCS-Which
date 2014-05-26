@@ -184,6 +184,11 @@ sub exec {
 sub log {
     my ( $self, $file, @args ) = @_;
 
+    if ( ! -e $file ) {
+        unshift @args, $file;
+        undef $file;
+    }
+
     my $dir
         = !defined $file ? $self->{dir}
         : -f $file       ? file($file)->parent
