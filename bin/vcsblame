@@ -19,7 +19,7 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use VCS::Which;
 
-our $VERSION = version->new('0.4.3');
+our $VERSION = version->new('0.5.0');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -80,7 +80,7 @@ vcsblame - <One-line description of commands purpose>
 
 =head1 VERSION
 
-This documentation refers to vcsblame version 0.4.3.
+This documentation refers to vcsblame version 0.5.0.
 
 =head1 SYNOPSIS
 

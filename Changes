@@ -1,5 +1,24 @@
 Revision history for VCS-Which
 
+0.5.0   2014-05-26
+        made log work on current directory (Ivan Wills)
+        Fixed status details issue (Ivan Wills)
+        Added documentation about --merge parameter (Ivan Wills)
+        Added "add" method (Ivan Wills)
+        Changed status to know about merge statuses (Ivan Wills)
+        Removed nunessesary warn (Ivan Wills)
+        Stopped overwriting internal directory if set (Ivan Wills)
+        Fixed not localizing directory changes (Ivan Wills)
+        Merge branch 'master' of github.com:ivanwills/VCS-Which (Ivan Wills)
+        File cleanups (Ivan Wills)
+        Add a merge option for to show all files in a git merge (Ivan Wills)
+        Added ability to pass options to checkout (Ivan Wills)
+        Fixed executability (Ivan Wills)
+        Added checkout method (Ivan Wills)
+        Adding tag files (Ivan Wills)
+        cleaned indentation (Ivan Wills)
+        Changed to create parent path if missing (Ivan Wills)
+
 0.4.3   2013-05-13
         Fixed CSV library being not loaded
 
