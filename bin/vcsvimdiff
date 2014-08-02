@@ -9,7 +9,6 @@
 use strict;
 use warnings;
 use version;
-use Scalar::Util;
 use List::Util qw/max min/;
 use Getopt::Long;
 use Pod::Usage;
@@ -21,7 +20,7 @@ use IO::Prompt qw/prompt/;
 use Path::Class;
 use File::Copy qw/copy/;
 
-our $VERSION = version->new('0.4.3');
+our $VERSION = version->new('0.5.0');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -259,7 +258,7 @@ historic versions from subversion or bazaar.
 
 =head1 VERSION
 
-This documentation refers to vcsvimdiff version 0.4.3.
+This documentation refers to vcsvimdiff version 0.5.0.
 
 =head1 SYNOPSIS
 
@@ -275,6 +274,8 @@ This documentation refers to vcsvimdiff version 0.4.3.
   -3 --three    Three way diff for --replay, showing the file on disk, the
                 revision one newer than the current revision and the current
                 revision.
+  -M --merge    Assume in a git merge and show "ours" and "theirs" versions
+                along git's conflicted version
   -p --previous
                 If set diff are between the revision currently being used and
                 the either the last looked revision or the file on disk

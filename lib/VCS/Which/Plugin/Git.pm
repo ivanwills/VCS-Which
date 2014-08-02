@@ -17,7 +17,7 @@ use Path::Class;
 use File::chdir;
 use Contextual::Return;
 
-our $VERSION = version->new('0.4.3');
+our $VERSION = version->new('0.5.0');
 our $name    = 'Git';
 our $exe     = 'git';
 our $meta    = '.git';
@@ -126,7 +126,7 @@ sub cat {
 
         my $repo = Git->repository(Directory => $self->{base});
         my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
-        my $rev = $revs[$revision] || $revision;
+        my $rev = $revision =~ /^[-]?\d+$/xms && $revs[$revision] ? $revs[$revision] : $revision;
 
         return join "\n", $repo->command('show', $rev . ':' . $file);
     }
@@ -143,11 +143,11 @@ sub log {
     local $CWD = $CWD;
 
     my $dir;
-    if ( -d $args[0] && $args[0] =~ m{^/} ) {
+    if ( defined $args[0] && -d $args[0] && $args[0] =~ m{^/} ) {
         $dir = shift @args;
         $CWD = $dir;
     }
-    my $args = join ' ', @args;
+    my $args = join ' ', grep {defined $_} @args;
 
     return
         SCALAR   { scalar `$exe log $args` }
@@ -232,6 +232,8 @@ sub status {
     }
     local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
     my $status = `$exe status $name`;
+    $status =~ s/^no \s+ changes (.*?) $//xms;
+    chomp $status;
 
     my @both = split /\n?[#]\s+both\s+modified:\s+/, $status;
     if ( @both > 1 ) {
@@ -294,7 +296,7 @@ VCS::Which::Plugin::Git - The Git plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Git version 0.4.3.
+This documentation refers to VCS::Which::Plugin::Git version 0.5.0.
 
 =head1 SYNOPSIS
 
