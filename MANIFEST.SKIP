@@ -90,7 +90,7 @@ tags
 # Other files of interest
 \..*\.tag$
 vim.sh
+errors.err
 vrc.yml
 tmp*
 temp*
-errors.err
