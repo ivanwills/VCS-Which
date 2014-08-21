@@ -88,8 +88,9 @@ tags
 .prove
 
 # Other files of interest
-[$.].*[.]tag$
+[.].*[.]tag$
 errors.err
+.travis.yml
 vim.sh
 vrc.yml
 tmp*

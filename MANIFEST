@@ -3,7 +3,6 @@ bin/vcsvimdiff
 bin/vcsw
 Build.PL
 Changes
-Debian_CPANTS.txt
 eg/vcslogstat
 lib/VCS/Which.pm
 lib/VCS/Which/Plugin.pm
