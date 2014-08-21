@@ -333,7 +333,6 @@ VCS::Which - Generically interface with version control systems
 
 This documentation refers to VCS::Which version 0.5.0.
 
-
 =head1 SYNOPSIS
 
    use VCS::Which;
@@ -446,6 +445,14 @@ Return: HASHREF - Status of files
 
 Description: Get the statuses of all files not added or not committed in the
 repository.
+
+=head3 C<add ( [$file] )>
+
+Add C<$file> to VCS
+
+=head3 C<checkout ( [$dir] )>
+
+Checkout clean copy of C<$file>
 
 =head1 DIAGNOSTICS
 

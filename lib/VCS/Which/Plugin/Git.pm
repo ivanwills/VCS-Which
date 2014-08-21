@@ -367,6 +367,10 @@ Description: push updates to the master repository
 
 Description: push updates to the master repository
 
+=head3 C<checkout ( [$dir] )>
+
+Checkout clean copy of C<$file>
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT

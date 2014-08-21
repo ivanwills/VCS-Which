@@ -133,7 +133,6 @@ VCS::Which::Plugin - Base class for the various VCS plugins
 
 This documentation refers to VCS::Which::Plugin version 0.5.0.
 
-
 =head1 SYNOPSIS
 
    use VCS::Which::Plugin;
@@ -141,7 +140,6 @@ This documentation refers to VCS::Which::Plugin version 0.5.0.
    # Brief but working code example(s) here showing the most common usage(s)
    # This section will be as far as many users bother reading, so make it as
    # educational and exemplary as possible.
-
 
 =head1 DESCRIPTION
 
@@ -249,6 +247,10 @@ Description: Pulls or updates the directory $dir to the newest version
 =head3 C<push ( [$dir] )>
 
 Description: push updates to parent repository must be implemented by plugin
+
+=head3 C<add ( [$file] )>
+
+Add C<$file> to VCS
 
 =head1 DIAGNOSTICS
 
