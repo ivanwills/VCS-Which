@@ -14,7 +14,9 @@ if ( not $ENV{TEST_AUTHOR} ) {
 eval { require Test::Kwalitee; Test::Kwalitee->import() };
 
 if ($@) {
-    require Test::More;
-    Test::More->import;
+    if ( ! main->can('plan') ) {
+        require Test::More;
+        Test::More->import;
+    }
     plan( skip_all => 'Test::Kwalitee not installed; skipping' );
 }
