@@ -88,9 +88,9 @@ tags
 .prove
 
 # Other files of interest
-\..*\.tag$
-vim.sh
+[$.].*[.]tag$
 errors.err
+vim.sh
 vrc.yml
 tmp*
 temp*
