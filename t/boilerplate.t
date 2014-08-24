@@ -37,7 +37,7 @@ sub module_boilerplate_ok {
     );
 }
 
-not_in_file_ok(README =>
+not_in_file_ok((-f '../README' ? 'README' : 'README.pod') =>
     "The README is used..."       => qr/The README is used/,
     "'version information here'"  => qr/to provide version information/,
 );
@@ -47,3 +47,8 @@ not_in_file_ok(Changes =>
 );
 
 module_boilerplate_ok('lib/VCS/Which.pm');
+module_boilerplate_ok('lib/VCS/Which/Plugin.pm');
+module_boilerplate_ok('lib/VCS/Which/Plugin/Bazaar.pm');
+module_boilerplate_ok('lib/VCS/Which/Plugin/CVS.pm');
+module_boilerplate_ok('lib/VCS/Which/Plugin/Git.pm');
+module_boilerplate_ok('lib/VCS/Which/Plugin/Subversion.pm');
