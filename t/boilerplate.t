@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3 + 1;
+use Test::More tests => 8 + 1;
 use Test::NoWarnings;
 
 sub not_in_file_ok {
