@@ -1,5 +1,20 @@
 Revision history for VCS-Which
 
+0.5.2   2014-12-13
+        Updating for release of version 0.5.2
+        More cleanups (Ivan Wills)
+        Updated dependencies (Ivan Wills)
+        Fixed up tests (Ivan Wills)
+        Never completed what I wanted to do (Ivan Wills)
+        Changed to test README.pod (Ivan Wills)
+        Merge branch 'master' of github.com:ivanwills/VCS-Which (Ivan Wills)
+        Updated readme (Ivan Wills)
+        Fixed test count (Ivan Wills)
+        Fixed boilerplate test (Ivan Wills)
+        Fixed missing =cut (Ivan Wills)
+        Converted to POD syntax (Ivan Wills)
+        Moved to pod (Ivan Wills)
+
 0.5.1   2014-08-21
         Added missing method documentation (Ivan Wills)
         Updated manifest (Ivan Wills)
