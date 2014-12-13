@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'File::chdir'        => 0,
         'IO::Prompt'         => 0,
         'List::MoreUtils'    => 0,
+        'List::Util'         => 0,
         'Path::Class'        => '0.16',
         'version'            => 0,
     },

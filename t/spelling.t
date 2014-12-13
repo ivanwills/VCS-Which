@@ -40,7 +40,6 @@ add_stopwords(qw/
     vimdiff
     versioned
     plugins
-    vcsblame
     Versioning
 /);
 all_pod_files_spelling_ok();

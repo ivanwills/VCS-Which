@@ -1,4 +1,3 @@
-bin/vcsblame
 bin/vcsvimdiff
 bin/vcsw
 Build.PL

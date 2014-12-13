@@ -46,7 +46,6 @@ not_in_file_ok(Changes =>
     "placeholder date/time"       => qr(Date/time)
 );
 
-module_boilerplate_ok('bin/vcsblame');
 module_boilerplate_ok('bin/vcsvimdiff');
 module_boilerplate_ok('bin/vcsw');
 module_boilerplate_ok('lib/VCS/Which.pm');

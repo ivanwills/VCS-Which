@@ -9,9 +9,7 @@
 use strict;
 use warnings;
 use version;
-use Scalar::Util;
 use List::Util qw/max/;
-use List::MoreUtils;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
