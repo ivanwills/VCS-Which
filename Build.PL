@@ -21,8 +21,11 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More'           => 0,
-        'Test::NoWarnings'     => 0,
+        'Test::Warnings'       => 0,
         'Test::MinimumVersion' => 0,
+    },
+    recommends => {
+        'Time::HiRes' => 0,
     },
     add_to_cleanup     => [ 'VCS-Which-*' ],
     create_makefile_pl => 'traditional',
