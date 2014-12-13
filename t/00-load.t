@@ -2,9 +2,8 @@
 
 use strict;
 use warnings;
-
-use Test::More tests => 6 + 1;
-use Test::NoWarnings;
+use Test::More;
+use Test::Warnings;
 
 BEGIN {
     use_ok( 'VCS::Which' );
@@ -16,3 +15,4 @@ BEGIN {
 }
 
 diag( "Testing VCS::Which $VCS::Which::VERSION, Perl $], $^X" );
+done_testing();
