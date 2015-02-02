@@ -53,6 +53,7 @@ sub main {
         'prev|previous|p',
         'three|3',
         'diff|d=s',
+        'diff_option|diff-option|o=s@',
         'test|t!',
         'verbose|v+',
         'man',
@@ -246,7 +247,7 @@ sub diff {
         return unless `diff '$files[0]' '$files[1]'`;
     }
 
-    system $option{diff}, @files;
+    system $option{diff}, @{ $option{diff_option} }, @files;
 }
 
 __DATA__
@@ -284,6 +285,8 @@ This documentation refers to vcsvimdiff version 0.5.2.
   -t --test     Turn on testing (vimdiff wont actually be run)
      --no-test  Trurn off testing
   -d --diff=str Allows you to specify a diffing program (Default vimdiff)
+  -o --diff-option[=]str
+                Pass extra options of diff command (eg --diff-option=-R)
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
