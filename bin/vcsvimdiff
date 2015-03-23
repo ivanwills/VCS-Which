@@ -247,7 +247,7 @@ sub diff {
         return unless `diff '$files[0]' '$files[1]'`;
     }
 
-    system $option{diff}, @{ $option{diff_option} }, @files;
+    system $option{diff}, @{ $option{diff_option} || [] }, @files;
 }
 
 __DATA__
