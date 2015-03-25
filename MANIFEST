@@ -19,8 +19,10 @@ t/00-load.t
 t/boilerplate.t
 t/critic.t
 t/kwalitee.t
+t/lib/VCS/Which/Plugin/Blank.pm
 t/perlcriticrc
 t/pod-coverage.t
 t/pod.t
 t/spelling.t
+t/which.t
 tx/minver.t
