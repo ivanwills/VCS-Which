@@ -1,4 +1,4 @@
-package Module::Name;
+package VCS::Which::Plugin::Blank;
 
 # Created on: 2015-03-24 19:25:29
 # Create by:  Ivan Wills
@@ -21,17 +21,6 @@ our $name    = 'Blank';
 our $exe     = 'blank';
 our $meta    = '.blank';
 
-sub new {
-	my $caller = shift;
-	my $class  = ref $caller ? ref $caller : $caller;
-	my %param  = @_;
-	my $self   = \%param;
-
-	bless $self, $class;
-
-	return $self;
-}
-
 
 
 1;
@@ -40,16 +29,16 @@ __END__
 
 =head1 NAME
 
-Module::Name - <One-line description of module's purpose>
+VCS::Which::Plugin::Blank - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to Module::Name version 0.0.1
+This documentation refers to VCS::Which::Plugin::Blank version 0.0.1
 
 
 =head1 SYNOPSIS
 
-   use Module::Name;
+   use VCS::Which::Plugin::Blank;
 
    # Brief but working code example(s) here showing the most common usage(s)
    # This section will be as far as many users bother reading, so make it as
@@ -82,7 +71,7 @@ context to help them understand the methods that are subsequently described.
 
 Param: C<$search> - type (detail) - description
 
-Return: Module::Name -
+Return: VCS::Which::Plugin::Blank -
 
 Description:
 
