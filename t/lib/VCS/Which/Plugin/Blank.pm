@@ -23,6 +23,8 @@ our $meta    = '.blank';
 
 sub installed { 2 }
 sub used      { 0.5 } # hack to be top plugin
+our $uptodate = 1;
+sub uptodate { $uptodate }
 
 
 1;

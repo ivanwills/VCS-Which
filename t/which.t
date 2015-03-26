@@ -10,6 +10,7 @@ use VCS::Which;
 new();
 capabilities();
 which();
+uptodate();
 
 done_testing();
 
@@ -46,5 +47,28 @@ sub which {
 
     $which = $vcsw->which('.');
     isa_ok $which, 'VCS::Which::Plugin::Blank';
+}
+
+sub uptodate {
+    my $vcsw = eval { VCS::Which->new() };
+
+    eval { $vcsw->uptodate() };
+    my $error = $@;
+    like $error, qr/No directory supplied!/, "Errors if no directory set";
+
+    $vcsw->{dir} = 't';
+    my $uptodate = $vcsw->uptodate();
+    is $uptodate, 1, 'The t directory is up to date';
+
+    {
+        no warnings;
+        $VCS::Which::Plugin::Blank::uptodate = 0;
+    }
+
+    $uptodate = $vcsw->uptodate('t');
+    is $uptodate, 1, 'The t directory is up to date (cached)';
+
+    $uptodate = $vcsw->uptodate('.');
+    is $uptodate, 0, 'The current directory is not up to date';
 }
 
