@@ -21,6 +21,7 @@ our $name    = 'Blank';
 our $exe     = 'blank';
 our $meta    = '.blank';
 
+sub installed { 1 }
 
 
 1;
