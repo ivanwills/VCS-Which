@@ -21,7 +21,8 @@ our $name    = 'Blank';
 our $exe     = 'blank';
 our $meta    = '.blank';
 
-sub installed { 1 }
+sub installed { 2 }
+sub used      { 0.5 } # hack to be top plugin
 
 
 1;
