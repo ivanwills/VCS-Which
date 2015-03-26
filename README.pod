@@ -1,8 +1,7 @@
-=pod
-
 =begin html
 
 <a href="https://travis-ci.org/ivanwills/VCS-Which"><img src="https://travis-ci.org/ivanwills/VCS-Which.png" alt="VCS-Which"></a>
+<a href="https://coveralls.io/r/ivanwills/VCS-Which?branch=master"><img src="https://coveralls.io/repos/ivanwills/VCS-Which/badge.svg?branch=master" alt="Coverage Status" /></a>
 
 =head1 VCS-Which
 
