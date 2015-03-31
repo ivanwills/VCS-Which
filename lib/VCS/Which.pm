@@ -171,8 +171,16 @@ sub uptodate {
 
 sub exec {
     my ( $self, @args ) = @_;
+    my $dir;
 
-    my $dir = $self->{dir};
+    confess "Nothing to exec!" if !@args;
+
+    if (-e $args[0]) {
+        $dir = $self->{dir} = shift @args;
+    }
+    else {
+        $dir = $self->{dir};
+    }
 
     confess "No directory supplied!" if !$dir;
 
@@ -184,7 +192,7 @@ sub exec {
 sub log {
     my ( $self, $file, @args ) = @_;
 
-    if ( ! -e $file ) {
+    if ( $file && ! -e $file ) {
         unshift @args, $file;
         undef $file;
     }
@@ -192,10 +200,9 @@ sub log {
     my $dir
         = !defined $file ? $self->{dir}
         : -f $file       ? file($file)->parent
-        : -d $file       ? $file
-        :                  confess('No file passed and no default directory setup!');
+        :                  $file;
 
-    confess "No directory supplied! '$dir'" if !$dir;
+    confess "No directory supplied!" if !$dir;
 
     my $system = $self->which($dir);
 

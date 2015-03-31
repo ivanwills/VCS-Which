@@ -25,7 +25,9 @@ sub installed { 2 }
 sub used      { 0.5 } # hack to be top plugin
 our $uptodate = 1;
 sub uptodate { $uptodate }
-
+sub exec     { 1 }
+sub log      { 'log' }
+sub cat      { $_[1] }
 
 1;
 
