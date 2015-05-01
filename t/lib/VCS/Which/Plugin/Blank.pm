@@ -39,7 +39,7 @@ VCS::Which::Plugin::Blank - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Blank version 0.0.1
+This documentation refers to VCS::Which::Plugin::Blank version 0.5.2
 
 
 =head1 SYNOPSIS
