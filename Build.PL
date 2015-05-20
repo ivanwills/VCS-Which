@@ -21,6 +21,7 @@ my $builder = Module::Build->new(
         'Module::Build' => 0.38,
     },
     build_requires => {
+        'Test::Fatal'          => 0,
         'Test::More'           => '0.88',
         'Test::Warnings'       => 0,
         'Test::MinimumVersion' => 0,
