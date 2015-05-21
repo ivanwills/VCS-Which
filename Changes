@@ -1,5 +1,25 @@
 Revision history for VCS-Which
 
+0.5.3   2015-05-21
+        Updating for release of version 0.5.3
+        Added missing build requirement (Ivan Wills)
+        Updated license (Ivan Wills)
+        Fixed incorrect version numbers (Ivan Wills)
+        Removed unneeded tag (Ivan Wills)
+        Added tests for exec, log and cat (Ivan Wills)
+        Added specific Test::More version for the features being used (Ivan Wills)
+        Tests for uptodate (Ivan Wills)
+        Added coveralls build badge (Ivan Wills)
+        More tests (Ivan Wills)
+        Started testing capabilities (Ivan Wills)
+        Added new files to MANifEST (Ivan Wills)
+        New test for VCS::Which (Ivan Wills)
+        Fixed package name (Ivan Wills)
+        Starting to work on getting test coverage up (Ivan Wills)
+        Added protection for missing diff_options (Ivan Wills)
+        Added config for coveralls.io (Ivan Wills)
+        Added new option --diff-option to pass extra options to diff command (Ivan Wills)
+
 0.5.2   2014-12-13
         Updating for release of version 0.5.2
         More cleanups (Ivan Wills)
