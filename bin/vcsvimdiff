@@ -20,7 +20,7 @@ use IO::Prompt qw/prompt/;
 use Path::Class;
 use File::Copy qw/copy/;
 
-our $VERSION = version->new('0.5.4');
+our $VERSION = version->new('0.5.5');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -258,7 +258,7 @@ vcsvimdiff - Uses vimdiff to compare a file with it unmodified version or histor
 
 =head1 VERSION
 
-This documentation refers to vcsvimdiff version 0.5.4.
+This documentation refers to vcsvimdiff version 0.5.5.
 
 =head1 SYNOPSIS
 

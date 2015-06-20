@@ -1,5 +1,9 @@
 Revision history for VCS-Which
 
+0.5.5   2015-06-20
+        Updating for release of version 0.5.5
+        Fixed version number (Ivan Wills)
+
 0.5.4   2015-06-15
         Updating for release of version 0.5.4
         Fixed description to be on only one line (Ivan Wills)
