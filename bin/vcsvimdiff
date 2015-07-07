@@ -17,7 +17,7 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use VCS::Which;
 use IO::Prompt qw/prompt/;
-use Path::Class;
+use Path::Tiny;
 use File::Copy qw/copy/;
 
 our $VERSION = version->new('0.5.5');
@@ -92,7 +92,7 @@ sub main {
         }
 
         # create the temporary file object name
-        my $tmp = "$temp_dir/$$.$name." . file($file)->basename;
+        my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
 
         # create a new VCS::Which object for the file of interest
         my $vcs = VCS::Which->new(dir => $file);
@@ -168,7 +168,7 @@ sub main {
             unlink $last           if $last && -e $last;
         }
         elsif ( $option{merge}) {
-            $file = file($file);
+            $file = path($file);
 
             # copy the current file out of the way
             copy $file, "$temp_dir/" . $file->basename . ".merge";
@@ -233,7 +233,7 @@ sub main {
 
 sub write_file {
     my ($file, @contents) = @_;
-    $file = file $file;
+    $file = path($file);
     $file->parent->mkpath;
     my $fh = $file->openw;
     print {$fh} @contents;

@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
-use Path::Class;
+use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
 
@@ -40,7 +40,7 @@ sub used {
     my ( $self, $dir ) = @_;
 
     if (-f $dir) {
-        $dir = file($dir)->parent;
+        $dir = path($dir)->parent;
     }
 
     croak "$dir is not a directory!" if !-d $dir;
@@ -138,7 +138,7 @@ sub log {
 sub versions {
     my ($self, $file, $oldest, $newest, $max) = @_;
 
-    $file = file($file);
+    $file = path($file);
     local $CWD = -d $file ? $file : $file->parent;
     my %logs = %{ $self->log(-d $file ? '.' : $file->basename, $max ? "--limit $max" : '') };
     my @versions;

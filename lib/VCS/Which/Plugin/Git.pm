@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
-use Path::Class;
+use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
 
@@ -40,12 +40,12 @@ sub used {
     my ( $self, $dir ) = @_;
 
     if (-f $dir) {
-        $dir = file($dir)->parent;
+        $dir = path($dir)->parent;
     }
 
     croak "$dir is not a directory!" if !-d $dir;
 
-    my $current_dir = dir($dir)->absolute;
+    my $current_dir = path($dir)->absolute;
     my $level       = 1;
 
     while ($current_dir) {
@@ -72,7 +72,7 @@ sub uptodate {
 
     croak "'$dir' is not a directory!" if !-d $dir;
 
-    local $CWD = dir($dir)->resolve->absolute;
+    local $CWD = path($dir)->resolve->absolute;
     my $ans = `$exe status`;
 
     return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
@@ -105,15 +105,15 @@ sub cat {
 
     # git expects $file to be relative to the base of the git repo not the
     # current directory so we change it to being relative to the repo if nessesary
-    my $repo_dir = dir($self->{base}) or confess "How did I get here with out a base directory?\n";
-    my $cwd      = dir('.')->absolute;
+    my $repo_dir = path($self->{base}) or confess "How did I get here with out a base directory?\n";
+    my $cwd      = path('.')->absolute;
     local $CWD = $CWD;
 
     if ( -f $file && $cwd ne $repo_dir ) {
         # get relavie directory of $cwd to $repo_dir
         my ($relative) = $cwd =~ m{^ $repo_dir / (.*) $}xms;
         my $old = $file;
-        $file = file("$relative/$file");
+        $file = path("$relative/$file");
         warn "Using repo absolute file $file from $old\n" if $ENV{VERBOSE};
         $CWD = $repo_dir;
     }
@@ -218,7 +218,7 @@ sub versions {
     }
 
     my $repo = Git->repository(Directory => $self->{base});
-    my @revs = reverse $repo->command('rev-list', '--all', '--', file($file)->absolute->resolve);
+    my @revs = reverse $repo->command('rev-list', '--all', '--', path($file)->absolute->resolve);
 
     return @revs;
 }
@@ -228,9 +228,9 @@ sub status {
     my %status;
     my $name = '';
     if ( -f $dir ) {
-        $name = file($dir)->resolve->absolute->basename;
+        $name = path($dir)->resolve->absolute->basename;
     }
-    local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
+    local $CWD = -f $dir ? path($dir)->resolve->absolute->parent : path($dir)->resolve->absolute;
     my $status = `$exe status $name`;
     $status =~ s/^no \s+ changes (.*?) $//xms;
     chomp $status;
@@ -277,9 +277,9 @@ sub checkout {
     my ($self, $dir, @extra) = @_;
     my $name = '';
     if ( -f $dir ) {
-        $name = file($dir)->resolve->absolute->basename;
+        $name = path($dir)->resolve->absolute->basename;
     }
-    local $CWD = -f $dir ? file($dir)->resolve->absolute->parent : dir($dir)->resolve->absolute;
+    local $CWD = -f $dir ? path($dir)->resolve->absolute->parent : path($dir)->resolve->absolute;
     my $extra = join ' ', @extra;
     `$exe checkout $extra $name`;
 

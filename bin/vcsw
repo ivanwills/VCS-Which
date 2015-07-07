@@ -14,7 +14,7 @@ use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Path::Class qw/file/;
+use Path::Tiny;
 use VCS::Which;
 
 our $VERSION = version->new('0.5.5');
@@ -35,7 +35,7 @@ sub main {
         if ( -e $arg ) {
             $dir = $arg;
             if ( -f $dir ) {
-                $dir = file($dir)->parent;
+                $dir = path($dir)->parent;
             }
             last ARG;
         }

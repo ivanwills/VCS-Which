@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
-use Path::Class;
+use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
 
@@ -40,12 +40,12 @@ sub used {
     my ( $self, $dir ) = @_;
 
     if (-f $dir) {
-        $dir = file($dir)->parent;
+        $dir = path($dir)->parent;
     }
 
     croak "$dir is not a directory!" if !-d $dir;
 
-    my $current_dir = dir($dir)->absolute;
+    my $current_dir = path($dir)->absolute;
     my $level       = 1;
 
     while ($current_dir) {

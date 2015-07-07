@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/VCS::Which::Plugin/;
-use Path::Class;
+use Path::Tiny;
 use Contextual::Return;
 
 our $VERSION = version->new('0.5.5');

@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
-use Path::Class qw/file/;
+use Path::Tiny;
 
 our $VERSION     = version->new('0.5.5');
 our @EXPORT_OK   = qw//;
@@ -36,7 +36,7 @@ sub new {
     $self->load_systems();
 
     if ( $self->{dir} && -f $self->{dir} ) {
-        $self->{dir} = file($self->{dir})->parent->cleanup;
+        $self->{dir} = path($self->{dir})->parent;
     }
 
     return $self;
@@ -121,7 +121,7 @@ sub which {
     }
 
     if ( $dir && -f $dir ) {
-        $self->{dir} ||= $dir = file($dir)->parent;
+        $self->{dir} ||= $dir = path($dir)->parent;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -199,7 +199,7 @@ sub log {
 
     my $dir
         = !defined $file ? $self->{dir}
-        : -f $file       ? file($file)->parent
+        : -f $file       ? path($file)->parent
         :                  $file;
 
     confess "No directory supplied!" if !$dir;

@@ -16,7 +16,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use VCS::Which;
-use Path::Class;
+use Path::Tiny;
 use Time::HiRes qw/time/;
 
 our $VERSION = version->new('0.5.5');
@@ -61,7 +61,7 @@ sub main {
     my @dir = @ARGV ? @ARGV : qw/./;
     my $vcs = VCS::Which->new();
 
-    my $pwd = dir('.')->absolute;
+    my $pwd = path('.')->absolute;
     my %global;
 
     for my $dir (@dir) {
@@ -69,7 +69,7 @@ sub main {
         print "$dir\n";
         chdir $dir;
 
-        $vcs->{dir} = dir('.')->absolute;
+        $vcs->{dir} = path('.')->absolute;
         my $start = time;
         my $log = $vcs->log('.');
         warn time - $start, "s to get log\n" if $option{verbose};
