@@ -17,7 +17,7 @@ use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
 
-our $VERSION = version->new('0.5.5');
+our $VERSION = version->new('0.5.6');
 our $name    = 'Subversion';
 our $exe     = 'svn';
 our $meta    = '.svn';
@@ -160,7 +160,7 @@ VCS::Which::Plugin::Subversion - The Subversion plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Subversion version 0.5.5.
+This documentation refers to VCS::Which::Plugin::Subversion version 0.5.6.
 
 =head1 SYNOPSIS
 

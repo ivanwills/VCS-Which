@@ -16,7 +16,7 @@ use base qw/VCS::Which::Plugin/;
 use Path::Tiny;
 use Contextual::Return;
 
-our $VERSION = version->new('0.5.5');
+our $VERSION = version->new('0.5.6');
 our $name    = 'Blank';
 our $exe     = 'blank';
 our $meta    = '.blank';
@@ -39,7 +39,7 @@ VCS::Which::Plugin::Blank - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Blank version 0.5.5
+This documentation refers to VCS::Which::Plugin::Blank version 0.5.6
 
 
 =head1 SYNOPSIS
