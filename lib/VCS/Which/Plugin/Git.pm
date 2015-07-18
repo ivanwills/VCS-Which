@@ -72,7 +72,7 @@ sub uptodate {
 
     croak "'$dir' is not a directory!" if !-d $dir;
 
-    local $CWD = path($dir)->resolve->absolute;
+    local $CWD = path($dir)->absolute;
     my $ans = `$exe status`;
 
     return $ans =~ /nothing \s to \s commit/xms ? 1 : 0;
@@ -218,7 +218,7 @@ sub versions {
     }
 
     my $repo = Git->repository(Directory => $self->{base});
-    my @revs = reverse $repo->command('rev-list', '--all', '--', path($file)->absolute->resolve);
+    my @revs = reverse $repo->command('rev-list', '--all', '--', path($file)->absolute);
 
     return @revs;
 }
@@ -228,9 +228,9 @@ sub status {
     my %status;
     my $name = '';
     if ( -f $dir ) {
-        $name = path($dir)->resolve->absolute->basename;
+        $name = path($dir)->absolute->basename;
     }
-    local $CWD = -f $dir ? path($dir)->resolve->absolute->parent : path($dir)->resolve->absolute;
+    local $CWD = -f $dir ? path($dir)->absolute->parent : path($dir)->absolute;
     my $status = `$exe status $name`;
     $status =~ s/^no \s+ changes (.*?) $//xms;
     chomp $status;
@@ -277,9 +277,9 @@ sub checkout {
     my ($self, $dir, @extra) = @_;
     my $name = '';
     if ( -f $dir ) {
-        $name = path($dir)->resolve->absolute->basename;
+        $name = path($dir)->absolute->basename;
     }
-    local $CWD = -f $dir ? path($dir)->resolve->absolute->parent : path($dir)->resolve->absolute;
+    local $CWD = -f $dir ? path($dir)->absolute->parent : path($dir)->absolute;
     my $extra = join ' ', @extra;
     `$exe checkout $extra $name`;
 
