@@ -254,7 +254,7 @@ __DATA__
 
 =head1 NAME
 
-vcsvimdiff - Uses vimdiff to compare a file with it unmodified version or historic versions from subversion or bazaar.
+vcsvimdiff - Uses vimdiff to compare a file with it unmodified version or historic versions from git, subversion, bazaar or cvs.
 
 =head1 VERSION
 
