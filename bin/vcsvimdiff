@@ -266,10 +266,12 @@ This documentation refers to vcsvimdiff version 0.5.6.
 
  OPTIONS:
   -r --revision=rev1[:rev2]
-                Specify revisions to use for full details see vcs help diff
+                Specify the revision(s) to compare with. HEAD is used if only
+                one revision specified.
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
-  -R --replay   Replay each change vs the current file
+  -R --replay   Replay the revision history of "file", --verbose shows the
+                details of each change before going into vimdiff
   -m --max=int  Maximum number of revisions to replay
   -3 --three    Three way diff for --replay, showing the file on disk, the
                 revision one newer than the current revision and the current
