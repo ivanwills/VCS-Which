@@ -33,6 +33,7 @@ add_stopwords(qw/
     Arg
     svn
     CVS
+    cvs
     VCS
     vcs
     vcsw
