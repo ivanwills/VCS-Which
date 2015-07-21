@@ -1,5 +1,11 @@
 Revision history for VCS-Which
 
+0.5.7   2015-07-20
+        Updating for release of version 0.5.7
+        More work on documentation (Ivan Wills)
+        Tidied up description (Ivan Wills)
+        Fixed use of resolve which Path::Tiny doesn't support it (Ivan Wills)
+
 0.5.6   2015-07-17
         Updating for release of version 0.5.6
         Converted to Path::Tiny (Ivan Wills)
