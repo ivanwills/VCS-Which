@@ -10,7 +10,6 @@ lib/VCS/Which/Plugin/CVS.pm
 lib/VCS/Which/Plugin/Git.pm
 lib/VCS/Which/Plugin/Subversion.pm
 LICENSE
-Makefile.PL
 MANIFEST
 META.json
 META.yml

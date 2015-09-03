@@ -30,7 +30,6 @@ my $builder = Module::Build->new(
         'Time::HiRes' => 0,
     },
     add_to_cleanup     => [ 'VCS-Which-*' ],
-    create_makefile_pl => 'traditional',
     create_license     => 1,
     meta_merge         => {
         resources => {
