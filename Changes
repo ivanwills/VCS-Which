@@ -1,5 +1,9 @@
 Revision history for VCS-Which
 
+0.5.8   2015-09-03
+        Updating for release of version 0.5.8
+        Removed creation of makefile (Ivan Wills)
+
 0.5.7   2015-07-20
         Updating for release of version 0.5.7
         More work on documentation (Ivan Wills)
