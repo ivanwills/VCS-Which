@@ -259,9 +259,13 @@ sub status {
     my @untracked = split /Untracked files:\n/, $status;
     if ( @untracked > 1 ) {
         my $untracked = pop @untracked;
-        $untracked =~ s/^[#].*?\n//xms;
-        $untracked =~ s/^[#].*?\n//xms;
-        $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]\s+/, $untracked ];
+        if ($untracked =~ s/^\s+[(]use \s+ "git \s+ add \s+ [^"]+" \s+ [^)]+\)\n\n//xms) {
+            chomp $untracked;
+        }
+        else {
+            $untracked =~ s/^[#].*?\n//gxms;
+        }
+        $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]?\s+/, $untracked ];
     }
 
     $status{merge} = $status =~ /
