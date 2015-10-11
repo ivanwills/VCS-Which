@@ -56,6 +56,7 @@ sub which {
 sub uptodate {
     my $vcsw = eval { VCS::Which->new() };
 
+    delete $vcsw->{dir};
     eval { $vcsw->uptodate() };
     my $error = $@;
     like $error, qr/No directory supplied!/, "Errors if no directory set";
@@ -79,6 +80,7 @@ sub uptodate {
 sub wexec {
     my $vcsw = eval { VCS::Which->new() };
 
+    delete $vcsw->{dir};
     like exception { $vcsw->exec('test') }, qr/No directory supplied!/, 'Error with out a directory';
     ok $vcsw->exec('.', 'test'), 'Exec low level command';
 
@@ -90,6 +92,7 @@ sub wexec {
 
 sub wlog {
     my $vcsw = eval { VCS::Which->new() };
+    delete $vcsw->{dir};
     like exception { $vcsw->log('test') }, qr/No directory supplied!/, 'Error with out a directory';
     ok $vcsw->log('.'), 'Log "." dir';
     ok $vcsw->log('Build.PL'), 'Log file';
