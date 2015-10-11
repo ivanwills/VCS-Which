@@ -235,21 +235,21 @@ sub status {
     $status =~ s/^no \s+ changes (.*?) $//xms;
     chomp $status;
 
-    my @both = split /\n?[#]\s+both\s+modified:\s+/, $status;
+    my @both = split /\n?[#]?\s+both\s+modified:\s+/, $status;
     if ( @both > 1 ) {
         shift @both;
         $both[-1] =~ s/\n.*//xms;
         $status{both} = \@both;
     }
 
-    my @modified = split /\n?[#]\s+modified:\s+/, $status;
+    my @modified = split /\n?[#]?\s+modified:\s+/, $status;
     if ( @modified > 1 ) {
         shift @modified;
         $modified[-1] =~ s/\n.*//xms;
         $status{modified} = \@modified;
     }
 
-    my @added = split /\n?[#]\s+new\sfile:\s+/, $status;
+    my @added = split /\n?[#]?\s+new\sfile:\s+/, $status;
     if ( @added > 1 ) {
         shift @added;
         $added[-1] =~ s/\n.*//xms;
