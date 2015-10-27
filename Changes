@@ -1,5 +1,11 @@
 Revision history for VCS-Which
 
+0.5.9   2015-10-27
+        Updating for release of version 0.5.9
+        Fixed more newer git issues (Ivan Wills)
+        Fixed tests as VCS::Which now defaults to current directory (Ivan Wills)
+        Fixed newer git's untracked file syntax (Ivan Wills)
+
 0.5.8   2015-09-03
         Updating for release of version 0.5.8
         Removed creation of makefile (Ivan Wills)

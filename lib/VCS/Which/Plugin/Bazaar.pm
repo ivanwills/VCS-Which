@@ -17,7 +17,7 @@ use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
 
-our $VERSION = version->new('0.5.8');
+our $VERSION = version->new('0.5.9');
 our $name    = 'Bazaar';
 our $exe     = 'bzr';
 our $meta    = '.bzr';
@@ -164,7 +164,7 @@ VCS::Which::Plugin::Bazaar - The Bazaar plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Bazaar version 0.5.8.
+This documentation refers to VCS::Which::Plugin::Bazaar version 0.5.9.
 
 =head1 SYNOPSIS
 
