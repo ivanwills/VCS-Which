@@ -256,6 +256,12 @@ sub status {
         $status{added} = \@added;
     }
 
+    my @committed = split /Changes to be committed:\n/, $status;
+    if (@committed > 1) {
+        my $new = pop @committed;
+        $status{committed} = [ $new =~ /^\t[^:]+:\s+(.*?)\n/gxms ];
+    }
+
     my @untracked = split /Untracked files:\n/, $status;
     if ( @untracked > 1 ) {
         my $untracked = pop @untracked;
