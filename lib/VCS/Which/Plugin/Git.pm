@@ -271,14 +271,22 @@ sub status {
         else {
             $untracked =~ s/^[#].*?\n//gxms;
         }
-        $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]?\s+/, $untracked ];
+
+        if ($untracked =~ /^[#]/xms) {
+            $status{untracked} = [ grep {$_} map {chomp; $_} split /\n?[#]\s+/, $untracked ];
+        }
+        else {
+            $status{untracked} = [ $untracked =~ /^\t(.*?)\n/gxms ];
+        }
     }
 
-    $status{merge} = $status =~ /
+    if ($status =~ /
         You \s+ have \s+ unmerged \s+ paths[.]$
         |
         All \s+ conflicts \s+ fixed \s+ but \s+ you \s+ are \s+ still \s+ merging[.]$
-    /xms;
+    /xms) {
+        $status{merge} = 1;
+    }
 
     return \%status;
 }
