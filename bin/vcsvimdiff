@@ -186,7 +186,7 @@ sub main {
             # return the file
             copy "$temp_dir/" . $file->basename . ".merge", $file;
 
-            diff( $file, "$temp_dir/" . $file->basename . ".ours", "$temp_dir/" . $file->basename . ".theirs" );
+            diff( "$temp_dir/" . $file->basename . ".ours", $file, "$temp_dir/" . $file->basename . ".theirs" );
         }
         elsif ($rev_new) {
             write_file( "$tmp.$rev_new", scalar $vcs->cat($file, $rev_new) );
