@@ -25,14 +25,12 @@ terminals:
     command: ./Build && ./Build testcover
     restart: 1
     wait: 0
-    # watch is a list of files (or file groups) to watch for changes and
-    # re-run the command. This watch waits for changes in files in the
-    # lib bin and tests directories and then runs tests
     watch:
       - lib
       - bin
-      - all-tests
+      - tests
   2:
+    restart: 1
     edit: bin
   3:
     edit: base
