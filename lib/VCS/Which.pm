@@ -137,7 +137,9 @@ sub which {
         my $used = eval { $system->used($dir) || 0 };
         next if $EVAL_ERROR;
 
-        $min ||= $used if $used;
+        if ( $used && ! defined $min ) {
+            $min = $used;
+        }
 
         # check that the directory is used and that it was found at a level closer to $dir that the last found system
         if ( $used && $used <= $min ) {
