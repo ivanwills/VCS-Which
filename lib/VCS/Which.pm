@@ -6,28 +6,29 @@ package VCS::Which;
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
+use Moo;
 use strict;
 use warnings;
 use version;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/Exporter/;
 use Path::Tiny;
 
-our $VERSION     = version->new('0.5.9');
-our @EXPORT_OK   = qw//;
-our %EXPORT_TAGS = ();
+our $VERSION = version->new('0.5.9');
 
 our %systems;
 
-sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my %param  = @_;
-    my $self   = \%param;
+has [qw/dir systems/] => (
+    is => 'rw',
+);
+has [qw/_which _uptodate/] => (
+    is      => 'rw',
+    default => sub {{}},
+);
 
-    bless $self, $class;
+sub BUILD {
+    my ($self) = @_;
 
     if ( !%systems ) {
         $self->get_systems();
@@ -35,8 +36,8 @@ sub new {
 
     $self->load_systems();
 
-    if ( $self->{dir} && -f $self->{dir} ) {
-        $self->{dir} = path($self->{dir})->parent;
+    if ( $self->dir && -f $self->dir ) {
+        $self->dir( path($self->dir)->parent );
     }
 
     return $self;
@@ -80,10 +81,10 @@ sub capabilities {
     my %out;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     for my $system (values %{ $self->{systems} }) {
@@ -114,21 +115,21 @@ sub which {
     my ( $self, $dir ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     if ( $dir && -f $dir ) {
-        $self->{dir} ||= $dir = path($dir)->parent;
+        $dir = $self->dir( path($dir)->parent );
     }
 
     confess "No directory supplied!" if !$dir;
 
-    return $self->{which}{$dir} if exists $self->{which}{$dir};
+    return $self->_which->{$dir} if exists $self->_which->{$dir};
 
-    $self->{which}{$dir} = undef;
+    $self->_which->{$dir} = undef;
     my %used;
     my $min;
 
@@ -140,33 +141,33 @@ sub which {
 
         # check that the directory is used and that it was found at a level closer to $dir that the last found system
         if ( $used && $used <= $min ) {
-            $self->{which}{$dir} = $system;
+            $self->_which->{$dir} = $system;
             $min = $used;
         }
     }
 
-    confess "Could not work out what plugin to use with '$dir'\n" if !$self->{which}{$dir};
+    confess "Could not work out what plugin to use with '$dir'\n" if !$self->_which->{$dir};
 
-    return $self->{which}{$dir};
+    return $self->_which->{$dir};
 }
 
 sub uptodate {
     my ( $self, $dir ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
 
-    return $self->{uptodate}{$dir} if exists $self->{uptodate}{$dir};
+    return $self->_uptodate->{$dir} if exists $self->_uptodate->{$dir};
 
     my $system = $self->which || confess "Could not work out which version control system to use!\n";
 
-    return $self->{uptodate}{$dir} = $system->uptodate($dir);
+    return $self->_uptodate->{$dir} = $system->uptodate($dir);
 }
 
 sub exec {
@@ -176,10 +177,10 @@ sub exec {
     confess "Nothing to exec!" if !@args;
 
     if (-e $args[0]) {
-        $dir = $self->{dir} = shift @args;
+        $dir = $self->dir( shift @args );
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -198,7 +199,7 @@ sub log {
     }
 
     my $dir
-        = !defined $file ? $self->{dir}
+        = !defined $file ? $self->dir
         : -f $file       ? path($file)->parent
         :                  $file;
 
@@ -213,10 +214,10 @@ sub cat {
     my ( $self, $file, @args ) = @_;
 
     if ($file) {
-        $self->{dir} = $file;
+        $self->dir($file);
     }
     else {
-        $file = $self->{dir};
+        $file = $self->dir;
     }
 
     confess "No file supplied!" if !$file;
@@ -230,10 +231,10 @@ sub versions {
     my ( $self, $file, @args ) = @_;
 
     if ($file) {
-        $self->{dir} = $file;
+        $self->dir($file);
     }
     else {
-        $file = $self->{dir};
+        $file = $self->dir;
     }
 
     confess "No file supplied!" if !$file;
@@ -247,10 +248,10 @@ sub pull {
     my ( $self, $dir ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -264,10 +265,10 @@ sub push {
     my ( $self, $dir ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -281,10 +282,10 @@ sub status {
     my ( $self, $dir ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -298,10 +299,10 @@ sub checkout {
     my ( $self, $dir, @extra ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -315,10 +316,10 @@ sub add {
     my ( $self, $dir, @extra ) = @_;
 
     if ($dir) {
-        $self->{dir} = $dir;
+        $self->dir($dir);
     }
     else {
-        $dir = $self->{dir};
+        $dir = $self->dir;
     }
 
     confess "No directory supplied!" if !$dir;
@@ -360,25 +361,19 @@ uncommitted changes.
 
 =head1 SUBROUTINES/METHODS
 
-=head3 C<new ( %args )>
+=head2 C<BUILD ()>
 
-Arg: C<dir> - string - (optional) a directory that will be used for
-determining the used version control system. It is used for other methods
-that require a directory and one is not supplied.
+Initializes the C<VCS::Which> object.
 
-Return: VCS::Which - A new object.
-
-Description:
-
-=head3 C<load_systems ()>
+=head2 C<load_systems ()>
 
 Description: Creates new objects for each version control system found
 
-=head3 C<get_systems ()>
+=head2 C<get_systems ()>
 
 Description: Searches for version control systems plugins installed
 
-=head3 C<capabilities ( [$dir] )>
+=head2 C<capabilities ( [$dir] )>
 
 Param: C<$dir> - string - Directory to base out put on
 
@@ -387,7 +382,7 @@ Return: list context - The data for each system's capabilities
 
 Description: Gets the capabilities of each system and returns the results
 
-=head3 C<which ( [$dir] )>
+=head2 C<which ( [$dir] )>
 
 Param: C<$dir> - string - Directory to work out which system it is using
 
@@ -396,7 +391,7 @@ Return: VCS::Which::Plugin - Object which can be used against the directory
 Description: Determines which version control plugin can be used to with the
 supplied directory.
 
-=head3 C<uptodate ( $dir )>
+=head2 C<uptodate ( $dir )>
 
 Param: C<$dir> - string - Directory to base out put on
 
@@ -405,13 +400,13 @@ Return: bool - True if the everything is checked in for the directory
 Description: Determines if there are any changes that have not been committed
 to the VCS running the directory.
 
-=head3 C<exec ( @args )>
+=head2 C<exec ( @args )>
 
 Param: C<@args> - array - Arguments to pass on to the appropriate vcs command
 
 Description: Runs the appropriate vcs command with the parameters supplied
 
-=head3 C<cat ( $file[, $revision] )>
+=head2 C<cat ( $file[, $revision] )>
 
 Param: C<$file> - string - The name of the file to cat
 
@@ -424,7 +419,7 @@ Return: The file contents of the desired revision
 
 Description: Gets the contents of a specific revision of a file.
 
-=head3 C<log ( [$file], [@args] )>
+=head2 C<log ( [$file], [@args] )>
 
 Param: C<$file> - string - The name of the file or directory to get the log of
 
@@ -434,32 +429,42 @@ Return: The log out put
 
 Description: Gets the log of changes (optionally limited to a file)
 
-=head3 C<versions ( [$file], [@args] )>
+=head2 C<versions ( [$file], [@args] )>
 
 Description: Gets all the versions of $file
 
-=head3 C<pull ( [$dir] )>
+=head2 C<pull ( [$dir] )>
 
 Description: Pulls or updates the directory $dir to the newest version
 
-=head3 C<push ( [$dir] )>
+=head2 C<push ( [$dir] )>
 
 Description: Pushes content to master repository for distributed VCS systems
 
-=head3 C<status ( [$dir] )>
+=head2 C<status ( [$dir] )>
 
 Return: HASHREF - Status of files
 
 Description: Get the statuses of all files not added or not committed in the
 repository.
 
-=head3 C<add ( [$file] )>
+=head2 C<add ( [$file] )>
 
 Add C<$file> to VCS
 
-=head3 C<checkout ( [$dir] )>
+=head2 C<checkout ( [$dir] )>
 
 Checkout clean copy of C<$file>
+
+=head1 ATTRIBUTES
+
+=head2 C<dir>
+
+The directory base for the VCS operation to be carried out.
+
+=head2 C<systems>
+
+All the available VCS system plugins found.
 
 =head1 DIAGNOSTICS
 
