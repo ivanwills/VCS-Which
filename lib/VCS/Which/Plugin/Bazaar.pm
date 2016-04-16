@@ -6,16 +6,18 @@ package VCS::Which::Plugin::Bazaar;
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
+use Moo;
 use strict;
 use warnings;
 use version;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/VCS::Which::Plugin/;
 use Path::Tiny;
 use File::chdir;
 use Contextual::Return;
+
+extends 'VCS::Which::Plugin';
 
 our $VERSION = version->new('0.5.9');
 our $name    = 'Bazaar';

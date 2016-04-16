@@ -6,29 +6,16 @@ package VCS::Which::Plugin;
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
+use Moo;
 use strict;
 use warnings;
 use version;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use base qw/Exporter/;
 use File::chdir;
 
-our $VERSION     = version->new('0.5.9');
-our @EXPORT_OK   = qw//;
-our %EXPORT_TAGS = ();
-
-sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my %param  = @_;
-    my $self   = \%param;
-
-    bless $self, $class;
-
-    return $self;
-}
+our $VERSION = version->new('0.5.9');
 
 sub name {
     my ($self) = @_;
