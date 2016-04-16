@@ -41,6 +41,10 @@ sub capabilities {
 
     # Only guarentee Blank installed
     is $capabilities{Blank}{installed}, 0.5, "Blank test VCS installed in .";
+
+    my $capabilities = $vcsw->capabilities('.');
+
+    like $capabilities, qr/^Blank\s+installed\s+versioning$/xms, 'Blak is installed';
 }
 
 sub which {
@@ -51,6 +55,10 @@ sub which {
 
     $which = $vcsw->which('.');
     isa_ok $which, 'VCS::Which::Plugin::Blank';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->which() };
+    ok $@, 'Error with no supplied dir';
 }
 
 sub uptodate {
