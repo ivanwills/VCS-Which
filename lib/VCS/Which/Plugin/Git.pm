@@ -27,15 +27,15 @@ our $meta    = '.git';
 sub installed {
     my ($self) = @_;
 
-    return $self->{installed} if exists $self->{installed};
+    return $self->_installed if defined $self->_installed;
 
     for my $path (split /[:;]/, $ENV{PATH}) {
         next if !-x "$path/$exe";
 
-        return $self->{installed} = 1;
+        return $self->_installed( 1 );
     }
 
-    return $self->{installed} = 0;
+    return $self->_installed( 0 );
 }
 
 sub used {
@@ -52,7 +52,7 @@ sub used {
 
     while ($current_dir) {
         if ( -d "$current_dir/$meta" ) {
-            $self->{base} = $current_dir;
+            $self->_base( $current_dir );
             return $level;
         }
 
@@ -70,7 +70,7 @@ sub used {
 sub uptodate {
     my ( $self, $dir ) = @_;
 
-    $dir ||= $self->{base};
+    $dir ||= $self->_base;
 
     croak "'$dir' is not a directory!" if !-d $dir;
 
@@ -83,7 +83,7 @@ sub uptodate {
 sub pull {
     my ( $self, $dir ) = @_;
 
-    $dir ||= $self->{base};
+    $dir ||= $self->_base;
 
     croak "'$dir' is not a directory!" if !-e $dir;
 
@@ -94,7 +94,7 @@ sub pull {
 sub push {
     my ( $self, $dir ) = @_;
 
-    $dir ||= $self->{base};
+    $dir ||= $self->_base;
 
     croak "'$dir' is not a directory!" if !-e $dir;
 
@@ -107,7 +107,7 @@ sub cat {
 
     # git expects $file to be relative to the base of the git repo not the
     # current directory so we change it to being relative to the repo if nessesary
-    my $repo_dir = path($self->{base}) or confess "How did I get here with out a base directory?\n";
+    my $repo_dir = path($self->_base) or confess "How did I get here with out a base directory?\n";
     my $cwd      = path('.')->absolute;
     local $CWD = $CWD;
 
@@ -126,7 +126,7 @@ sub cat {
             die "Git.pm is not installed only propper revision names can be used\n";
         }
 
-        my $repo = Git->repository(Directory => $self->{base});
+        my $repo = Git->repository(Directory => $self->_base);
         my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
         my $rev = $revision =~ /^[-]?\d+$/xms && $revs[$revision] ? $revs[$revision] : $revision;
 
@@ -219,7 +219,7 @@ sub versions {
         die "Git.pm is not installed only propper revision names can be used\n";
     }
 
-    my $repo = Git->repository(Directory => $self->{base});
+    my $repo = Git->repository(Directory => $self->_base);
     my @revs = reverse $repo->command('rev-list', '--all', '--', path($file)->absolute);
 
     return @revs;

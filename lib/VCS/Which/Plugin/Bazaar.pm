@@ -27,15 +27,15 @@ our $meta    = '.bzr';
 sub installed {
     my ($self) = @_;
 
-    return $self->{installed} if exists $self->{installed};
+    return $self->_installed if defined $self->_installed;
 
     for my $path (split /[:;]/, $ENV{PATH}) {
         next if !-x "$path/$exe";
 
-        return $self->{installed} = 1;
+        return $self->_installed( 1 );
     }
 
-    return $self->{installed} = 0;
+    return $self->_installed( 0 );
 }
 
 sub used {
@@ -52,7 +52,7 @@ sub used {
 
     while ($current_dir) {
         if ( -d "$current_dir/$meta" ) {
-            $self->{base} = $current_dir;
+            $self->_base( $current_dir );
             return $level;
         }
 
@@ -70,7 +70,7 @@ sub used {
 sub uptodate {
     my ( $self, $dir ) = @_;
 
-    $dir ||= $self->{base};
+    $dir ||= $self->_base;
 
     croak "'$dir' is not a directory!" if !-e $dir;
 
@@ -83,7 +83,7 @@ sub uptodate {
 sub pull {
     my ( $self, $dir ) = @_;
 
-    $dir ||= $self->{base};
+    $dir ||= $self->_base;
 
     croak "'$dir' is not a directory!" if !-e $dir;
 

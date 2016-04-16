@@ -17,6 +17,10 @@ use File::chdir;
 
 our $VERSION = version->new('0.5.9');
 
+has [qw/_installed _base/] => (
+    is => 'rw',
+);
+
 sub name {
     my ($self) = @_;
     my $package = ref $self ? ref $self : $self;
