@@ -14,6 +14,7 @@ my $builder = Module::Build->new(
         'IO::Prompt'         => 0,
         'List::MoreUtils'    => 0,
         'List::Util'         => 0,
+        'Moo'                => 0,
         'Path::Tiny'         => 0,
         'version'            => 0,
     },
