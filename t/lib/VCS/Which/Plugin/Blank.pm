@@ -28,6 +28,12 @@ sub uptodate { $uptodate }
 sub exec     { 1 }
 sub log      { 'log' }
 sub cat      { $_[1] }
+sub versions { () }
+sub pull     { 1 }
+sub push     { 1 }
+sub status   { 1 }
+sub checkout { 1 }
+sub add      { 1 }
 
 1;
 

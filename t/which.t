@@ -15,6 +15,12 @@ uptodate();
 wexec();
 wlog();
 cat();
+versions();
+pull();
+vcs_push();
+status();
+checkout();
+add();
 
 done_testing();
 
@@ -119,4 +125,88 @@ sub cat {
     $vcsw = eval { VCS::Which->new(dir => 't') };
     ok $vcsw->cat(), 'Cat default dir';
     ok $vcsw->cat('other'), 'Cat default dir';
+}
+
+sub versions {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my @versions = $vcsw->versions('t/which.t');
+    is scalar @versions, 0, 'Called versions';
+
+    @versions = $vcsw->versions();
+    is scalar @versions, 0, 'Called versions';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->versions() };
+    ok $@, 'Error with no supplied dir';
+}
+
+sub pull {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my $pull = $vcsw->pull('t/which.t');
+    is $pull, 1, 'Called pull';
+
+    $pull = $vcsw->pull();
+    is $pull, 1, 'Called pull';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->pull() };
+    ok $@, 'Error with no supplied dir';
+}
+
+sub vcs_push {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my $push = $vcsw->push('t/which.t');
+    is $push, 1, 'Called push';
+
+    $push = $vcsw->push();
+    is $push, 1, 'Called push';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->push() };
+    ok $@, 'Error with no supplied dir';
+}
+
+sub status {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my $status = $vcsw->status('t/which.t');
+    is $status, 1, 'Called status';
+
+    $status = $vcsw->status();
+    is $status, 1, 'Called status';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->status() };
+    ok $@, 'Error with no supplied dir';
+}
+
+sub checkout {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my $checkout = $vcsw->checkout('t/which.t');
+    is $checkout, 1, 'Called checkout';
+
+    $checkout = $vcsw->checkout();
+    is $checkout, 1, 'Called checkout';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->checkout() };
+    ok $@, 'Error with no supplied dir';
+}
+
+sub add {
+    my $vcsw = eval { VCS::Which->new(dir => 't') };
+
+    my $add = $vcsw->add('t/which.t');
+    is $add, 1, 'Called add';
+
+    $add = $vcsw->add();
+    is $add, 1, 'Called add';
+
+    $vcsw->dir(undef);
+    eval { $vcsw->add() };
+    ok $@, 'Error with no supplied dir';
 }
