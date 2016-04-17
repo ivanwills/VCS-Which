@@ -1,5 +1,24 @@
 Revision history for VCS-Which
 
+0.6.0   2016-04-17
+        Updating for release of version 0.6.0
+        Added more tests (Ivan Wills)
+        Removed redundant check (Ivan Wills)
+        Restructuring code for better code coverage (Ivan Wills)
+        Adding more tests (Ivan Wills)
+        Made propper attributes (Ivan Wills)
+        Finishing Moo conversion (Ivan Wills)
+        Added Moo as a dependency (Ivan Wills)
+        Mooifying VCS::Which (Ivan Wills)
+        Added restart to bin files (Ivan Wills)
+        Update skip files (Ivan Wills)
+        License date update (Ivan Wills)
+        Updating config (Ivan Wills)
+        Fixed more newer/older git issues (Ivan Wills)
+        Added tracking added files to current HEAD (Ivan Wills)
+        diff doesn't cope with 3 file diffs (Ivan Wills)
+        VTide and editor configs (Ivan Wills)
+
 0.5.9   2015-10-27
         Updating for release of version 0.5.9
         Fixed more newer git issues (Ivan Wills)
