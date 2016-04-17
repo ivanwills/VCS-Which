@@ -167,7 +167,7 @@ sub uptodate {
 
     return $self->_uptodate->{$dir} if exists $self->_uptodate->{$dir};
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $self->_uptodate->{$dir} = $system->uptodate($dir);
 }
@@ -258,7 +258,7 @@ sub pull {
 
     confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $system->pull($dir);
 }
@@ -275,7 +275,7 @@ sub push {
 
     confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $system->push($dir);
 }
@@ -292,7 +292,7 @@ sub status {
 
     confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $system->status($dir);
 }
@@ -309,7 +309,7 @@ sub checkout {
 
     confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $system->checkout($dir, @extra);
 }
@@ -326,7 +326,7 @@ sub add {
 
     confess "No directory supplied!" if !$dir;
 
-    my $system = $self->which || confess "Could not work out which version control system to use!\n";
+    my $system = $self->which;
 
     return $system->add($dir, @extra);
 }
