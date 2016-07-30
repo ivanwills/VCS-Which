@@ -61,7 +61,7 @@ sub get_systems {
 
         for my $file (@files) {
             my $module = $file;
-            $module =~ s{$dir/}{}xms;
+            $module =~ s{\Q$dir\E/}{}xms;
             $module =~ s{/}{::}gxms;
             $module =~ s{[.]pm$}{}xms;
 
