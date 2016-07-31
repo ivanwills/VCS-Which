@@ -1,5 +1,9 @@
 Revision history for VCS-Which
 
+0.6.1   2016-07-31
+        Updating for release of version 0.6.1
+        Added safty disabled patterns (Ivan Wills)
+
 0.6.0   2016-04-17
         Updating for release of version 0.6.0
         Added more tests (Ivan Wills)
