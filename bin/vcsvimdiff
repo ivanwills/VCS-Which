@@ -343,12 +343,19 @@ This documentation refers to vcsvimdiff version 0.6.1.
 
 =head1 SYNOPSIS
 
-   vcsvimdiff [option] file
+   vcsvimdiff [option] [file_or_dir ...]
 
  OPTIONS:
+  file_or_dir   The file to show differences with in vimdiff. If this is a
+                directory only files that have changed will be shown by
+                defailt, --all option changes that. If not specified the
+                current directory is used.
+
   -r --revision=rev1[:rev2]
                 Specify the revision(s) to compare with. HEAD is used if only
                 one revision specified.
+  -a --all      If the file_or_dir is a directory this will run vcsvimdiff for
+                each file git has a log for.
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
   -R --replay   Replay the revision history of "file", --verbose shows the
