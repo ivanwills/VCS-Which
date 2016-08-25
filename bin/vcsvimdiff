@@ -44,6 +44,7 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
+        'all|a',
         'revision|r=s',
         'replay|R',
         'merge|M',
@@ -74,28 +75,35 @@ sub main {
         pod2usage( -verbose => 1 );
     }
 
-    my $temp_dir = $ENV{TEMP} || '/tmp';
-    for my $file (@ARGV) {
-        # sort out the revision names
-        my ( $rev_old, $rev_new ) = ('', '');
-        if ( $option{'revision'} ) {
-            ( $rev_old, $rev_new )
-                = $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
-                :                                 ( $option{'revision'} );
-        }
+    # sort out the revision names
+    my ( $rev_old, $rev_new ) = ('', '');
+    if ( $option{'revision'} ) {
+        ( $rev_old, $rev_new )
+            = $option{'revision'} =~ /:/xms ? ( split /:/xms, $option{'revision'} )
+            :                                 ( $option{'revision'} );
+    }
 
-        if ( $option{'change'} ) {
-            ( $rev_old, $rev_new ) =
-                $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
-                :                       ( $option{'change'}, $option{'change'} - 1 );
-            $option{'revision'} = "$rev_old\:$rev_new";
+    if ( $option{'change'} ) {
+        ( $rev_old, $rev_new ) =
+            $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
+            :                       ( $option{'change'}, $option{'change'} - 1 );
+        $option{'revision'} = "$rev_old\:$rev_new";
+    }
+
+    my $temp_dir = $ENV{TEMP} || '/tmp';
+    while ( my $file = shift @ARGV ) {
+
+        # create a new VCS::Which object for the file of interest
+        my $vcs = VCS::Which->new(dir => $file);
+
+        if (-d $file) {
+            unshift @ARGV, find_files($file, $vcs);
+            warn Dumper \@ARGV;
+            next;
         }
 
         # create the temporary file object name
         my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
-
-        # create a new VCS::Which object for the file of interest
-        my $vcs = VCS::Which->new(dir => $file);
 
         if ($option{replay}) {
             my $warned   = 0;
@@ -248,6 +256,34 @@ sub diff {
     }
 
     system $option{diff}, @{ $option{diff_option} || [] }, @files;
+}
+
+sub find_files {
+    my ($dir, $vcs) = @_;
+
+    if ($option{all}) {
+        my @files = path($dir)->children;
+        my @found;
+        while (my $file = shift @files) {
+            if (-d $file) {
+                push @files, $file->children;
+                next;
+            }
+            next if ! $vcs->log($file);
+
+            push @found, "$file";
+        }
+        return @found;
+    }
+
+    # Now show only files that have changes
+    my $status = $vcs->status($dir);
+
+    return (
+        map { path($dir, $_) }
+        map {@{ $status->{$_} || [] }}
+        qw/both modified committed/
+    );
 }
 
 __DATA__
