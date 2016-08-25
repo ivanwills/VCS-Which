@@ -102,29 +102,21 @@ sub main {
 
         # create the temporary file object name
         my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
+        my $command
+            = $option{replay} ? 'replay'
+            : $option{merge}  ? 'merge'
+            : $rev_new        ? 'rev_new'
+            : $rev_old        ? 'rev_old'
+            :                   'rev_default';
 
-        if ($option{replay}) {
-            replay($file, $vcs, $rev_old, $rev_new, $temp_dir);
-        }
-        elsif ( $option{merge}) {
-            merge($file, $vcs, $rev_old, $rev_new, $temp_dir);
-        }
-        elsif ($rev_new) {
-            rev_new($file, $vcs, $rev_old, $rev_new, $temp_dir);
-        }
-        elsif ($rev_old) {
-            rev_old($file, $vcs, $rev_old, $rev_new, $temp_dir);
-        }
-        else {
-            rev_default($file, $vcs, $rev_old, $rev_new, $temp_dir);
-        }
+        main->$command($file, $vcs, $rev_old, $rev_new, $temp_dir);
     }
 
     return;
 }
 
 sub replay {
-    my ($file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
+    my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
@@ -202,7 +194,7 @@ sub replay {
 }
 
 sub merge {
-    my ($file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
+    my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
@@ -231,7 +223,7 @@ sub merge {
 }
 
 sub rev_new {
-    my ($file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
+    my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
@@ -249,7 +241,7 @@ sub rev_new {
 }
 
 sub rev_old {
-    my ($file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
+    my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
@@ -266,7 +258,7 @@ sub rev_old {
 }
 
 sub rev_default {
-    my ($file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
+    my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
