@@ -32,10 +32,6 @@ my %option = (
     VERSION  => 0,
 );
 
-if ( !@ARGV ) {
-    pod2usage( -verbose => 1 );
-}
-
 main();
 exit 0;
 
@@ -69,9 +65,7 @@ sub main {
     elsif ( $option{'man'} ) {
         pod2usage( -verbose => 2 );
     }
-    elsif ( $option{'help'} || !@ARGV || !-e $ARGV[0] ) {
-        warn `pwd`;
-        warn "Can't find $ARGV[0]!\n" if !-e $ARGV[0];
+    elsif ( $option{'help'} ) {
         pod2usage( -verbose => 1 );
     }
 
@@ -91,6 +85,10 @@ sub main {
     }
 
     my $temp_dir = $ENV{TEMP} || '/tmp';
+    if ( ! @ARGV ) {
+        @ARGV = qw{.};
+    }
+
     while ( my $file = shift @ARGV ) {
 
         # create a new VCS::Which object for the file of interest
