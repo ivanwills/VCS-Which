@@ -19,7 +19,7 @@ use Contextual::Return;
 
 extends 'VCS::Which::Plugin';
 
-our $VERSION = version->new('0.6.1');
+our $VERSION = version->new('0.6.2');
 our $name    = 'Subversion';
 our $exe     = 'svn';
 our $meta    = '.svn';
@@ -162,7 +162,7 @@ VCS::Which::Plugin::Subversion - The Subversion plugin for VCS::Which
 
 =head1 VERSION
 
-This documentation refers to VCS::Which::Plugin::Subversion version 0.6.1.
+This documentation refers to VCS::Which::Plugin::Subversion version 0.6.2.
 
 =head1 SYNOPSIS
 

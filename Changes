@@ -1,5 +1,12 @@
 Revision history for VCS-Which
 
+0.6.2   2016-09-18
+        Updating for release of version 0.6.2
+        Fixed up documentation (Ivan Wills)
+        Simplified calling logic (Ivan Wills)
+        Split up main to smaller functions (Ivan Wills)
+        Added default file of current directory and removed the requirement for a parameter to be passed (Ivan Wills)
+
 0.6.1   2016-07-31
         Updating for release of version 0.6.1
         Added safty disabled patterns (Ivan Wills)
