@@ -40,6 +40,7 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
+        'add|A',
         'all|a',
         'revision|r=s',
         'replay|R',
@@ -218,6 +219,21 @@ sub merge {
     copy "$temp_dir/" . $file->basename . ".merge", $file;
 
     diff( "$temp_dir/" . $file->basename . ".ours", $file, "$temp_dir/" . $file->basename . ".theirs" );
+
+    if ($option{add}) {
+        system 'git', 'diff', $file;
+        my $ans = lc prompt(
+            "Add '$file'? [yY] ",
+            '-tty',
+            '-one_char',
+            '-yes',
+        );
+        print "\n\n";
+
+        if ( $ans eq 'y' ) {
+            system 'git', 'add', $file;
+        }
+    }
 
     return;
 }
