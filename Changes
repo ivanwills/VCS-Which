@@ -1,5 +1,12 @@
 Revision history for VCS-Which
 
+0.6.3   2017-01-15
+        Updating for release of version 0.6.3
+        Updated licence (Ivan Wills)
+        Increasing minimum version due to dependencies now failing to install (Ivan Wills)
+        Adding option to add diffed files after finishing (Ivan Wills)
+        Added perl 5.24 to travis build list (Ivan Wills)
+
 0.6.2   2016-09-18
         Updating for release of version 0.6.2
         Fixed up documentation (Ivan Wills)
