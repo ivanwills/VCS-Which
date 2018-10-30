@@ -57,6 +57,9 @@ sub get_systems {
     my ($self) = @_;
 
     for my $dir (@INC) {
+        if ( $dir !~ /^\/|^\w:\// ) {
+            $dir = "./$dir";
+        }
         my @files = glob "$dir/VCS/Which/Plugin/*.pm";
 
         for my $file (@files) {
@@ -67,7 +70,11 @@ sub get_systems {
 
             next if $systems{$module};
 
-            require $file;
+            eval {
+                require $file;
+            } or do {
+                confess $@, "Error with $file / $module";
+            };
             $systems{$module} = 1;
         }
     }
