@@ -1,5 +1,10 @@
 Revision history for VCS-Which
 
+0.6.5   2018-10-30
+        Updating for release of version 0.6.5
+        Added wait (Ivan Wills)
+        Updating Test dependencies for better windows experience (Ivan Wills)
+
 0.6.4   2017-03-26
         Updating for release of version 0.6.4
         Merge pull request #1 from manwar/fix-inconsisten-version (Ivan Wills)
