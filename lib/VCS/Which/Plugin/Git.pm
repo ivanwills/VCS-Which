@@ -127,10 +127,8 @@ sub cat {
         }
 
         my $repo = Git->repository(Directory => $self->_base);
-        my @revs = reverse $repo->command('rev-list', '--all', '--', $file);
-        my $rev = $revision =~ /^[-]?\d+$/xms && $revs[$revision] ? $revs[$revision] : $revision;
-
-        return join "\n", $repo->command('show', $rev . ':' . $file);
+        my @revs = reverse $repo->command('log', '--format=format:%H', '--', $file);
+        $revision = $revision =~ /^[-]?\d+$/xms && $revs[$revision] ? $revs[$revision] : $revision;
     }
     elsif ( !defined $revision ) {
         $revision = '';
