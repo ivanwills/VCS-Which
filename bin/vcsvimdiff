@@ -26,6 +26,7 @@ my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my %option = (
     revision => '',
     diff     => 'vimdiff',
+    diff_option => [],
     verbose  => 0,
     man      => 0,
     help     => 0,
@@ -52,6 +53,7 @@ sub main {
         'three|3',
         'diff|d=s',
         'diff_option|diff-option|o=s@',
+        'readonly|n',
         'test|t!',
         'verbose|v+',
         'man',
@@ -68,6 +70,10 @@ sub main {
     }
     elsif ( $option{'help'} ) {
         pod2usage( -verbose => 1 );
+    }
+
+    if ( $option{readonly} && $option{diff} eq 'vimdiff' ) {
+        push @{$option{diff_option}}, '-R';
     }
 
     # sort out the revision names
