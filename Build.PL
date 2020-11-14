@@ -34,8 +34,8 @@ my $builder = Module::Build->new(
     create_license     => 1,
     meta_merge         => {
         resources => {
-            repository => 'http://github.com/ivanwills/VCS-Which',
-            bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=VCS-Which',
+            repository => 'https://github.com/ivanwills/VCS-Which',
+            bugtracker => 'https://rt.cpan.org/NoAuth/Bugs.html?Dist=VCS-Which',
         },
     },
 );
