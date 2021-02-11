@@ -245,6 +245,8 @@ sub merge {
         if ( $ans eq 'y' ) {
             system 'git', 'add', $file;
         }
+
+        system 'git', 'status';
     }
 
     return;
