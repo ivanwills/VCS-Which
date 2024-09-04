@@ -12,19 +12,16 @@ use warnings;
 use version;
 use Carp;
 use Data::Dumper qw/Dumper/;
-use English qw/ -no_match_vars /;
+use English      qw/ -no_match_vars /;
 use Path::Tiny;
 
 our $VERSION = version->new('0.6.9');
-
 our %systems;
 
-has [qw/dir systems/] => (
-    is => 'rw',
-);
+has [qw/dir systems/] => ( is => 'rw', );
 has [qw/_which _uptodate/] => (
     is      => 'rw',
-    default => sub {{}},
+    default => sub { {} },
 );
 
 sub BUILD {
@@ -37,16 +34,16 @@ sub BUILD {
     $self->load_systems();
 
     if ( $self->dir && -f $self->dir ) {
-        $self->dir( path($self->dir)->parent );
+        $self->dir( path( $self->dir )->parent );
     }
 
     return $self;
 }
 
 sub load_systems {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
-    for my $module (keys %systems) {
+    for my $module ( keys %systems ) {
         $self->{systems}{$module} = $module->new;
     }
 
@@ -70,9 +67,7 @@ sub get_systems {
 
             next if $systems{$module};
 
-            eval {
-                require $file;
-            } or do {
+            eval { require $file; } or do {
                 confess $@, "Error with $file / $module";
             };
             $systems{$module} = 1;
@@ -83,7 +78,7 @@ sub get_systems {
 }
 
 sub capabilities {
-    my ($self, $dir) = @_;
+    my ( $self, $dir ) = @_;
     my $out;
     my %out;
 
@@ -94,21 +89,22 @@ sub capabilities {
         $dir = $self->dir;
     }
 
-    for my $system (values %{ $self->{systems} }) {
+    for my $system ( values %{ $self->{systems} } ) {
 
-        $out .= $system->name . ' ' x (10 - length $system->name);
-        $out .= $system->installed  ? ' installed    ' : ' not installed';
-        $out{$system->name}{installed} = $system->installed;
+        $out .= $system->name . ' ' x ( 10 - length $system->name );
+        $out .= $system->installed ? ' installed    ' : ' not installed';
+        $out{ $system->name }{installed} = $system->installed;
 
         if ($dir) {
             eval {
                 $out .= $system->used($dir) ? ' versioning' : ' not versioning';
-                $out{$system->name}{installed} = $system->used($dir);
+                $out{ $system->name }{installed} = $system->used($dir);
             };
             if ($EVAL_ERROR) {
-                warn "$system error in determining if the directory is used: $EVAL_ERROR\n";
+                warn
+"$system error in determining if the directory is used: $EVAL_ERROR\n";
                 $out .= ' NA';
-                $out{$system->name}{installed} = ' NA';
+                $out{ $system->name }{installed} = ' NA';
             }
         }
 
@@ -128,8 +124,14 @@ sub which {
         $dir = $self->dir;
     }
 
-    if ( $dir && -f $dir ) {
-        $dir = $self->dir( path($dir)->parent );
+    if ( $dir ) {
+        if ( -f $dir ) {
+            $dir = $self->dir( path($dir)->parent );
+        } elsif ( ! -e $dir ) {
+            while ( $dir && ! -e $dir ) {
+                $dir = $self->dir( path($dir)->parent );
+            }
+        }
     }
 
     confess "No directory supplied!" if !$dir;
@@ -140,22 +142,23 @@ sub which {
     my %used;
     my $min;
 
-    for my $system (values %{ $self->{systems} }) {
+    for my $system ( values %{ $self->{systems} } ) {
         my $used = eval { $system->used($dir) || 0 };
         next if $EVAL_ERROR;
 
-        if ( $used && ! defined $min ) {
+        if ( $used && !defined $min ) {
             $min = $used;
         }
 
-        # check that the directory is used and that it was found at a level closer to $dir that the last found system
+# check that the directory is used and that it was found at a level closer to $dir that the last found system
         if ( $used && $used <= $min ) {
             $self->_which->{$dir} = $system;
             $min = $used;
         }
     }
 
-    confess "Could not work out what plugin to use with '$dir'\n" if !$self->_which->{$dir};
+    confess "Could not work out what plugin to use with '$dir'\n"
+      if !$self->_which->{$dir};
 
     return $self->_which->{$dir};
 }
@@ -185,7 +188,7 @@ sub exec {
 
     confess "Nothing to exec!" if !@args;
 
-    if (-e $args[0]) {
+    if ( -e $args[0] ) {
         $dir = $self->dir( shift @args );
     }
     else {
@@ -196,27 +199,27 @@ sub exec {
 
     my $system = $self->which;
 
-    return $system->exec($dir, @args);
+    return $system->exec( $dir, @args );
 }
 
 sub log {
     my ( $self, $file, @args ) = @_;
 
-    if ( $file && ! -e $file ) {
+    if ( $file && !-e $file ) {
         unshift @args, $file;
         undef $file;
     }
 
-    my $dir
-        = !defined $file ? $self->dir
-        : -f $file       ? path($file)->parent
-        :                  $file;
+    my $dir =
+        !defined $file ? $self->dir
+      : -f $file       ? path($file)->parent
+      :                  $file;
 
     confess "No directory supplied!" if !$dir;
 
     my $system = $self->which($dir);
 
-    return $system->log($file, @args);
+    return $system->log( $file, @args );
 }
 
 sub cat {
@@ -233,7 +236,7 @@ sub cat {
 
     my $system = $self->which;
 
-    return $system->cat($file, @args);
+    return $system->cat( $file, @args );
 }
 
 sub versions {
@@ -250,7 +253,7 @@ sub versions {
 
     my $system = $self->which;
 
-    return $system->versions($file, @args);
+    return $system->versions( $file, @args );
 }
 
 sub pull {
@@ -318,7 +321,7 @@ sub checkout {
 
     my $system = $self->which;
 
-    return $system->checkout($dir, @extra);
+    return $system->checkout( $dir, @extra );
 }
 
 sub add {
@@ -335,7 +338,7 @@ sub add {
 
     my $system = $self->which;
 
-    return $system->add($dir, @extra);
+    return $system->add( $dir, @extra );
 }
 
 1;
