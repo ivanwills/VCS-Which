@@ -117,7 +117,7 @@ sub main {
             :                   'rev_default';
 
         if ( $option{test} ) {
-            warn "$command $file, $rev_old, $rev_new";
+            warn "$command $file, $rev_old, $rev_new\n";
             next;
         }
         main->$command($file, $vcs, $rev_old, $rev_new, $temp_dir);
@@ -351,7 +351,6 @@ sub find_files {
                 push @files, $file->children;
                 next;
             }
-            next if ! $vcs->log($file);
             next if ! keys %{$vcs->status($file)};
 
             push @found, "$file";
