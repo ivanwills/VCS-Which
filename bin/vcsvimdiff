@@ -104,7 +104,6 @@ sub main {
 
         if (-d $file) {
             unshift @ARGV, find_files($file, $vcs);
-            warn Dumper \@ARGV;
             next;
         }
 
@@ -117,6 +116,10 @@ sub main {
             : $rev_old        ? 'rev_old'
             :                   'rev_default';
 
+        if ( $option{test} ) {
+            warn "$command $file, $rev_old, $rev_new";
+            next;
+        }
         main->$command($file, $vcs, $rev_old, $rev_new, $temp_dir);
     }
 
@@ -349,6 +352,7 @@ sub find_files {
                 next;
             }
             next if ! $vcs->log($file);
+            next if ! keys %{$vcs->status($file)};
 
             push @found, "$file";
         }
