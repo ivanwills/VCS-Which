@@ -117,6 +117,8 @@ sub main {
             :                   'rev_default';
 
         if ( $option{test} ) {
+            $rev_old ||= '';
+            $rev_new ||= '';
             warn "$command $file, $rev_old, $rev_new\n";
             next;
         }
@@ -283,13 +285,12 @@ sub rev_old {
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
 
-    write_file( "$tmp.$rev_old", scalar $vcs->cat($option{old_name} || $file, $rev_old) );
+    my $cat = eval { scalar $vcs->cat($option{old_name} || $file, $rev_old) };
+    write_file( "$tmp.$rev_old", $cat );
     if ($option{test} || $option{verbose}) {
         print "$option{diff} $file $tmp.$rev_old\n";
     }
-    if (!$option{test} && -s "$tmp.$rev_old") {
-        diff( $file, "$tmp.$rev_old" );
-    }
+    diff( $file, "$tmp.$rev_old" );
 
     return;
 }
