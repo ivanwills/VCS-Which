@@ -307,6 +307,24 @@ sub status {
     return $system->status($dir);
 }
 
+sub diff_files {
+    my ( $self, $dir, @rest ) = @_;
+
+    if ($dir) {
+        $self->dir($dir);
+    }
+    else {
+        $dir = $self->dir;
+    }
+
+    confess "No directory supplied!" if !$dir;
+
+    my $system = $self->which;
+
+    warn "$dir, @rest\n";
+    return $system->diff_files($dir, @rest);
+}
+
 sub checkout {
     my ( $self, $dir, @extra ) = @_;
 

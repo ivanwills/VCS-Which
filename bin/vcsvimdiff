@@ -43,11 +43,13 @@ sub main {
         \%option,
         'add|A',
         'all|a',
+        'deep|D',
         'revision|r=s',
         'replay|R',
         'merge|M',
         'change|c=i',
         'changed|changed-only|C',
+        'conflict|file|f',
         'max|m=i',
         'prev|previous|p',
         'three|3',
@@ -90,6 +92,29 @@ sub main {
             $option{'change'} > 0 ? ( $option{'change'} - 1, $option{'change'} )
             :                       ( $option{'change'}, $option{'change'} - 1 );
         $option{'revision'} = "$rev_old\:$rev_new";
+    }
+
+    if ( $option{merge} && $option{conflict} ) {
+        my $vcs = VCS::Which->new(dir => '.');
+        my $stats = $vcs->status;
+        push @ARGV, @{ $stats->{unmerged} };
+
+        if ($option{test}) {
+            warn Dumper $stats;
+            die join "\n", (sort @ARGV), '';
+        }
+    #} elsif ( $option{merge} ) {
+    #    my $vcs = VCS::Which->new(dir => '.');
+    #    my $stats = $vcs->log('-1');
+    #    ($rev_old, $rev_new) = $stats =~/Merge:\s+(\S+)\s+(\S+)/;
+    }
+
+    if ( $option{revision} && $option{conflict} ) {
+        my $vcs = VCS::Which->new(dir => '.');
+        warn ". $option{revision}\n";
+        my @files = $vcs->diff_files('.', $option{revision});
+        warn join '\n', @files, '';
+        push @ARGV, @files;
     }
 
     my $temp_dir = $ENV{TEMP} || '/tmp';
@@ -220,26 +245,50 @@ sub merge {
 
     # create the temporary file object name
     my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
+    my $ours = '.ours';
+    my $theirs = '.theirs';
 
+    warn "$file, $rev_old, $rev_new, $temp_dir\n";
     $file = path($file);
 
-    # copy the current file out of the way
-    copy $file, "$temp_dir/" . $file->basename . ".merge";
+    warn Dumper \%option;
+    if ($rev_old && $rev_new) {
+        $ours = ".$rev_old";
+        $theirs = ".$rev_new";
+        path("$temp_dir/" . $file->basename . $ours)->spew($vcs->cat($file, $rev_old));
+        path("$temp_dir/" . $file->basename . $theirs)->spew($vcs->cat($file, $rev_new));
+    }
+    elsif ($option{deep}) {
+        my $head = path('.git/HEAD')->slurp();
+        $head =~ s/^ref: refs\/heads\/|\n//g;
+        my $merge = path('.git/MERGE_HEAD')->slurp();
+        $merge =~ s/^ref: refs\/heads\/|\n//g;
 
-    # get current branches "ours" version
-    $vcs->checkout($file, qw/--ours/);
-    # copy to "ours"
-    copy $file, "$temp_dir/" . $file->basename . ".ours";
+        my $head_file = $vcs->cat($file, $head);
+        my $merge_file = $vcs->cat($file, $merge);
 
-    # get current branches "theirs" version
-    $vcs->checkout($file, qw/--theirs/);
-    # copy to "theirs"
-    copy $file, "$temp_dir/" . $file->basename . ".theirs";
+        path("$temp_dir/" . $file->basename . $ours)->spew($head_file);
+        path("$temp_dir/" . $file->basename . $theirs)->spew($merge_file);
+    }
+    else {
+        # copy the current file out of the way
+        copy $file, "$temp_dir/" . $file->basename . ".merge";
 
-    # return the file
-    copy "$temp_dir/" . $file->basename . ".merge", $file;
+        # get current branches "ours" version
+        $vcs->checkout($file, qw/--ours/);
+        # copy to "ours"
+        copy $file, "$temp_dir/" . $file->basename . $ours;
 
-    diff( "$temp_dir/" . $file->basename . ".ours", $file, "$temp_dir/" . $file->basename . ".theirs" );
+        # get current branches "theirs" version
+        $vcs->checkout($file, qw/--theirs/);
+        # copy to "theirs"
+        copy $file, "$temp_dir/" . $file->basename . $theirs;
+
+        # return the file
+        copy "$temp_dir/" . $file->basename . ".merge", $file;
+    }
+
+    diff( "$temp_dir/" . $file->basename . $ours, $file, "$temp_dir/" . $file->basename . $theirs );
 
     if ($option{add}) {
         system 'git', 'diff', $file;
@@ -397,6 +446,11 @@ This documentation refers to vcsvimdiff version 0.6.9.
   -A --add      When used with --merge will add the file once you exit vimdiff.
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
+  -f --conflict When handeling a merge this will automatically select files in
+                conflict
+  -f --files    When comparing against another commit/branch this will select all
+                files that are different between the current commit and the other
+                branch specified with -r or --revision
   -R --replay   Replay the revision history of "file", --verbose shows the
                 details of each change before going into vimdiff
   -m --max=int  Maximum number of revisions to replay
