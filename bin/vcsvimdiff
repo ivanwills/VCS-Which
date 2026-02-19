@@ -446,6 +446,7 @@ This documentation refers to vcsvimdiff version 0.6.9.
   -A --add      When used with --merge will add the file once you exit vimdiff.
   -c --change=int
                 Specify changes from a specific revision (see vcs help diff)
+  -D --deep     When merging use source commits not current state
   -f --conflict When handeling a merge this will automatically select files in
                 conflict
   -f --files    When comparing against another commit/branch this will select all
@@ -477,6 +478,14 @@ This documentation refers to vcsvimdiff version 0.6.9.
      --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for vcsvimdiff
+
+ Examples
+   # diff local changes
+   vcsvimdff local-file-with-changes
+   # diff local file against branch main
+   vcsvimdiff -r main my-file
+   # diff local file agains branch name where name has changed from old-name
+   vcsvimdiff -r main --old-name old-name local-file
 
 =head1 DESCRIPTION
 
