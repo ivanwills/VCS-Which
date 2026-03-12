@@ -19,6 +19,7 @@ use VCS::Which;
 use IO::Prompt qw/prompt/;
 use Path::Tiny;
 use File::Copy qw/copy/;
+use Term::ANSIColor qw/colored/;
 
 our $VERSION = version->new('0.6.9');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -172,6 +173,7 @@ sub replay {
         return;
     }
 
+    my $all_revisions = max keys %$versions;
     while ( %$versions ) {
         if ( ( $option{prev} || $option{three} ) && $rev_old ) {
             unlink $last if $last && -e $last;
@@ -204,11 +206,22 @@ sub replay {
                 my @diff = `$diff`;
                 $other->{'Lines added'}   = grep {/^([+] [^+] )/gxms} @diff;
                 $other->{'Lines removed'} = grep {/^([-] [^-] )/gxms} @diff;
+                $other->{'added'}   = colored(['red'],   '+' . $other->{'Lines added'}  );
+                $other->{'removed'} = colored(['green'], '-' . $other->{'Lines removed'});
             }
+            my $author = colored(['bold'], $other->{Author});
+            my $description = colored(['black on_white'], $other->{description});
 
-            local $Data::Dumper::Indent = 1;
-            local $Data::Dumper::Sortkeys = 1;
-            print Data::Dumper->Dump([$other], ["*$rev_no"]);
+            print <<"MESSAGE";
+Revision     : $rev_no / $all_revisions
+Author       : $author
+Description  : $description
+Date         : $other->{Date}
+Lines Added  : $other->{'added'}
+      Removed: $other->{'removed'}
+SHA          : $other->{rev}
+
+MESSAGE
 
             next if @files == 2 && $other->{'Lines added'} == 0 && $other->{'Lines removed'} == 0;
         }
