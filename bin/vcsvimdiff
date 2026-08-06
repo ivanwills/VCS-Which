@@ -25,9 +25,9 @@ our $VERSION = version->new('0.6.9');
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    revision => '',
-    diff     => 'vimdiff',
-    diff_option => [],
+    revision      => '',
+    diff          => 'vimdiff',
+    diff_option   => [],
     verbose  => 0,
     man      => 0,
     help     => 0,
@@ -51,6 +51,7 @@ sub main {
         'change|c=i',
         'changed|changed-only|C',
         'conflict|file|f',
+        'skip_conflict|skip-conflict|s=s@',
         'max|m=i',
         'prev|previous|p',
         'three|3',
@@ -78,6 +79,10 @@ sub main {
 
     if ( $option{readonly} && $option{diff} eq 'vimdiff' ) {
         push @{$option{diff_option}}, '-R';
+    }
+
+    if (!$option{skip_conflict}) {
+        $option{skip_conflict} = qw/package-lock.json/;
     }
 
     # sort out the revision names
@@ -308,7 +313,7 @@ sub merge {
     if ($option{add}) {
         system 'git', 'diff', $file;
         my $ans = lc prompt(
-            "Add '$file'? [yY] ",
+            "Add '$file'? [yYnNqQ] ",
             '-tty',
             '-one_char',
             '-yes',
@@ -317,6 +322,9 @@ sub merge {
 
         if ( $ans eq 'y' ) {
             system 'git', 'add', $file;
+        }
+        elsif ( $ans eq 'q' ) {
+            exit 0;
         }
 
         system 'git', 'status';
