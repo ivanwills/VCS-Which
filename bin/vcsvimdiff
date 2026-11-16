@@ -355,7 +355,7 @@ sub rev_old {
     my (undef, $file, $vcs, $rev_old, $rev_new, $temp_dir) = @_;
 
     # create the temporary file object name
-    my $tmp = "$temp_dir/$$.$name." . path($file)->basename;
+    my $tmp = "$temp_dir/$$.$name." . path($option{old_name} || $file)->basename;
 
     my $cat = eval { scalar $vcs->cat($option{old_name} || $file, $rev_old) };
     write_file( "$tmp.$rev_old", $cat );
